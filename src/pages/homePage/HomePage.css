@@ -1,0 +1,157 @@
+.body-nav {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 85px 30px 0 0;
+  border-bottom: 1px solid rgba(35, 35, 35, 0.441);
+  z-index: 11;
+  background-color: #fff;
+  color: #6e6e6e;
+}
+
+.table-box {
+  padding-top: 125px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.table-headers {
+  position: fixed;
+  width: 100%;
+  padding: 10px 0;
+  font-weight: 600;
+  background-color: #ffffff;
+}
+
+.open-table {
+  > .open-body {
+    cursor: pointer;
+    margin-top: 45px;
+    background-color: #d6d6d646;
+    padding: 2px 5px;
+    border-radius: 3px;
+    
+    > .open-task {
+        margin: 8px 0;
+      padding: 4px;
+      border-radius: 3px;
+      background: #fff;
+      > .card-top {
+        display: flex;
+        justify-content: space-between;
+        > img {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+        }
+      }
+      > .card-bottom{
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+    
+  }
+}
+.progress-table {
+    > .open-body {
+      margin-top: 45px;
+      background-color: #d6d6d646;
+
+      padding: 2px 5px;
+      border-radius: 3px;
+      
+      > .open-task {
+          margin: 8px 0;
+        padding: 4px;
+        border-radius: 3px;
+        background: #fff;
+        > .card-top {
+          display: flex;
+          justify-content: space-between;
+          > img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+          }
+        }
+        > .card-bottom{
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+      
+    }
+  }
+  .review-table {
+    > .open-body {
+      margin-top: 45px;
+      background-color: #d6d6d646;
+
+      padding: 2px 5px;
+      border-radius: 3px;
+      
+      > .open-task {
+          margin: 8px 0;
+        padding: 4px;
+        border-radius: 3px;
+        background: #fff;
+        > .card-top {
+          display: flex;
+          justify-content: space-between;
+          > img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+          }
+        }
+        > .card-bottom{
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+      
+    }
+  }
+  .closed-table {
+    > .open-body {
+      margin-top: 45px;
+      background-color: #d6d6d646;
+
+      padding: 2px 5px;
+      border-radius: 3px;
+      
+      > .open-task {
+          margin: 8px 0;
+        padding: 4px;
+        border-radius: 3px;
+        background: #fff;
+        > .card-top {
+          display: flex;
+          justify-content: space-between;
+          > img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+          }
+        }
+        > .card-bottom{
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+      
+    }
+  }
+
+@media (max-width:700px) {
+    .table-headers{
+        font-size: 10px;
+    }
+    .open-table, .progress-table, .review-table, .closed-table *{
+      font-size: 10px;
+    }
+}
