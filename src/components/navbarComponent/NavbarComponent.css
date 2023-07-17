@@ -1,0 +1,24 @@
+header {
+  width: 100%;
+  position: fixed;
+  z-index: 99;
+  background: #ffe1f7;
+}
+
+.profile-dropdown {
+  position: absolute;
+  font-size: 20px;
+  text-align: start;
+  top: 75px;
+  right: 10px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  z-index: 99;
+  background-color: #fff;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+.profile-dropdown .links{
+  color: rgba(0, 0, 0, 0.886);
+  text-decoration: none;
+}

@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from "react-router-dom";
+import LoginPage from "./pages/loginPage/LoginPage";
+import RegisterPage from "./pages/registerPage/RegisterPage";
+import HomePage from "./pages/homePage/HomePage";
+import Backlogg from "./pages/backLogg/Backlogg";
+import TaskManagment from "./pages/taskManagment/TaskManagment";
+import UserManagment from "./pages/userManagment/UserManagment";
+import EmployeeManagment from "./pages/employeeManagment/EmployeeManagment";
+import Account from "./pages/account/Account";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/backlog" element={<Backlogg />} />
+        <Route path="/taskManagment" element={<TaskManagment/>} />
+        <Route path="/userManagment" element={<UserManagment/>} />
+        <Route path="/employeeManagment" element={<EmployeeManagment/>} />
+        <Route path="/account" element={<Account/>} />
+      </Routes>
+    </>
   );
 }
 
