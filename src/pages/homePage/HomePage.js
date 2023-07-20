@@ -1,30 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 import "./HomePage.css";
 import PopUpWindow from "../../components/modal/PopUpWindow";
 
 const HomePage = () => {
-  const [modalShow, setModalShow] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+ 
+
+  const handleTaskClick = (taskId) => {
+    setSelectedTask(taskId);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedTask(null);
+  };
+
+  // Replace this with your actual task data, or fetch the data based on the taskId
+  const taskData = {
+    id: selectedTask,
+    title: "Task Title va nmadur",
+    description: "Task Description",
+    // Add other task data fields as needed
+  };
 
   return (
     <>
       <NavbarComponent />
-      <div className="container-fluid ">
+      <div className="container-fluid">
         <div className="body-nav">
           <h4>
+
             <b>Makeoson 1.0.0</b>
           </h4>
           <p>🕐 5 days remaining</p>
         </div>
         <div className="table-box">
-          {/* open-table start */}
           <div className="open-table">
             <p className="table-headers">OPEN</p>
             <div className="open-body">
-              {/* task cards here below */}
-              <div className="open-task" onClick={() => setModalShow(true)}>
+              <div className="open-task" onClick={() => handleTaskClick(1)}>
                 <div className="card-top">
                   <p>Task Id:1</p>
                   <img
@@ -33,26 +48,20 @@ const HomePage = () => {
                   />
                 </div>
                 <div className="card-middle">
-                  <p>Title:somthing bla bla</p>
+                <p>Title:adfafsfsfvd</p>
                 </div>
                 <div className="card-bottom">
                   <span>🅾️⏬</span>
                   <Link>next ⏭️</Link>
                 </div>
-                <PopUpWindow
-                  show={modalShow}
-                  onHide={() => setModalShow(false)}
-                />
               </div>
-              {/* task cards end */}
             </div>
           </div>
-          {/* open table end */}
           <div className="progress-table">
             <p className="table-headers">IN PROGRESS</p>
             <div className="open-body">
-              {/* task card below */}
-              <div className="open-task" onClick={() => setModalShow(true)}>
+              <div className="open-task" onClick={() => handleTaskClick(2)}>
+                {/* Task card content */}
                 <div className="card-top">
                   <p>Task Id:1</p>
                   <img
@@ -67,20 +76,14 @@ const HomePage = () => {
                   <span>🅾️⏬</span>
                   <Link>next ⏭️</Link>
                 </div>
-                <PopUpWindow
-                  show={modalShow}
-                  onHide={() => setModalShow(false)}
-                />
               </div>
-              {/* task card end */}
             </div>
           </div>
-          {/* progress table end */}
           <div className="review-table">
             <p className="table-headers">IN REVIEW</p>
             <div className="open-body">
-              {/* Task card here  */}
-              <div className="open-task" onClick={() => setModalShow(true)}>
+              <div className="open-task" onClick={() => handleTaskClick(3)}>
+                {/* Task card content */}
                 <div className="card-top">
                   <p>Task Id:1</p>
                   <img
@@ -96,19 +99,13 @@ const HomePage = () => {
                   <Link>next ⏭️</Link>
                 </div>
               </div>
-              <PopUpWindow
-                show={modalShow}
-                onHide={() => setModalShow(false)}
-              />
-              {/* Task card end */}
             </div>
           </div>
-          {/* review table end */}
           <div className="closed-table">
             <p className="table-headers">CLOSED</p>
             <div className="open-body">
-              {/* task card here */}
-              <div className="open-task" onClick={() => setModalShow(true)}>
+              <div className="open-task" onClick={() => handleTaskClick(4)}>
+                {/* Task card content */}
                 <div className="card-top">
                   <p>Task Id:1</p>
                   <img
@@ -123,17 +120,18 @@ const HomePage = () => {
                   <span>🅾️⏬</span>
                   <Link>next ⏭️</Link>
                 </div>
-                <PopUpWindow
-                  show={modalShow}
-                  onHide={() => setModalShow(false)}
-                />
               </div>
-              {/* task card end */}
             </div>
           </div>
-          {/* closed table end */}
         </div>
       </div>
+      {selectedTask && (
+        <PopUpWindow
+          show={true}
+          onHide={handleCloseModal}
+          taskData={taskData}
+        />
+      )}
     </>
   );
 };

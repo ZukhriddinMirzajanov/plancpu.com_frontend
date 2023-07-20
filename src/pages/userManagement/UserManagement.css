@@ -1,16 +1,43 @@
-.task-wrapper {
+
+.title {
+    text-align: center;
+  }
+  
+  .users-container {
+    padding-top: 100px;
+  }
+  
+  .users-form {
+    padding: 10px;
+    margin: 10px auto 40px;
+    max-width: 450px;
+    border-radius: 10px;
+    box-shadow: 0px 10px 45px -3px rgba(0, 0, 0, 0.3);
+  }
+  
+  .add-user-btn:hover {
+    transform: perspective(300px) rotateX(40deg);
+    color: white;
+  }
+  
+  .user-wrapper {
     padding: 5px 10px;
     overflow: hidden;
     box-shadow: 0px 10px 45px -3px rgba(0, 0, 0, 0.1);
   }
-  .time-btn {
+  
+  .user-info {
     display: flex;
     justify-content: space-between;
-    > .list-title {
+    gap: 10px;
+  
+    .list-email,
+    .list-company {
       display: flex;
-      gap: 10px;
+      gap: 5px;
     }
-    & .edite-btn {
+  
+    .edit-btn {
       padding: 2px 8px;
       border: none;
       margin-left: 5px;
@@ -21,7 +48,8 @@
         color: white;
       }
     }
-    & .delete-btn {
+  
+    .delete-btn {
       padding: 2px 8px;
       margin-left: 5px;
       border: none;
@@ -32,25 +60,14 @@
         color: white;
       }
     }
-    & .see-btn {
-      padding: 2px 8px;
-      margin-left: 5px;
-      border: none;
-      border-radius: 5px;
-      background-color: rgba(6, 55, 253, 0.886);
-      &:hover {
-        transform: perspective(300px) rotateX(40deg);
-        color: white;
-      }
-    }
   }
   
-  .pagination{
-      margin: 0 auto;
+  .pagination {
+    margin: 0 auto;
   }
   
   @media (max-width: 800px) {
-    .task-wrapper * {
+    .user-wrapper * {
       font-size: 15px;
       display: flex;
       flex-direction: column;
