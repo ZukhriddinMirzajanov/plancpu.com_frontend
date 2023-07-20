@@ -4,9 +4,9 @@ import {Link} from 'react-router-dom';
 import './NavbarComponent.css';
 import Backlogg from '../../pages/backLogg/Backlogg';
 import HomePage from '../../pages/homePage/HomePage';
-import UserManagment from '../../pages/userManagment/UserManagment';
-import TaskManagment from '../../pages/taskManagment/TaskManagment';
-import EmployeeManagment from '../../pages/employeeManagment/EmployeeManagment';
+import UserManagement from '../../pages/userManagement/UserManagement';
+import TaskManagement from '../../pages/taskManagement/TaskManagement';
+import EmployeeManagement from '../../pages/employeeManagement/EmployeeManagement';
 import Account from '../../pages/account/Account';
 
 const NavbarComponent = () => {
@@ -38,9 +38,9 @@ const NavbarComponent = () => {
               <p><Link className="links" to="/" element={<HomePage/>} >Active Sprint</Link> </p>
               <p><Link className="links" to="/account" element={<Account/>} >Sukhrob Ruzmetov</Link> </p>
               <p><Link className="links" to="/backlog" element={<Backlogg/>} >Backlog</Link> </p>
-              <p><Link className="links" to="/userManagment" element={<UserManagment/>} >User Managment</Link> </p>
-              <p><Link className="links" to="/taskManagment" element={<TaskManagment/>} >Task Managment</Link> </p>
-              <p><Link className="links" to="/employeeManagment" element={<EmployeeManagment/>} >Employee Managment</Link> </p>
+              <p><Link className="links" to="/userManagement" element={<UserManagement/>} >User Managment</Link> </p>
+              <p><Link className="links" to="/taskManagement" element={<TaskManagement/>} >Task Managment</Link> </p>
+              <p><Link className="links" to="/employeeManagement" element={<EmployeeManagement/>} >Employee Managment</Link> </p>
               
               <p>Log Out</p>
             </div>
