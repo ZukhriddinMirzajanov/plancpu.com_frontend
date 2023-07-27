@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import logo from '../../makeoson.svg';
-import {Link} from 'react-router-dom';
-import './NavbarComponent.css';
-import Backlogg from '../../pages/backLogg/Backlogg';
-import HomePage from '../../pages/homePage/HomePage';
-import UserManagement from '../../pages/userManagement/UserManagement';
-import TaskManagement from '../../pages/taskManagement/TaskManagement';
-import EmployeeManagement from '../../pages/employeeManagement/EmployeeManagement';
-import Account from '../../pages/account/Account';
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import logo from "../../plancpu.svg";
+import "./NavbarComponent.css";
+import Backlogg from "../../pages/backLogg/Backlogg";
+import HomePage from "../../pages/homePage/HomePage";
+import UserManagement from "../../pages/userManagement/UserManagement";
+import TaskManagement from "../../pages/taskManagement/TaskManagement";
+import EmployeeManagement from "../../pages/employeeManagement/EmployeeManagement";
+import Account from "../../pages/account/Account";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 const NavbarComponent = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
- 
+  const location = useLocation();
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -21,27 +22,83 @@ const NavbarComponent = () => {
     <header>
       <nav className="navbar container-fluid">
         <div className="navbar-logo">
-         <Link to="/" element={<HomePage/>}>
-         <img src={logo} height={50} alt="logo" />
-         </Link>
+          <Link to="/" element={<HomePage />}>
+            <img src={logo} height={50} alt="logo" />
+          </Link>
         </div>
         <div className="navbar-profile">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/NewTux.svg/1707px-NewTux.svg.png"
-            height={50}
-            alt="Profile"
+          <GiHamburgerMenu
+            className="menu-bar"
             onClick={handleDropdownToggle}
           />
           {isDropdownOpen && (
             <div className="profile-dropdown open">
-             
-              <p><Link className="links" to="/" element={<HomePage/>} >Active Sprint</Link> </p>
-              <p><Link className="links" to="/account" element={<Account/>} >Sukhrob Ruzmetov</Link> </p>
-              <p><Link className="links" to="/backlog" element={<Backlogg/>} >Backlog</Link> </p>
-              <p><Link className="links" to="/userManagement" element={<UserManagement/>} >User Managment</Link> </p>
-              <p><Link className="links" to="/taskManagement" element={<TaskManagement/>} >Task Managment</Link> </p>
-              <p><Link className="links" to="/employeeManagement" element={<EmployeeManagement/>} >Employee Managment</Link> </p>
-              
+              <p>
+                <Link
+                  className={`links ${
+                    location.pathname === "/" ? "active" : ""
+                  }`}
+                  to="/"
+                  element={<HomePage />}
+                >
+                  Active Sprint
+                </Link>{" "}
+              </p>
+              <p>
+                <Link
+                  className={`links ${
+                    location.pathname === "/account" ? "active" : ""
+                  }`}
+                  to="/account"
+                  element={<Account />}
+                >
+                  Sukhrob Ruzmetov
+                </Link>{" "}
+              </p>
+              <p>
+                <Link
+                  className={`links ${
+                    location.pathname === "/backlog" ? "active" : ""
+                  }`}
+                  to="/backlog"
+                  element={<Backlogg />}
+                >
+                  Backlog
+                </Link>{" "}
+              </p>
+              <p>
+                <Link
+                  className={`links ${
+                    location.pathname === "/userManagement" ? "active" : ""
+                  }`}
+                  to="/userManagement"
+                  element={<UserManagement />}
+                >
+                  User Management
+                </Link>{" "}
+              </p>
+              <p>
+                <Link
+                  className={`links ${
+                    location.pathname === "/taskManagement" ? "active" : ""
+                  }`}
+                  to="/taskManagement"
+                  element={<TaskManagement />}
+                >
+                  Task Management
+                </Link>{" "}
+              </p>
+              <p>
+                <Link
+                  className={`links ${
+                    location.pathname === "/employeeManagement" ? "active" : ""
+                  }`}
+                  to="/employeeManagement"
+                  element={<EmployeeManagement />}
+                >
+                  Employee Management
+                </Link>{" "}
+              </p>
               <p>Log Out</p>
             </div>
           )}
