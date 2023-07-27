@@ -31,7 +31,7 @@ const HomePage = () => {
         <div className="body-nav">
           <h4>
 
-            <b>Makeoson 1.0.0</b>
+            <b>Plancpu 1.0.0</b>
           </h4>
           <p>🕐 5 days remaining</p>
         </div>
