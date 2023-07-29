@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import logo from "../../plancpu.svg";
 
 function AboutPage() {
-
   return (
     <>
       <div className="container-fluid">
@@ -23,14 +22,9 @@ function AboutPage() {
         </Link>
         <img className="about-logo" src={logo} alt="logo" />
 
-        <Link to='/'><div class="content">
-          <h2>
-            <i>plancpu</i>
-          </h2>
-          <h2>
-            <i>plancpu</i>
-          </h2>
-        </div></Link>
+        <Link to="/">
+          <div class="content"></div>
+        </Link>
         <div className="about-box">
           <h1 className="about-title">
             Our SaaS(software as a service) Projects
@@ -60,7 +54,7 @@ function AboutPage() {
           </h6>
           <h5>
             Join us today and experience the future of project management with
-            plancpu. Together, let's build a world where every project thrives! 
+            plancpu. Together, let's build a world where every project thrives!
             <a href="https//plancpu.com">plancpu.com</a>
           </h5>
         </div>
