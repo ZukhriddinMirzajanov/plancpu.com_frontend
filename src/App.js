@@ -7,12 +7,13 @@ import EmployeeManagement from "./pages/employeeManagement/EmployeeManagement";
 import Account from "./pages/account/Account";
 import TaskManagement from "./pages/taskManagement/TaskManagement";
 import UserManagement from "./pages/userManagement/UserManagement";
+import AboutPage from "./pages/aboutPage/AboutPage";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/home" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/backlog" element={<Backlogg />} />
@@ -20,6 +21,7 @@ function App() {
         <Route path="/userManagement" element={<UserManagement/>} />
         <Route path="/employeeManagement" element={<EmployeeManagement/>} />
         <Route path="/account" element={<Account/>} />
+        <Route path="/" element={<AboutPage/>}/>
       </Routes>
     </>
   );
