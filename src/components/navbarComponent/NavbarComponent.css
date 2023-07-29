@@ -9,6 +9,7 @@ header {
 .menu-bar {
   font-size: 25px;
   margin-right: 15px;
+  cursor: pointer;
 }
 .profile-dropdown {
   position: absolute;

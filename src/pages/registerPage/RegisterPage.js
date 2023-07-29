@@ -98,8 +98,9 @@ const RegisterPage = () => {
         </Form>
         <div className="login-link">
           <p className="mt-4">
-            Already have an account? <Link to="/">Login here</Link>
+            Already have an account? <Link to="/login">Login here</Link>
           </p>
+         <Link to='/about'> <Button className="btn-success">>> About plancpu !</Button></Link>
         </div>
       </div>
     </div>

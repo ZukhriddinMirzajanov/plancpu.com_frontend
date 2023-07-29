@@ -28,6 +28,7 @@ const LoginPage = () => {
   };
 
   return (
+    <div className="body">
     <div className="login-container text-center">
      
       <div className="login-box">
@@ -65,8 +66,10 @@ const LoginPage = () => {
           <p className="mt-5">
             Don't have an account? <Link to="/register">Register here</Link>
           </p>
+         <Link to='/about'> <Button className="btn-success">>> About plancpu !</Button></Link>
         </div>
       </div>
+    </div>
     </div>
   );
 };
