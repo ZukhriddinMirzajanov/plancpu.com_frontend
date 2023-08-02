@@ -23,7 +23,7 @@ const NavbarComponent = () => {
       <nav className="navbar container-fluid">
         <div className="navbar-logo">
           <Link to="/" element={<HomePage />}>
-            <img src={logo} height={50} alt="logo" />
+            <img src={logo} className="brand" alt="logo" />
           </Link>
         </div>
         <div className="navbar-profile">
