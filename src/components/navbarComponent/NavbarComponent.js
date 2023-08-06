@@ -7,7 +7,7 @@ import HomePage from "../../pages/homePage/HomePage";
 import UserManagement from "../../pages/userManagement/UserManagement";
 import TaskManagement from "../../pages/taskManagement/TaskManagement";
 import EmployeeManagement from "../../pages/employeeManagement/EmployeeManagement";
-import Account from "../../pages/account/Account";
+import Account from "../../pages/profile/Profile";
 import { GiHamburgerMenu } from "react-icons/gi";
 
 const NavbarComponent = () => {
