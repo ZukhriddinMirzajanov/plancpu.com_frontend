@@ -33,12 +33,14 @@
     background-color: #d6d6d646;
     padding: 2px 5px;
     border-radius: 3px;
-    
+
     > .open-task {
-        margin: 8px 0;
+      margin: 8px 0;
       padding: 4px;
       border-radius: 3px;
       background: #fff;
+      box-shadow: rgba(29, 172, 91, 0.941) 0px 2px 4px 0px,
+        rgba(25, 154, 98, 0.717) 0px 2px 16px 0px;
       > .card-top {
         display: flex;
         justify-content: space-between;
@@ -48,110 +50,118 @@
           border-radius: 50%;
         }
       }
-      > .card-bottom{
+      > .card-bottom {
         display: flex;
         justify-content: space-between;
       }
     }
-    
   }
 }
 .progress-table {
-    > .open-body {
-      margin-top: 45px;
-      background-color: #d6d6d646;
+  > .open-body {
+    margin-top: 45px;
+    background-color: #d6d6d646;
 
-      padding: 2px 5px;
+    padding: 2px 5px;
+    border-radius: 3px;
+
+    > .open-task {
+      margin: 8px 0;
+      padding: 4px;
       border-radius: 3px;
-      
-      > .open-task {
-          margin: 8px 0;
-        padding: 4px;
-        border-radius: 3px;
-        background: #fff;
-        > .card-top {
-          display: flex;
-          justify-content: space-between;
-          > img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-          }
-        }
-        > .card-bottom{
-          display: flex;
-          justify-content: space-between;
+      background: #fff;
+      box-shadow: rgba(25, 119, 220, 0.941) 0px 2px 4px 0px,
+        rgba(21, 76, 204, 0.879) 0px 2px 16px 0px;
+
+      > .card-top {
+        display: flex;
+        justify-content: space-between;
+        > img {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
         }
       }
-      
+      > .card-bottom {
+        display: flex;
+        justify-content: space-between;
+      }
     }
   }
-  .review-table {
-    > .open-body {
-      margin-top: 45px;
-      background-color: #d6d6d646;
+}
+.review-table {
+  > .open-body {
+    margin-top: 45px;
+    background-color: #d6d6d646;
 
-      padding: 2px 5px;
+    padding: 2px 5px;
+    border-radius: 3px;
+
+    > .open-task {
+      margin: 8px 0;
+      padding: 4px;
       border-radius: 3px;
-      
-      > .open-task {
-          margin: 8px 0;
-        padding: 4px;
-        border-radius: 3px;
-        background: #fff;
-        > .card-top {
-          display: flex;
-          justify-content: space-between;
-          > img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-          }
-        }
-        > .card-bottom{
-          display: flex;
-          justify-content: space-between;
+      background: #fff;
+      box-shadow: rgba(29, 172, 91, 0.941) 0px 2px 4px 0px,
+        rgba(25, 154, 98, 0.717) 0px 2px 16px 0px;
+
+      > .card-top {
+        display: flex;
+        justify-content: space-between;
+        > img {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
         }
       }
-      
+      > .card-bottom {
+        display: flex;
+        justify-content: space-between;
+      }
     }
   }
-  .closed-table {
-    > .open-body {
-      margin-top: 45px;
-      background-color: #d6d6d646;
+}
+.closed-table {
+  > .open-body {
+    margin-top: 45px;
+    background-color: #d6d6d646;
 
-      padding: 2px 5px;
+    padding: 2px 5px;
+    border-radius: 3px;
+
+    > .open-task {
+      margin: 8px 0;
+      padding: 4px;
       border-radius: 3px;
-      
-      > .open-task {
-          margin: 8px 0;
-        padding: 4px;
-        border-radius: 3px;
-        background: #fff;
-        > .card-top {
-          display: flex;
-          justify-content: space-between;
-          > img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-          }
-        }
-        > .card-bottom{
-          display: flex;
-          justify-content: space-between;
+      background: #fff;
+      box-shadow: rgba(29, 172, 91, 0.941) 0px 2px 4px 0px,
+        rgba(25, 154, 98, 0.717) 0px 2px 16px 0px;
+
+      > .card-top {
+        display: flex;
+        justify-content: space-between;
+        > img {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
         }
       }
-      
+      > .card-bottom {
+        display: flex;
+        justify-content: space-between;
+      }
     }
   }
+}
 
-@media (max-width:700px) {
-    .table-headers{
-        font-size: 10px;
-    }
-    .open-table, .progress-table, .review-table, .closed-table *{
-      font-size: 10px;
-    }
+@media (max-width: 700px) {
+  .table-headers {
+    font-size: 10px;
+  }
+  .open-table,
+  .progress-table,
+  .review-table,
+  .closed-table * {
+    font-size: 10px;
+  }
 }
