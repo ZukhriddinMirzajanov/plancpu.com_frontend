@@ -4,10 +4,10 @@ import RegisterPage from "./pages/registerPage/RegisterPage";
 import HomePage from "./pages/homePage/HomePage";
 import Backlogg from "./pages/backLogg/Backlogg";
 import EmployeeManagement from "./pages/employeeManagement/EmployeeManagement";
-import Account from "./pages/account/Account";
 import TaskManagement from "./pages/taskManagement/TaskManagement";
 import UserManagement from "./pages/userManagement/UserManagement";
 import AboutPage from "./pages/aboutPage/AboutPage";
+import Profile from "./pages/profile/Profile";
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
         <Route path="/taskManagement" element={<TaskManagement/>} />
         <Route path="/userManagement" element={<UserManagement/>} />
         <Route path="/employeeManagement" element={<EmployeeManagement/>} />
-        <Route path="/account" element={<Account/>} />
+        <Route path="/profile" element={<Profile/>} />
         <Route path="/about" element={<AboutPage/>}/>
       </Routes>
     </>
