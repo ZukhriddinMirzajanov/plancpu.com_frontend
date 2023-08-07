@@ -7,6 +7,7 @@ import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import DescriptionPopUpWindow from "./DescriptionPopUpWindow";
 
 function TaskManagment() {
+  const [companyName, setCompanyName] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [time, setTime] = useState("");
@@ -29,8 +30,7 @@ function TaskManagment() {
     e.preventDefault();
 
     const newTask = {
-      id: Date.now(),
-      title,
+      companyName,
       description,
       time,
       createdTime: Date.now(),
@@ -39,6 +39,7 @@ function TaskManagment() {
 
     // Add the new task to the tasks array
     setTasks([...tasks, newTask]);
+    setCompanyName("OK");
 
     // Clear input fields for the next task entry
     setTitle("");

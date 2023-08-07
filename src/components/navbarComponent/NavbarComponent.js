@@ -49,7 +49,7 @@ const NavbarComponent = () => {
                   className={`links ${
                     location.pathname === "/account" ? "active" : ""
                   }`}
-                  to="/account"
+                  to="/profile"
                   element={<Account />}
                 >
                   Sukhrob Ruzmetov

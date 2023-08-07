@@ -35,6 +35,10 @@ const RegisterPage = () => {
     console.log("Email:", email);
     console.log("Password:", password);
     console.log("isAdmin:", isAdmin);
+    const userData = {
+        comppanyId: 2,
+        firstname: firstName
+    }
     // reset form
     setFirstName("");
     setLastName("");
@@ -100,7 +104,7 @@ const RegisterPage = () => {
           <p className="mt-4">
             Already have an account? <Link to="/login">Login here</Link>
           </p>
-         <Link to='/about'> <Button className="btn-success">>> About plancpu !</Button></Link>
+         <Link to='/about'> <Button className="btn-success"> About plancpu !</Button></Link>
         </div>
       </div>
     </div>
