@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./LoginPage.css";
+import authService from "../../services/auth.service";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,12 +17,22 @@ const LoginPage = () => {
     setPassword(event.target.value);
   };
 
+  const navigate = useNavigate();
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Email:", email);
     console.log("Password:", password);
 
-    // reset form
+    authService.login(email, password)
+    .then((data) => {
+        navigate("/");
+        console.log("Registered");
+      })
+      .catch((error) => {
+        console.error("Error during registration:", error);
+      });
 
     setEmail("");
     setPassword("");
@@ -58,7 +69,7 @@ const LoginPage = () => {
             />
           </Form.Group>
 
-          <Button variant="primary" className="mt-4" type="submit">
+          <Button variant="outline-success" className="mt-4" type="submit">
             Login
           </Button>
         </Form>
@@ -66,7 +77,7 @@ const LoginPage = () => {
           <p className="mt-5">
             Don't have an account? <Link to="/register">Register here</Link>
           </p>
-         <Link to='/about'> <Button className="btn-success">>> About plancpu !</Button></Link>
+         <Link to='/about'> <Button variant="outline-primary">Learn more about Plancpu</Button></Link>
         </div>
       </div>
     </div>

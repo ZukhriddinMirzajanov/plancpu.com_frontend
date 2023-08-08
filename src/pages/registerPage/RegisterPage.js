@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./RegisterPage.css";
+import authService from "../../services/auth.service";
 
 const RegisterPage = () => {
+  const [companyName, setCompanyName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
 
   const handleFirstNameChange = (event) => {
     setFirstName(event.target.value);
@@ -18,6 +19,10 @@ const RegisterPage = () => {
   const handleLastNameChange = (event) => {
     setLastName(event.target.value);
   };
+
+  const handleCompayNameChange = (event) => {
+    setCompanyName(event.target.value);
+  };
   
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -25,26 +30,38 @@ const RegisterPage = () => {
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
-    setIsAdmin(true);
   };
+
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("First Name:", firstName);
-    console.log("Last Name:", lastName);
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("isAdmin:", isAdmin);
+    
     const userData = {
-        comppanyId: 2,
-        firstname: firstName
+        companyId: 2,
+        companyName: companyName,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password:password,
+        role:"MANAGER"
     }
+
+    authService.signup(userData)
+    .then((data) => {
+        navigate("/");
+        console.log("Registered");
+      })
+      .catch((error) => {
+        console.error("Error during registration:", error);
+      });
+    console.log(userData);
     // reset form
     setFirstName("");
     setLastName("");
+    setCompanyName("");
     setEmail("");
     setPassword("");
-    setIsAdmin(false);
   };
 
   return (
@@ -74,6 +91,16 @@ const RegisterPage = () => {
           </Form.Group>
           <Form.Group className="input-box">
             <Form.Control
+              type="text"
+              placeholder="Company Name"
+              value={companyName}
+              onChange={handleCompayNameChange}
+              required
+              className="mt-4"
+            />
+          </Form.Group>
+          <Form.Group className="input-box">
+            <Form.Control
               type="email"
               placeholder="Email"
               pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"
@@ -96,7 +123,7 @@ const RegisterPage = () => {
             />
           </Form.Group>
 
-          <Button variant="primary" className="mt-4" type="submit">
+          <Button variant="outline-success" className="mt-4" type="submit">
             Register
           </Button>
         </Form>
@@ -104,7 +131,7 @@ const RegisterPage = () => {
           <p className="mt-4">
             Already have an account? <Link to="/login">Login here</Link>
           </p>
-         <Link to='/about'> <Button className="btn-success"> About plancpu !</Button></Link>
+         <Link to='/about'> <Button variant="outline-primary" >Learn more about Plancpu</Button></Link>
         </div>
       </div>
     </div>

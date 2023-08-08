@@ -8,20 +8,23 @@ import TaskManagement from "./pages/taskManagement/TaskManagement";
 import UserManagement from "./pages/userManagement/UserManagement";
 import AboutPage from "./pages/aboutPage/AboutPage";
 import Profile from "./pages/profile/Profile";
+import PrivateRoutes from "./utils/PrivateRoutes";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/backlog" element={<Backlogg />} />
-        <Route path="/taskManagement" element={<TaskManagement/>} />
-        <Route path="/userManagement" element={<UserManagement/>} />
-        <Route path="/employeeManagement" element={<EmployeeManagement/>} />
-        <Route path="/profile" element={<Profile/>} />
         <Route path="/about" element={<AboutPage/>}/>
+        <Route element={<PrivateRoutes/>}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/backlog" element={<Backlogg />} />
+            <Route path="/taskManagement" element={<TaskManagement/>} />
+            <Route path="/userManagement" element={<UserManagement/>} />
+            <Route path="/employeeManagement" element={<EmployeeManagement/>} />
+            <Route path="/profile" element={<Profile/>} />
+        </Route>
       </Routes>
     </>
   );
