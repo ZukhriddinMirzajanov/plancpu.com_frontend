@@ -7,7 +7,7 @@ import HomePage from "../../pages/homePage/HomePage";
 import UserManagement from "../../pages/userManagement/UserManagement";
 import TaskManagement from "../../pages/taskManagement/TaskManagement";
 import EmployeeManagement from "../../pages/employeeManagement/EmployeeManagement";
-import Account from "../../pages/profile/Profile";
+import Profile from "../../pages/profile/Profile";
 import { GiHamburgerMenu } from "react-icons/gi";
 import LoginPage from "../../pages/loginPage/LoginPage";
 
@@ -15,10 +15,11 @@ const NavbarComponent = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     // Check if the user is logged in based on localStorage data
-    const storedUser = localStorage.getItem('user');
+    const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
       setIsLoggedIn(true);
     }
@@ -65,12 +66,12 @@ const NavbarComponent = () => {
               <p>
                 <Link
                   className={`links ${
-                    location.pathname === "/account" ? "active" : ""
+                    location.pathname === "/profile" ? "active" : ""
                   }`}
                   to="/profile"
-                  element={<Account />}
+                  element={<Profile />}
                 >
-                  Sukhrob Ruzmetov
+                  {user.firstName + " " + user.lastName}
                 </Link>{" "}
               </p>
               <p>

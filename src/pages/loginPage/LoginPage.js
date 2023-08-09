@@ -22,8 +22,6 @@ const LoginPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
 
     authService.login(email, password)
     .then((data) => {

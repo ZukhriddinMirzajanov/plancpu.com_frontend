@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import userService from "./user.service";
 
 const API_BASE_URL = 'http://localhost:8080/api/auth'; 

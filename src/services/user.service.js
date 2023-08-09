@@ -1,38 +1,46 @@
 import axios from "axios";
+import authHeader from "./auth-header";
 
-const API_BASE_URL = 'http://localhost:8080/api/users'; 
+const API_BASE_URL = 'http://localhost:8080/api/users';
 
 const getUserById = (id) => {
-    return null
-};
-const getUserByCompayId = (companyId) => {
-    return null
+    return axios
+        .get(API_BASE_URL + "/" + id, { headers: authHeader() })
+        .then((response) => {
+            console.log(response.data);
+            return response.data;
+        })
+        .catch((error) => {
+            console.log(error);
+        })
 };
 const updateUser = (id, updatedUser) => {
     return axios
-        .put(API_BASE_URL + "/update/" + id, updatedUser)
+        .put(API_BASE_URL + "/update/" + id, updatedUser, { headers: authHeader() })
         .then((response) => {
-            if (
-                response.data.token &&
-                response.data.id &&
-                response.data.companyName &&
-                response.data.firstName &&
-                response.data.lastName &&
-                response.data.email &&
-                response.data.role
-            ) {
-                localStorage.setItem("user", JSON.stringify(response.data));
-            } else {
-                console.log("some error happend");
+            const user = JSON.parse(localStorage.getItem("user"));
+            const userDataToLocal = {
+                token: user.token,
+                id: user.id,
+                companyId: user.companyId,
+                companyName: user.companyName,
+                firstName: updatedUser.firstName,
+                lastName: updatedUser.lastName,
+                email: updatedUser.email,
+                role:user.role
             }
-            return response.data;
+            localStorage.setItem("user", JSON.stringify(userDataToLocal));
+            console.log("success")
+            return response;
+        })
+        .catch((error) => {
+            console.log(error);
         })
 };
 
 const userService = {
     getUserById,
-    getUserByCompayId,
     updateUser
-  };
-  
-  export default userService;
+};
+
+export default userService;
