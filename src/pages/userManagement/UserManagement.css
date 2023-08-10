@@ -43,10 +43,7 @@
       margin-left: 5px;
       border-radius: 5px;
       background-color: rgba(44, 233, 88, 0.747);
-      &:hover {
-        transform: perspective(300px) rotateX(40deg);
-        color: white;
-      }
+      
     }
   
     .delete-btn {
@@ -55,10 +52,7 @@
       border: none;
       border-radius: 5px;
       background-color: rgba(255, 0, 0, 0.795);
-      &:hover {
-        transform: perspective(300px) rotateX(40deg);
-        color: white;
-      }
+      
     }
   }
   

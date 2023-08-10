@@ -1,78 +1,48 @@
 /* EmployeeManagement.css */
 
 .title {
-    text-align: center;
-  }
-  
-  .employees-container {
-    padding-top: 100px;
-  }
-  
-  .employees-form {
-    padding: 10px;
-    margin: 10px auto 40px;
-    max-width: 450px;
-    border-radius: 10px;
-    box-shadow: 0px 10px 45px -3px rgba(0, 0, 0, 0.3);
-  }
-  
-  .add-employee-btn:hover {
-    transform: perspective(300px) rotateX(40deg);
-    color: white;
-  }
-  
-  .employee-wrapper {
-    padding: 5px 10px;
-    overflow: hidden;
-    box-shadow: 0px 10px 45px -3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .employee-info {
+  text-align: center;
+}
+
+.employees-container {
+  padding-top: 100px;
+}
+
+.employees-form {
+  padding: 10px;
+  margin: 10px auto 40px;
+  max-width: 450px;
+  border-radius: 10px;
+  box-shadow: 0px 10px 45px -3px rgba(0, 0, 0, 0.3);
+}
+
+.employee-wrapper {
+  padding: 5px 10px;
+  overflow: hidden;
+  box-shadow: 0px 10px 45px -3px rgba(0, 0, 0, 0.1);
+}
+
+.employee-info {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+
+  .list-email,
+  .list-profession {
     display: flex;
-    justify-content: space-between;
-    gap: 10px;
-  
-    .list-email,
-    .list-profession {
-      display: flex;
-      gap: 5px;
-    }
-  
-    .edit-btn {
-      padding: 2px 8px;
-      border: none;
-      margin-left: 5px;
-      border-radius: 5px;
-      background-color: rgba(44, 233, 88, 0.747);
-      &:hover {
-        transform: perspective(300px) rotateX(40deg);
-        color: white;
-      }
-    }
-  
-    .delete-btn {
-      padding: 2px 8px;
-      margin-left: 5px;
-      border: none;
-      border-radius: 5px;
-      background-color: rgba(255, 0, 0, 0.795);
-      &:hover {
-        transform: perspective(300px) rotateX(40deg);
-        color: white;
-      }
-    }
+    gap: 5px;
   }
-  
-  .pagination {
-    margin: 0 auto;
+}
+
+.pagination {
+  margin: 0 auto;
+}
+
+@media (max-width: 800px) {
+  .employee-wrapper * {
+    font-size: 15px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
   }
-  
-  @media (max-width: 800px) {
-    .employee-wrapper * {
-      font-size: 15px;
-      display: flex;
-      flex-direction: column;
-      margin-top: 15px;
-    }
-  }
-  
+}

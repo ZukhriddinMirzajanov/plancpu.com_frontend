@@ -11,10 +11,6 @@
   border-radius: 10px;
   box-shadow: 0px 10px 45px -3px rgba(0, 0, 0, 0.3);
 }
-.add-task-btn:hover {
-  transform: perspective(300px) rotateX(40deg);
-  color: white;
-}
 
 .task-wrapper {
   padding: 5px 10px;
@@ -28,43 +24,20 @@
     display: flex;
     gap: 10px;
   }
-  & .edite-btn {
-    padding: 2px 8px;
-    border: none;
-    margin-left: 5px;
-    border-radius: 5px;
-    background-color: rgba(44, 233, 88, 0.747);
-    &:hover {
-      transform: perspective(300px) rotateX(40deg);
-      color: white;
-    }
-  }
-  & .delete-btn {
-    padding: 2px 8px;
-    margin-left: 5px;
-    border: none;
-    border-radius: 5px;
-    background-color: rgba(255, 0, 0, 0.795);
-    &:hover {
-      transform: perspective(300px) rotateX(40deg);
-      color: white;
-    }
-  }
-  & .see-btn {
-    padding: 2px 8px;
-    margin-left: 5px;
-    border: none;
-    border-radius: 5px;
-    background-color: rgba(6, 55, 253, 0.886);
-    &:hover {
-      transform: perspective(300px) rotateX(40deg);
-      color: white;
-    }
-  }
+}
+.task-edite-btn{
+  margin: 0 5px;
+}
+.pagination {
+  margin: 0 auto;
 }
 
-.pagination{
-    margin: 0 auto;
+.task-toast {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background: green;
+  color: white;
 }
 
 @media (max-width: 800px) {
