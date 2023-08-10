@@ -59,7 +59,7 @@ const ProfileModal = ({ closeModal }) => {
     };
 
     return (
-        <div className="modal">
+        <div className="profile-modal">
             <div className="modal-content">
                 <span className="close" onClick={closeModal}>
                     &times;

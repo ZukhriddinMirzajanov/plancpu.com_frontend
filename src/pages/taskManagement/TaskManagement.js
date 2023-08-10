@@ -185,7 +185,7 @@ function TaskManagment() {
                     Edit
                   </Button>
                   <Button
-                    className="delete-btn"
+                    variant="outline-success"
                     onClick={() => handleDeleteTask(index)}
                   >
                     Delete

@@ -26,6 +26,9 @@ function EmployeeManagement() {
                     setEmployees(res);
                 }
             })
+            .catch((err) =>{
+                console.log(err);
+            })
     }, []);
 
     const handleFormSubmit = (e) => {
