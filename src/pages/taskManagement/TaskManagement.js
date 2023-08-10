@@ -5,6 +5,10 @@ import EditTaskPopup from "./EditTaskPopup";
 import "./TaskManagement.css";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import DescriptionPopUpWindow from "./DescriptionPopUpWindow";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 
 function TaskManagment() {
   const [companyName, setCompanyName] = useState("");
@@ -23,6 +27,7 @@ function TaskManagment() {
     const storedTasks = localStorage.getItem("tasks");
     if (storedTasks) {
       setTasks(JSON.parse(storedTasks));
+      toast.success("Tasks retrieved from local storage!",);
     }
   }, []);
 
@@ -30,6 +35,7 @@ function TaskManagment() {
     e.preventDefault();
 
     const newTask = {
+      title,
       companyName,
       description,
       time,
@@ -157,7 +163,7 @@ function TaskManagment() {
                 </Form.Group>
               </Col>
             </Row>
-            <Button className="mt-3 add-task-btn" type="submit">
+            <Button className="mt-3"  variant="outline-success" type="submit">
               Add Task
             </Button>
           </Form>
@@ -173,19 +179,20 @@ function TaskManagment() {
                 </div>
                 <div className="list-btn">
                   <Button
-                    className="see-btn"
+                    variant="outline-primary"
                     onClick={() => handleShowDescription(index)}
                   >
                     See Description
                   </Button>
                   <Button
-                    className="edite-btn"
+                    className="task-edite-btn"
                     onClick={() => handleEditTask(index)}
+                    variant="outline-success"
                   >
                     Edit
                   </Button>
                   <Button
-                    variant="outline-success"
+                    variant="outline-danger"
                     onClick={() => handleDeleteTask(index)}
                   >
                     Delete
@@ -209,6 +216,8 @@ function TaskManagment() {
             ))}
              <Pagination.Next onClick={handleNextClick} disabled={currentPage === Math.ceil(tasks.length / tasksPerPage)} />
           </Pagination>
+        <ToastContainer position="bottom-right" />
+
         </div>
 
         {showEditPopup && selectedTaskIndex !== -1 && (

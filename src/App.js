@@ -20,11 +20,11 @@ function App() {
         <Route element={<PrivateRoutes/>}>
             <Route path="/" element={<HomePage />} />
             <Route path="/backlog" element={<Backlogg />} />
-            <Route path="/taskManagement" element={<TaskManagement/>} />
             <Route path="/userManagement" element={<UserManagement/>} />
             <Route path="/employeeManagement" element={<EmployeeManagement/>} />
             <Route path="/profile" element={<Profile/>} />
         </Route>
+            <Route path="/taskManagement" element={<TaskManagement/>} />
       </Routes>
     </>
   );

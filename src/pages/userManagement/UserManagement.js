@@ -6,6 +6,8 @@ import EditUserPopup from "./EditUserPopUp";
 import "./UserManagement.css";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import adminService from "../../services/admin.service";
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
 
 function UserManagement() {
     // const [firstname, setFirstname] = useState("");
@@ -29,6 +31,7 @@ function UserManagement() {
             })
             .catch((err) =>{
                 console.log(err);
+                toast.error("Error retrieving tasks from local storage.");
             })
     }, []);
 

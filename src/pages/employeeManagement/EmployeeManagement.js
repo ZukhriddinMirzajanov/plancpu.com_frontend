@@ -5,6 +5,8 @@ import "./EmployeeManagement.css";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import userService from "../../services/user.service";
 import managerService from "../../services/manager.service";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function EmployeeManagement() {
 
@@ -192,13 +194,13 @@ function EmployeeManagement() {
 
                                 <div className="employee-btns">
                                     <Button
-                                        className="edit-btn"
+                                       variant="outline-success"
                                         onClick={() => handleEditEmployee(index)}
                                     >
                                         Edit
                                     </Button>
                                     <Button
-                                        className="delete-btn"
+                                       variant="outline-danger"
                                         onClick={() => handleDeleteEmployee(index)}
                                     >
                                         Delete
