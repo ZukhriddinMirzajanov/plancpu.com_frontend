@@ -23,8 +23,8 @@ function App() {
             <Route path="/userManagement" element={<UserManagement/>} />
             <Route path="/employeeManagement" element={<EmployeeManagement/>} />
             <Route path="/profile" element={<Profile/>} />
-        </Route>
             <Route path="/taskManagement" element={<TaskManagement/>} />
+        </Route>
       </Routes>
     </>
   );
