@@ -39,8 +39,8 @@
       padding: 4px;
       border-radius: 3px;
       background: #fff;
-      box-shadow: rgba(29, 172, 91, 0.941) 0px 2px 4px 0px,
-        rgba(25, 154, 98, 0.717) 0px 2px 16px 0px;
+      box-shadow: rgba(25, 119, 220, 0.941) 0px 2px 4px 0px,
+      rgba(21, 76, 204, 0.879) 0px 2px 16px 0px;
       > .card-top {
         display: flex;
         justify-content: space-between;
@@ -70,8 +70,8 @@
       padding: 4px;
       border-radius: 3px;
       background: #fff;
-      box-shadow: rgba(25, 119, 220, 0.941) 0px 2px 4px 0px,
-        rgba(21, 76, 204, 0.879) 0px 2px 16px 0px;
+      box-shadow: rgba(29, 172, 91, 0.941) 0px 2px 4px 0px,
+      rgba(25, 154, 98, 0.717) 0px 2px 16px 0px;
 
       > .card-top {
         display: flex;
@@ -102,8 +102,8 @@
       padding: 4px;
       border-radius: 3px;
       background: #fff;
-      box-shadow: rgba(29, 172, 91, 0.941) 0px 2px 4px 0px,
-        rgba(25, 154, 98, 0.717) 0px 2px 16px 0px;
+      box-shadow: rgba(211, 225, 89, 0.941) 0px 2px 4px 0px,
+        rgba(201, 235, 80, 0.717) 0px 2px 16px 0px;
 
       > .card-top {
         display: flex;
@@ -134,8 +134,8 @@
       padding: 4px;
       border-radius: 3px;
       background: #fff;
-      box-shadow: rgba(29, 172, 91, 0.941) 0px 2px 4px 0px,
-        rgba(25, 154, 98, 0.717) 0px 2px 16px 0px;
+      box-shadow: rgba(43, 224, 230, 0.941) 0px 2px 4px 0px,
+      rgba(67, 215, 223, 0.879) 0px 2px 16px 0px;
 
       > .card-top {
         display: flex;

@@ -5,7 +5,7 @@ import "./EmployeeManagement.css";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import userService from "../../services/user.service";
 import managerService from "../../services/manager.service";
-import { toast, ToastContainer } from "react-toastify";
+// import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function EmployeeManagement() {
@@ -31,7 +31,7 @@ function EmployeeManagement() {
             .catch((err) => {
                 console.log(err);
             })
-    }, []);
+    }, [userFromLocal.companyId]);
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
@@ -230,6 +230,7 @@ function EmployeeManagement() {
 
                 {showEditPopup && selectedEmployeeIndex !== -1 && (
                     <EditEmployeePopup
+                        key={userFromLocal.id}
                         employee={employees[selectedEmployeeIndex]}
                         onClose={handleClosePopup}
                         onSave={handleSaveEditedEmployee}

@@ -13,13 +13,13 @@ const PopUpWindow = ({ show, onHide, taskData }) => {
       </Modal.Header>
       <Modal.Body>
         <h6>Task Id: {taskData.id}</h6>
-        <h5>Title: {taskData.title}</h5>
+        <h5>Title: {taskData.name}</h5>
         <p>Description: {taskData.description}</p>
         
         {/* Render other task details as needed */}
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={onHide}>Close</Button>
+        <Button variant="outline-secondary" onClick={onHide}>Close</Button>
       </Modal.Footer>
     </Modal>
   );
