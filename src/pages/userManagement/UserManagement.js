@@ -7,7 +7,7 @@ import "./UserManagement.css";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import adminService from "../../services/admin.service";
 import "react-toastify/dist/ReactToastify.css";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 function UserManagement() {
     // const [firstname, setFirstname] = useState("");
@@ -60,10 +60,10 @@ function UserManagement() {
     //     localStorage.setItem("users", JSON.stringify([...users, newUser]));
     // };
 
-    const handleEditUser = (index) => {
-        setSelectedUserIndex(index);
-        setShowEditPopup(true);
-    };
+    // const handleEditUser = (index) => {
+    //     setSelectedUserIndex(index);
+    //     setShowEditPopup(true);
+    // };
 
     const handleSaveEditedUser = (editedUser) => {
         const updatedUsers = [...users];

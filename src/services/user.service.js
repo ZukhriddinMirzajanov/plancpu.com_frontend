@@ -1,17 +1,17 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_BASE_URL = 'http://localhost:8080/api/users';
+const API_BASE_URL = 'http://plancpu.ap-south-1.elasticbeanstalk.com/api/users';
 
 const getUserById = (id) => {
     return axios
         .get(API_BASE_URL + "/" + id, { headers: authHeader() })
         .then((response) => {
-            console.log(response.data);
             return response.data;
         })
         .catch((error) => {
             console.log(error);
+            throw error;
         })
 };
 const updateUser = (id, updatedUser) => {
@@ -35,6 +35,7 @@ const updateUser = (id, updatedUser) => {
         })
         .catch((error) => {
             console.log(error);
+            throw error;
         })
 };
 

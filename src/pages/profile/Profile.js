@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import "./Profile.css";
 import ProfileModal from "./ProfileModal";
+import { Button } from "react-bootstrap";
 
 const Profile = () => {
     const [showModal, setShowModal] = useState(false);
@@ -64,9 +65,7 @@ const Profile = () => {
                             <b>Role:</b> <span>{role}</span>
                         </p>
                     </div>
-                    <button className="btn btn-success" onClick={openModal}>
-                        Edit Profile
-                    </button>
+                    <Button variant="outline-primary" onClick={openModal}>Edit Profile</Button>
                 </div>
             </div>
 

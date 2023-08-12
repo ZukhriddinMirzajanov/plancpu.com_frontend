@@ -3,6 +3,9 @@
 .title {
   text-align: center;
 }
+.edit-employee-btn {
+    margin-right: 10px;
+}
 
 .employees-container {
   padding-top: 100px;

@@ -52,7 +52,7 @@ const HomePage = () => {
                 </div>
                 <div className="card-bottom">
                   <span>🅾️⏬</span>
-                  <Link>next ⏭️</Link>
+                  <Link to="/about">next ⏭️</Link>
                 </div>
               </div>
             </div>

@@ -27,7 +27,7 @@ function TaskManagment() {
     const storedTasks = localStorage.getItem("tasks");
     if (storedTasks) {
       setTasks(JSON.parse(storedTasks));
-      toast.success("Tasks retrieved from local storage!",);
+    //   toast.success("Tasks retrieved from local storage!",);
     }
   }, []);
 

@@ -61,32 +61,35 @@ const ProfileModal = ({ closeModal }) => {
     return (
         <div className="profile-modal">
             <div className="modal-content">
-                <span className="close" onClick={closeModal}>
+                <span className="profile-close" onClick={closeModal}>
                     &times;
                 </span>
                 <h2>Edit Profile</h2>
-                <form onSubmit={handleSubmit}>
-                    <label>
+                <form className="profile-form" onSubmit={handleSubmit}>
+                    <label className="profile-label">
                         First Name:
                         <input
+                            className="profile-input"
                             type="text"
                             name="firstName"
                             value={firstName}
                             onChange={handleFirstNameChange}
                         />
                     </label>
-                    <label>
+                    <label className="profile-label">
                         Last Name:
                         <input
+                            className="profile-input"
                             type="text"
                             name="lastName"
                             value={lastName}
                             onChange={handleLastNameChange}
                         />
                     </label>
-                    <label>
+                    <label className="profile-label">
                         Email:
                         <input
+                            className="profile-input"
                             type="email"
                             name="email"
                             value={email}

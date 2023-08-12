@@ -1,6 +1,6 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-const API_BASE_URL = 'http://localhost:8080/api/admin';
+const API_BASE_URL = 'http://plancpu.ap-south-1.elasticbeanstalk.com/api/admin';
 
 const getUsers = () => {
     return axios

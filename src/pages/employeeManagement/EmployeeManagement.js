@@ -28,7 +28,7 @@ function EmployeeManagement() {
                     setEmployees(res);
                 }
             })
-            .catch((err) =>{
+            .catch((err) => {
                 console.log(err);
             })
     }, []);
@@ -99,7 +99,7 @@ function EmployeeManagement() {
 
         // Update employees in local storage with the modified array
         managerService.deleteEmployee(deletedEmployee.id)
-            .then((res) =>{
+            .then((res) => {
                 console.log("deleted")
             })
             .catch((err) => {
@@ -175,6 +175,7 @@ function EmployeeManagement() {
                                     required
                                 />
                             </Form.Group>
+                            <br />
                             <Button variant="outline-success" type="submit">
                                 Add Employee
                             </Button>
@@ -192,15 +193,16 @@ function EmployeeManagement() {
                                     <p>{employee.role}</p>
                                 </div>
 
-                                <div className="employee-btns">
+                                <div>
                                     <Button
-                                       variant="outline-success"
+                                        className="edit-employee-btn"
+                                        variant="outline-success"
                                         onClick={() => handleEditEmployee(index)}
                                     >
                                         Edit
                                     </Button>
                                     <Button
-                                       variant="outline-danger"
+                                        variant="outline-danger"
                                         onClick={() => handleDeleteEmployee(index)}
                                     >
                                         Delete
