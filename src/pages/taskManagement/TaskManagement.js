@@ -27,14 +27,22 @@ function TaskManagment() {
     useEffect(() => {
         taskService.getAllTasksByCompanyId(userFromLocal.companyId)
             .then(res => {
+
                 if (res != null) {
-                    setTasks(res);
+                    let data = [];
+                    res.map(task => {
+                        if (task.createdByEmail === userFromLocal.email) {
+                            data.push(task);
+                        }
+                        return task;
+                    });                    
+                    setTasks(data);
                 } else {
                     toast.error("Error!",);
                 }
             })
 
-    }, [userFromLocal.companyId]);
+    }, [userFromLocal.companyId, userFromLocal.email]);
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
