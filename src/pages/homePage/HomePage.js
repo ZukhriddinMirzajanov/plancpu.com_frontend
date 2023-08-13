@@ -288,17 +288,17 @@ const HomePage = () => {
                     </div>
                     <div className="progress-table">
                         <p className="table-headers">In Progress</p>
-                        <div className="open-body">
+                        <div className="progress-open-body">
                             {inProgressTasks.map((task, index) => (
-                                <div key={task.id} className="open-task">
-                                    <div className="card-top">
+                                <div key={task.id} className="progress-open-task">
+                                    <div className="progress-card-top">
                                         <small>{task.assignedBy}</small>
                                         <small onClick={() => handleTaskClick(task)}><Icon.InfoCircle className="home-card-btn" /></small>
                                     </div>
-                                    <div className="card-middle">
+                                    <div className="progress-card-middle">
                                         <p>Title: {task.name}</p>
                                     </div>
-                                    <div className="card-bottom">
+                                    <div className="progress-card-bottom">
                                         <strong className="task-hour">{task.hour} h</strong>
                                         <span>
                                             <small onClick={() => updateTaskStatus4(task, index)}><Icon.ArrowLeftCircle className="home-card-btn" /></small>
@@ -312,17 +312,17 @@ const HomePage = () => {
                     </div>
                     <div className="review-table">
                         <p className="table-headers">In Review</p>
-                        <div className="open-body">
+                        <div className="review-open-body">
                             {inReviewTasks.map((task, index) => (
-                                <div key={task.id} className="open-task">
-                                    <div className="card-top">
+                                <div key={task.id} className="review-open-task">
+                                    <div className="review-card-top">
                                         <small>{task.taskReviewer}</small>
                                         <small onClick={() => handleTaskClick(task)}><Icon.InfoCircle className="home-card-btn" /></small>
                                     </div>
-                                    <div className="card-middle">
+                                    <div className="review-card-middle">
                                         <p>Title: {task.name}</p>
                                     </div>
-                                    <div className="card-bottom">
+                                    <div className="review-card-bottom">
                                         <strong className="task-hour">{task.hour} h</strong>
                                         <span>
                                             <small onClick={() => updateTaskStatus1(task, index)} size="sm" variant="outline-primary"><Icon.ArrowLeftCircle className="home-card-btn" /></small>
@@ -336,17 +336,17 @@ const HomePage = () => {
                     </div>
                     <div className="closed-table">
                         <p className="table-headers">Closed</p>
-                        <div className="open-body">
+                        <div className="close-open-body">
                             {closedTasks.map((task, index) => (
-                                <div key={task.id} className="open-task">
-                                    <div className="card-top">
+                                <div key={task.id} className="close-open-task">
+                                    <div className="close-card-top">
                                         <small>{task.createdByName}</small>
                                         <small onClick={() => handleTaskClick(task)}><Icon.InfoCircle className="home-card-btn" /></small>
                                     </div>
-                                    <div className="card-middle">
+                                    <div className="close-card-middle">
                                         <p>Title: {task.name}</p>
                                     </div>
-                                    <div className="card-bottom">
+                                    <div className="close-card-bottom">
                                         <strong className="task-hour">{task.hour} h</strong>
                                         <span>
                                             <small onClick={() => updateTaskStatus2(task, index)} size="sm" variant="outline-primary"><Icon.ArrowLeftCircle className="home-card-btn" /></small>
