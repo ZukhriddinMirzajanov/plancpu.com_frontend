@@ -2,13 +2,7 @@
     height: 25px;
 }
 
-@media (max-width:700px) {
-    .brand {
-        height: 22px;
-    }
-}
-
-header {
+.navbar-style {
   width: 100%;
   position: fixed;
   z-index: 99;
@@ -16,33 +10,40 @@ header {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.menu-bar {
-  font-size: 25px;
-  margin-right: 15px;
-  cursor: pointer;
-}
-.profile-dropdown {
-  position: absolute;
-  font-size: 20px;
-  text-align: start;
-  top: 75px;
-  right: 10px;
-  padding: 10px 20px;
-  border-radius: 10px;
-  z-index: 99;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
-.profile-dropdown .links {
+.links {
   color: rgba(0, 0, 0, 0.886);
   text-decoration: none;
   transition: text-shadow 0.3s;
+  display: inline;
+  padding: 10px;
+  border-radius: 5%;
   &:hover {
-    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #00ffde, 0 0 30px #00ffde;
+    text-shadow: 0 0 5px #93e283, 0 0 10px #94e790, 0 0 20px #80da7b, 0 0 30px #77e28e;
   }
 }
-.profile-dropdown .active {
-  text-shadow: 0 0 5px #fff, 0 0 10px #1df56d, 0 0 20px #00ff48,
-    0 0 30px #00ff62fe;
+.active {
+  color: #36b558;  
   font-weight: 500;
+}
+
+.navbar-card-btn {
+    font-size: 20px;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+@media (max-width:700px) {
+    .brand {
+        height: 10px;
+    }
+    .navbar-style {
+        font-size: 5px;
+    }
+    .links {
+        padding: 3px;
+    }
+    .navbar-card-btn {
+        font-size: 10px;
+        margin-left: 5px;
+    }
 }

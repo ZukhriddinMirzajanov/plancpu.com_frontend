@@ -10,7 +10,6 @@ import "react-toastify/dist/ReactToastify.css";
 import taskService from "../../services/task.service";
 
 
-
 function TaskManagment() {
     const [name, setName] = useState("");
     const [hour, setHour] = useState(0);
