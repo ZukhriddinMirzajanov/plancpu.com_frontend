@@ -4,25 +4,34 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
 const PopUpWindow = ({ show, onHide, taskData }) => {
-  return (
-    <Modal show={show} onHide={onHide} size="lg" centered>
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Task Details
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <h6>Task Id: {taskData.id}</h6>
-        <h5>Title: {taskData.name}</h5>
-        <p>Description: {taskData.description}</p>
-        
-        {/* Render other task details as needed */}
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="outline-secondary" onClick={onHide}>Close</Button>
-      </Modal.Footer>
-    </Modal>
-  );
+    return (
+        <Modal show={show} onHide={onHide} size="lg" centered>
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                    Task Details
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <h6>Task Id: {taskData.id}</h6>
+                <h5>Title: {taskData.name}</h5>
+                <p>Description: {taskData.description}</p>
+                <p>Task created by {taskData.createdByName}</p>
+                {taskData.assignedBy === "Unassigned" && (
+                    <p>Task is Unassigned</p>
+                )}
+                {taskData.assignedBy !== "Unassigned" && (
+                    <p>{taskData.assignedBy} is working on this task</p>
+                )}
+                {taskData.taskReviewer !== "Unassigned" && (
+                    <p>Task is reviewing by {taskData.taskReviewer}</p>
+                )}
+                {/* Render other task details as needed */}
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="outline-secondary" onClick={onHide}>Close</Button>
+            </Modal.Footer>
+        </Modal>
+    );
 };
 
 export default PopUpWindow;

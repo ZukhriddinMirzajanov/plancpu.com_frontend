@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
-import { Link } from "react-router-dom";
 import "./HomePage.css";
 import PopUpWindow from "../../components/modal/PopUpWindow";
 import taskService from "../../services/task.service";
@@ -51,6 +50,10 @@ const HomePage = () => {
                     toast.error("Error!",);
                 }
             })
+            .catch(err => {
+                toast.error("Server error!",);
+                console.log(err);
+            })
 
     }, [openTasks, inProgressTasks, inReviewTasks, closedTasks, userFromLocal.companyId]);
 
@@ -71,6 +74,8 @@ const HomePage = () => {
             companyId: task.companyId,
             createdByEmail: task.createdByEmail,
             createdByName: task.createdByName,
+            assignedBy: task.assignedBy,
+            taskReviewer: task.taskReviewer,
             name: task.name,
             hour: task.hour,
             createdAt: task.createdAt,
@@ -86,7 +91,7 @@ const HomePage = () => {
             })
             .catch(err => {
                 toast.error("Error while updating :(")
-                throw err;
+                console.log(err);
             })
 
     };
@@ -100,6 +105,8 @@ const HomePage = () => {
             companyId: task.companyId,
             createdByEmail: task.createdByEmail,
             createdByName: task.createdByName,
+            assignedBy: task.assignedBy,
+            taskReviewer: task.taskReviewer,
             name: task.name,
             hour: task.hour,
             createdAt: task.createdAt,
@@ -115,7 +122,7 @@ const HomePage = () => {
             })
             .catch(err => {
                 toast.error("Error while updating :(")
-                throw err;
+                console.log(err);
             })
 
     };
@@ -129,6 +136,8 @@ const HomePage = () => {
             companyId: task.companyId,
             createdByEmail: task.createdByEmail,
             createdByName: task.createdByName,
+            assignedBy: task.assignedBy,
+            taskReviewer: task.taskReviewer,
             name: task.name,
             hour: task.hour,
             createdAt: task.createdAt,
@@ -144,7 +153,7 @@ const HomePage = () => {
             })
             .catch(err => {
                 toast.error("Error while updating :(")
-                throw err;
+                console.log(err);
             })
 
     };
@@ -158,6 +167,8 @@ const HomePage = () => {
             companyId: task.companyId,
             createdByEmail: task.createdByEmail,
             createdByName: task.createdByName,
+            assignedBy: task.assignedBy,
+            taskReviewer: task.taskReviewer,
             name: task.name,
             hour: task.hour,
             createdAt: task.createdAt,
@@ -173,10 +184,72 @@ const HomePage = () => {
             })
             .catch(err => {
                 toast.error("Error while updating :(")
-                throw err;
+                console.log(err);
             })
 
     };
+
+    const assignToMeToWork = (task, index) => {
+        const updatedTasks = [...inReviewTasks];
+
+        const editedTask = {
+            id: task.id,
+            companyId: task.companyId,
+            createdByEmail: task.createdByEmail,
+            createdByName: task.createdByName,
+            assignedBy: userFromLocal.firstName,
+            taskReviewer: task.taskReviewer,
+            name: task.name,
+            hour: task.hour,
+            createdAt: task.createdAt,
+            statusOfTask: task.statusOfTask,
+            description: task.description
+        }
+
+        updatedTasks[index] = editedTask;
+
+        taskService.updateTask(editedTask.id, editedTask)
+            .then(res => {
+                if (res != null) {
+                    setOpentasks(updatedTasks);
+                }
+            })
+            .catch(err => {
+                toast.error("Error while updating :(")
+                console.log(err);
+            })
+    }
+
+    const assignToMeToReview = (task, index) => {
+        const updatedTasks = [...inReviewTasks];
+
+        const editedTask = {
+            id: task.id,
+            companyId: task.companyId,
+            createdByEmail: task.createdByEmail,
+            createdByName: task.createdByName,
+            assignedBy: task.assignedBy,
+            taskReviewer: userFromLocal.firstName,
+            name: task.name,
+            hour: task.hour,
+            createdAt: task.createdAt,
+            statusOfTask: task.statusOfTask,
+            description: task.description
+        }
+
+        updatedTasks[index] = editedTask;
+
+        taskService.updateTask(editedTask.id, editedTask)
+            .then(res => {
+                if (res != null) {
+                    setOpentasks(updatedTasks);
+                }
+            })
+            .catch(err => {
+                toast.error("Error while updating :(")
+                console.log(err);
+            })
+    }
 
     return (
         <>
@@ -196,11 +269,7 @@ const HomePage = () => {
                             {openTasks.map((task, index) => (
                                 <div className="open-task">
                                     <div className="card-top">
-                                        <small>assign to me</small>
-                                        {/* <img
-                                            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
-                                            alt="user"
-                                        /> */}
+                                        <small>{task.assignedBy}</small>
                                         <small onClick={() => handleTaskClick(task)}>info</small>
                                     </div>
                                     <div className="card-middle">
@@ -208,8 +277,10 @@ const HomePage = () => {
                                     </div>
                                     <div className="card-bottom">
                                         <strong>{task.hour} h</strong>
-                                        <Link to="/about"></Link>
-                                        <Button onClick={() => updateTaskStatus1(task, index)} size="sm" variant="outline-primary">next</Button>
+                                        <span>
+                                            <Button className="home-card-btn" onClick={() => assignToMeToWork(task, index)} size="sm" variant="outline-primary">assign to me</Button>
+                                            <Button onClick={() => updateTaskStatus1(task, index)} size="sm" variant="outline-primary">next</Button>
+                                        </span>
                                     </div>
                                 </div>
                             ))}
@@ -221,7 +292,7 @@ const HomePage = () => {
                             {inProgressTasks.map((task, index) => (
                                 <div key={task.id} className="open-task">
                                     <div className="card-top">
-                                        <p>Task Id: {task.id}</p>
+                                        <small>{task.assignedBy}</small>
                                         {/* <img
                                             src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
                                             alt="user"
@@ -245,7 +316,7 @@ const HomePage = () => {
                             {inReviewTasks.map((task, index) => (
                                 <div key={task.id} className="open-task">
                                     <div className="card-top">
-                                        <p>Task Id: {task.id}</p>
+                                        <small>{task.taskReviewer}</small>
                                         {/* <img
                                             src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
                                             alt="user"
@@ -257,7 +328,10 @@ const HomePage = () => {
                                     </div>
                                     <div className="card-bottom">
                                         <strong>{task.hour} h</strong>
-                                        <Button onClick={() => updateTaskStatus3(task, index)} size="sm" variant="outline-primary">Close</Button>
+                                        <span>
+                                            <Button className="home-card-btn" onClick={() => assignToMeToReview(task, index)} size="sm" variant="outline-primary">Review</Button>
+                                            <Button onClick={() => updateTaskStatus3(task, index)} size="sm" variant="outline-primary">Close</Button>
+                                        </span>
                                     </div>
                                 </div>
                             ))}
@@ -269,7 +343,7 @@ const HomePage = () => {
                             {closedTasks.map((task, index) => (
                                 <div key={task.id} className="open-task">
                                     <div className="card-top">
-                                        <p>Task Id: {task.id}</p>
+                                        <small>{task.createdByName}</small>
                                         {/* <img
                                         src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
                                         alt="user"

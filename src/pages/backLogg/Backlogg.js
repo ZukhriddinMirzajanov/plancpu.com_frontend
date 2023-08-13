@@ -45,6 +45,8 @@ const Backlogg = () => {
             companyId: taskToOpen.companyId,
             createdByEmail: taskToOpen.createdByEmail,
             createdByName: taskToOpen.createdByName,
+            assignedBy: taskToOpen.assignedBy,
+            taskReviewer: taskToOpen.taskReviewer,
             name: taskToOpen.name,
             hour: taskToOpen.hour,
             createdAt: taskToOpen.createdAt,

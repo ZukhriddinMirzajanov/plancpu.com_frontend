@@ -64,7 +64,7 @@ const deleteTask = (id) => {
         .delete(API_BASE_URL + "/delete/" + id, { headers: authHeader() })
         .then((response) => {
             if (response.data) {
-                return response.data;
+                return response;
             } else {
                 return null;
             }

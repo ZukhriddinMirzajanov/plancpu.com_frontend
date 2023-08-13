@@ -154,6 +154,10 @@
   }
 }
 
+.home-card-btn {
+    margin-right: 5px;
+}
+
 @media (max-width: 700px) {
   .table-headers {
     font-size: 10px;

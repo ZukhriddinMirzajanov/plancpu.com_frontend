@@ -31,10 +31,7 @@ function TaskManagment() {
                 if (res != null) {
                     let data = [];
                     res.map(task => {
-                        if (task.createdByEmail === userFromLocal.email) {
-                            data.push(task);
-                        }
-                        return task;
+                        return data.push(task);
                     });                    
                     setTasks(data);
                 } else {
@@ -52,6 +49,8 @@ function TaskManagment() {
             companyName: userFromLocal.companyName,
             createdByEmail: userFromLocal.email,
             createdByName: userFromLocal.firstName + " " + userFromLocal.lastName,
+            assignedBy: "Unassigned",
+            taskReviewer: "Unassigned",
             name: name,
             hour: hour,
             createdAt: Date.now(),
@@ -69,7 +68,6 @@ function TaskManagment() {
             })
             .catch(error => {
                 toast.error("Error whiling creating a task:(");
-                throw error;
             })
 
         // Clear input fields for the next task entry
@@ -102,7 +100,6 @@ function TaskManagment() {
             })
             .catch(err => {
                 toast.error("Error while updating :(")
-                throw err;
             })
     };
 
@@ -123,7 +120,6 @@ function TaskManagment() {
             })
             .catch(err => {
                 toast.error("Error while deleting!");
-                throw err;
             })
 
     };
@@ -236,12 +232,15 @@ function TaskManagment() {
                                     >
                                         Edit
                                     </Button>
-                                    <Button
+                                    {(task.createdByEmail === userFromLocal.email || userFromLocal.role === "ADMIN") && (
+                                        <Button
                                         variant="outline-danger"
                                         onClick={() => handleDeleteTask(index)}
                                     >
                                         Delete
                                     </Button>
+                                    )}
+                                    
                                 </div>
                             </div>
                         </li>

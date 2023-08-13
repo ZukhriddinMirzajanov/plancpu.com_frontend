@@ -26,6 +26,15 @@ function DescriptionPopUpWindow({ task, show, onClose }) {
         {task.hour} hours to spend
         <hr />
         <p>{taskStatus}</p>
+        <hr />
+        <small>Task created by {task.createdByName}</small>
+        <hr />
+        {task.assignedBy === "Unassigned" && (
+            <small>Task is Unassigned</small>
+        )}
+        {task.assignedBy !== "Unassigned" && (
+            <small>Task is assigned by {task.assignedBy}</small>
+        )}
       </Modal.Body>
       <Modal.Footer>
         <Button variant="outline-secondary" onClick={onClose}>
