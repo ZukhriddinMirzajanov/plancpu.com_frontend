@@ -270,7 +270,7 @@ const HomePage = () => {
                                 <div key={task.id} className="open-task">
                                     <div className="card-top">
                                         <small>{task.assignedBy}</small>
-                                        <small onClick={() => handleTaskClick(task)}><Icon.InfoCircle className="home-card-btn"/></small>
+                                        <small onClick={() => handleTaskClick(task)}><Icon.InfoCircle className="home-card-btn" /></small>
                                     </div>
                                     <div className="card-middle">
                                         <p>Title: {task.name}</p>
@@ -278,8 +278,8 @@ const HomePage = () => {
                                     <div className="card-bottom">
                                         <strong className="task-hour">{task.hour} h</strong>
                                         <span>
-                                            <small onClick={() => assignToMeToWork(task, index)}><Icon.PlusCircle className="home-card-btn"/></small>
-                                            <small onClick={() => updateTaskStatus1(task, index)}><Icon.ArrowRightCircle className="home-card-btn"/></small>
+                                            <small onClick={() => assignToMeToWork(task, index)}><Icon.PlusCircle className="home-card-btn" /></small>
+                                            <small onClick={() => updateTaskStatus1(task, index)}><Icon.ArrowRightCircle className="home-card-btn" /></small>
                                         </span>
                                     </div>
                                 </div>
@@ -293,14 +293,18 @@ const HomePage = () => {
                                 <div key={task.id} className="open-task">
                                     <div className="card-top">
                                         <small>{task.assignedBy}</small>
-                                        <small onClick={() => handleTaskClick(task)}><Icon.InfoCircle className="home-card-btn"/></small>
+                                        <small onClick={() => handleTaskClick(task)}><Icon.InfoCircle className="home-card-btn" /></small>
                                     </div>
                                     <div className="card-middle">
                                         <p>Title: {task.name}</p>
                                     </div>
                                     <div className="card-bottom">
                                         <strong className="task-hour">{task.hour} h</strong>
-                                        <small onClick={() => updateTaskStatus2(task, index)} size="sm" variant="outline-primary"><Icon.ArrowRightCircle className="home-card-btn"/></small>
+                                        <span>
+                                            <small onClick={() => updateTaskStatus4(task, index)}><Icon.ArrowLeftCircle className="home-card-btn" /></small>
+                                            <small onClick={() => assignToMeToWork(task, index)}><Icon.PlusCircle className="home-card-btn" /></small>
+                                            <small onClick={() => updateTaskStatus2(task, index)} size="sm" variant="outline-primary"><Icon.ArrowRightCircle className="home-card-btn" /></small>
+                                        </span>
                                     </div>
                                 </div>
                             ))}
@@ -313,7 +317,7 @@ const HomePage = () => {
                                 <div key={task.id} className="open-task">
                                     <div className="card-top">
                                         <small>{task.taskReviewer}</small>
-                                        <small onClick={() => handleTaskClick(task)}><Icon.InfoCircle className="home-card-btn"/></small>
+                                        <small onClick={() => handleTaskClick(task)}><Icon.InfoCircle className="home-card-btn" /></small>
                                     </div>
                                     <div className="card-middle">
                                         <p>Title: {task.name}</p>
@@ -321,8 +325,9 @@ const HomePage = () => {
                                     <div className="card-bottom">
                                         <strong className="task-hour">{task.hour} h</strong>
                                         <span>
-                                            <small onClick={() => assignToMeToReview(task, index)} size="sm" variant="outline-primary"><Icon.PlusCircle className="home-card-btn"/></small>
-                                            <small onClick={() => updateTaskStatus3(task, index)} size="sm" variant="outline-primary"><Icon.CheckCircle className="home-card-btn"/></small>
+                                            <small onClick={() => updateTaskStatus1(task, index)} size="sm" variant="outline-primary"><Icon.ArrowLeftCircle className="home-card-btn" /></small>
+                                            <small onClick={() => assignToMeToReview(task, index)} size="sm" variant="outline-primary"><Icon.PlusCircle className="home-card-btn" /></small>
+                                            <small onClick={() => updateTaskStatus3(task, index)} size="sm" variant="outline-primary"><Icon.CheckCircle className="home-card-btn" /></small>
                                         </span>
                                     </div>
                                 </div>
@@ -336,14 +341,17 @@ const HomePage = () => {
                                 <div key={task.id} className="open-task">
                                     <div className="card-top">
                                         <small>{task.createdByName}</small>
-                                        <small onClick={() => handleTaskClick(task)}><Icon.InfoCircle className="home-card-btn"/></small>
+                                        <small onClick={() => handleTaskClick(task)}><Icon.InfoCircle className="home-card-btn" /></small>
                                     </div>
                                     <div className="card-middle">
                                         <p>Title: {task.name}</p>
                                     </div>
                                     <div className="card-bottom">
                                         <strong className="task-hour">{task.hour} h</strong>
-                                        <small onClick={() => updateTaskStatus4(task, index)} size="sm" variant="outline-primary"><Icon.ArrowClockwise className="home-card-btn"/></small>
+                                        <span>
+                                            <small onClick={() => updateTaskStatus2(task, index)} size="sm" variant="outline-primary"><Icon.ArrowLeftCircle className="home-card-btn" /></small>
+                                            <small onClick={() => updateTaskStatus4(task, index)} size="sm" variant="outline-primary"><Icon.ArrowClockwise className="home-card-btn" /></small>
+                                        </span>
                                     </div>
                                 </div>
                             ))}

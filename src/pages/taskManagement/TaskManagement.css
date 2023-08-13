@@ -22,7 +22,7 @@
   justify-content: space-between;
   > .list-title {
     display: flex;
-    gap: 10px;
+    /* gap: 10px; */
   }
 }
 .task-edite-btn{
@@ -40,11 +40,12 @@
   color: white;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 700px) {
   .task-wrapper * {
-    font-size: 15px;
-    display: flex;
-    flex-direction: column;
-    margin-top: 15px;
+    font-size: 9px;
+  }
+  .tasks-form {
+    font-size: 10px;
+    max-width: 350px;
   }
 }

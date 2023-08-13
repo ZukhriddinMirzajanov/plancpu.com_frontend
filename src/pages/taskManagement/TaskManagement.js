@@ -219,6 +219,7 @@ function TaskManagment() {
                                 </div>
                                 <div className="list-btn">
                                     <Button
+                                        className="task-mang-btn"
                                         variant="outline-primary"
                                         onClick={() => handleShowDescription(index)}
                                     >

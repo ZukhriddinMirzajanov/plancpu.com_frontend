@@ -1,7 +1,7 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_BASE_URL = 'http://plancpu.ap-south-1.elasticbeanstalk.com/api/managers';
+const API_BASE_URL = 'https://www.softlatency.com/api/managers';
 const getUsersByCompanyId = (companyId) => {
     return axios
         .get(API_BASE_URL + "/users-by-companyId/" + companyId, { headers: authHeader() })
@@ -20,7 +20,7 @@ const getUsersByCompanyId = (companyId) => {
 
 const addEmployee = (userData) => {
     return axios
-        .post("http://plancpu.ap-south-1.elasticbeanstalk.com/api/auth/register", userData)
+        .post("https://www.softlatency.com/api/auth/register", userData)
         .then((response) => {
             console.log("Employee added");
         })
