@@ -9,6 +9,7 @@ import UserManagement from "./pages/userManagement/UserManagement";
 import AboutPage from "./pages/aboutPage/AboutPage";
 import Profile from "./pages/profile/Profile";
 import PrivateRoutes from "./utils/PrivateRoutes";
+import TimeRegistrationPage from "./pages/timeRegistration/TimeRegistrationPage";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/profile" element={<Profile/>} />
             <Route path="/taskManagement" element={<TaskManagement/>} />
         </Route>
+            <Route path="/timeRegistration" element={<TimeRegistrationPage/>}/>
       </Routes>
     </>
   );
