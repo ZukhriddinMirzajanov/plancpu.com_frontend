@@ -1,0 +1,98 @@
+.time-registration-page {
+  padding: 80px 20px;
+
+}
+
+.months-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.months-header .months button {
+  border: none;
+  border-radius: 10px;
+  background: none;
+  margin: 0 10px;
+}
+.time-register-btn {
+  font-size: 25px;
+  cursor: pointer;
+  color: rgb(16, 171, 16);
+}
+.total-hours-display {
+  font-weight: bold;
+  color: rgba(16, 171, 16, 0.685);
+}
+
+.time-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.time-table th,
+.time-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.time-table th {
+  background-color: #f2f2f2;
+}
+
+.time-table tbody td:hover {
+  background-color: #f2f2f2;
+  color: black;
+  cursor: pointer;
+}
+
+.time-table th:nth-child(1),
+.time-table td:nth-child(1) {
+  width: 70px;
+  text-align: center;
+}
+.time-table th:nth-child(2),
+.time-table td:nth-child(2) {
+  width: 40px;
+  text-align: center;
+  color: black;
+}
+.time-table th:nth-child(4),
+.time-table td:nth-child(4) {
+  width: 80px;
+  text-align: center;
+}
+.weekday-bg {
+  background-color: rgba(16, 171, 16, 0.685);
+}
+
+.register-modal .modal-content {
+  background-color: white;
+  padding: 40px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 360px;
+}
+
+.register-modal h2 {
+  margin-top: 0;
+}
+
+.register-modal label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.register-modal input {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+
+@media (max-width:800px) {
+    .time-registration-page{
+        font-size: 7px;
+    }
+}
