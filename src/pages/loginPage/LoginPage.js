@@ -26,7 +26,6 @@ const LoginPage = () => {
     authService.login(email, password)
     .then((data) => {
         navigate("/");
-        console.log("Registered");
       })
       .catch((error) => {
         console.error("Error during registration:", error);

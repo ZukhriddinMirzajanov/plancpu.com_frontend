@@ -5,13 +5,12 @@ const API_BASE_URL = 'https://www.softlatency.com/api/users';
 
 const getUserById = (id) => {
     return axios
-        .get(API_BASE_URL + "/" + id, { headers: authHeader() })
+        .get(API_BASE_URL + "/profile/" + id, { headers: authHeader() })
         .then((response) => {
             return response.data;
         })
         .catch((error) => {
-            console.log(error);
-            throw error;
+            return error;
         })
 };
 const updateUser = (id, updatedUser) => {
@@ -35,7 +34,7 @@ const updateUser = (id, updatedUser) => {
         })
         .catch((error) => {
             console.log(error);
-            throw error;
+            return error;
         })
 };
 
