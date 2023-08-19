@@ -1,14 +1,15 @@
 
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Form, Button, Pagination } from "react-bootstrap";
+import { Container, Form, Button, Pagination } from "react-bootstrap";
 import EditTaskPopup from "./EditTaskPopup";
 import "./TaskManagement.css";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import DescriptionPopUpWindow from "./DescriptionPopUpWindow";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import taskService from "../../services/task.service";
 import { useNavigate } from "react-router-dom";
+import { HashLoader } from "react-spinners";
 
 
 function TaskManagment() {
@@ -23,12 +24,13 @@ function TaskManagment() {
     const tasksPerPage = 10;
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
-    // Load tasks from local storage on component mount
-    useEffect(() => {
+    function fetchAllTasksData() {
+        setIsLoading(true);
         taskService.getAllTasksByCompanyId(userFromLocal.companyId)
             .then(res => {
-
+                setIsLoading(false);
                 if (res.length > 0) {
                     let data = [];
                     res.map(task => {
@@ -41,8 +43,13 @@ function TaskManagment() {
 
                 }
             })
-
-    }, [userFromLocal.companyId, userFromLocal.email]);
+            .catch(err => {
+                toast.error("Error!");
+                setIsLoading(false);
+                console.log(err);
+            })
+    }
+    useEffect(fetchAllTasksData, [userFromLocal.companyId, userFromLocal.email, navigate]);
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
@@ -62,24 +69,24 @@ function TaskManagment() {
         };
 
         // Calling the task service for adding the new task
+        setIsLoading(true);
         taskService.createTask(newTask)
             .then(res => {
+                setIsLoading(false);
                 if (res) {
                     toast.info("Created:)");
                     setTasks([...tasks, res]);
                 }
             })
             .catch(error => {
+                setIsLoading(false);
                 toast.error("Error whiling creating a task:(");
             })
 
         // Clear input fields for the next task entry
         setName("");
-        setHour(0);
+        setHour("");
         setDescription("");
-
-        // Update tasks in local storage with the modified array
-        localStorage.setItem("tasks", JSON.stringify([...tasks, newTask]));
     };
 
     const handleEditTask = (index) => {
@@ -89,19 +96,22 @@ function TaskManagment() {
 
     const handleSaveEditedTask = (editedTask) => {
         const updatedTasks = [...tasks];
-        setTasks(updatedTasks);
         setShowEditPopup(false);
+        updatedTasks[selectedTaskIndex] = editedTask;
 
         // Update task
+        setIsLoading(true);
         taskService.updateTask(editedTask.id, editedTask)
             .then(res => {
+                setIsLoading(false);
                 if (res != null) {
                     toast.info("Updated :)");
-                    updatedTasks[selectedTaskIndex] = res;
+                    setTasks(updatedTasks);
 
                 }
             })
             .catch(err => {
+                setIsLoading(false);
                 toast.error("Error while updating :(")
             })
     };
@@ -111,17 +121,18 @@ function TaskManagment() {
         const updatedTasks = [...tasks];
         const deletedTask = updatedTasks[index];
         updatedTasks.splice(index, 1);
-        setTasks(updatedTasks);
-        console.log(deletedTask.id);
 
-        // Update task
+        setIsLoading(true)
         taskService.deleteTask(deletedTask.id)
             .then(res => {
+                setIsLoading(false);
                 if (res) {
                     toast.info("Deleted :)");
+                    setTasks(updatedTasks);
                 }
             })
             .catch(err => {
+                setIsLoading(false);
                 toast.error("Error while deleting!");
             })
 
@@ -162,116 +173,118 @@ function TaskManagment() {
 
     return (
         <>
-            <NavbarComponent />
-            <Container className="tasks-container" fluid>
-                <div className="tasks-form">
-                    <h2 className="title">Create Tasks</h2>
-                    <Form onSubmit={handleFormSubmit}>
-                        <Form.Group controlId="title">
-                            <Form.Label>Title:</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                required
-                            />
-                        </Form.Group>
-                        <Form.Group controlId="description">
-                            <Form.Label>Description:</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                rows={3}
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                required
-                            />
-                        </Form.Group>
-                        <Form.Group controlId="time">
-                            <Form.Label>Hour:</Form.Label>
-                            <Form.Control
-                                type="number"
-                                value={hour}
-                                onChange={(e) => setHour(e.target.value)}
-                                required
-                            />
-                        </Form.Group>
-                        <Button className="mt-3" variant="outline-success" type="submit">
-                            Add Task
-                        </Button>
-                    </Form>
-                </div>
-                <h2 className="title">All Tasks:</h2>
-                <ul>
-                    {tasksToDisplay.map((task, index) => (
-                        <li className="task-wrapper" key={task.id}>
-                            <h5>{task.name}</h5>
-                            <div className="time-btn">
-                                <div className="list-title">
-                                    <i>Time to spend</i> {task.hour} hr
-                                </div>
-                                <div className="list-btn">
-                                    <Button
-                                        className="task-mang-btn"
-                                        variant="outline-primary"
-                                        onClick={() => handleShowDescription(index)}
+            {isLoading ? <HashLoader cssOverride={{ margin: "20% 50%" }} loading={isLoading} color="#62bdea" size={50} />
+                : <>
+                    <NavbarComponent />
+                    <ToastContainer position="top-center" />
+                    <Container className="tasks-container" fluid>
+                        <div className="tasks-form">
+                            <h2 className="title">Create Tasks</h2>
+                            <Form onSubmit={handleFormSubmit}>
+                                <Form.Group controlId="title">
+                                    <Form.Label>Title:</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+                                <Form.Group controlId="description">
+                                    <Form.Label>Description:</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        rows={3}
+                                        value={description}
+                                        onChange={(e) => setDescription(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+                                <Form.Group controlId="time">
+                                    <Form.Label>Hour:</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        value={hour}
+                                        onChange={(e) => setHour(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+                                <Button className="mt-3" variant="outline-success" type="submit">
+                                    Add Task
+                                </Button>
+                            </Form>
+                        </div>
+                        <h2 className="title">All Tasks:</h2>
+                        <ul>
+                            {tasksToDisplay.map((task, index) => (
+                                <li className="task-wrapper" key={task.id}>
+                                    <h5>{task.name}</h5>
+                                    <div className="time-btn">
+                                        <div className="list-title">
+                                            <i>Time to spend</i> {task.hour} hr
+                                        </div>
+                                        <div className="list-btn">
+                                            <Button
+                                                className="task-mang-btn"
+                                                variant="outline-primary"
+                                                onClick={() => handleShowDescription(index)}
+                                            >
+                                                See Description
+                                            </Button>
+                                            <Button
+                                                className="task-edite-btn"
+                                                onClick={() => handleEditTask(index)}
+                                                variant="outline-success"
+                                            >
+                                                Edit
+                                            </Button>
+                                            {(task.createdByEmail === userFromLocal.email || userFromLocal.role === "ADMIN") && (
+                                                <Button
+                                                    variant="outline-danger"
+                                                    onClick={() => handleDeleteTask(index)}
+                                                >
+                                                    Delete
+                                                </Button>
+                                            )}
+
+                                        </div>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="pagination">
+                            <Pagination>
+                                <Pagination.Prev onClick={handlePrevClick} disabled={currentPage === 1} />
+                                {Array.from({ length: Math.ceil(tasks.length / tasksPerPage) }, (_, index) => (
+                                    <Pagination.Item
+                                        key={index + 1}
+                                        active={currentPage === index + 1}
+                                        onClick={() => handlePaginationClick(index + 1)}
                                     >
-                                        See Description
-                                    </Button>
-                                    <Button
-                                        className="task-edite-btn"
-                                        onClick={() => handleEditTask(index)}
-                                        variant="outline-success"
-                                    >
-                                        Edit
-                                    </Button>
-                                    {(task.createdByEmail === userFromLocal.email || userFromLocal.role === "ADMIN") && (
-                                        <Button
-                                            variant="outline-danger"
-                                            onClick={() => handleDeleteTask(index)}
-                                        >
-                                            Delete
-                                        </Button>
-                                    )}
+                                        {index + 1}
+                                    </Pagination.Item>
+                                ))}
+                                <Pagination.Next onClick={handleNextClick} disabled={currentPage === Math.ceil(tasks.length / tasksPerPage)} />
+                            </Pagination>
+                        </div>
 
-                                </div>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-                <div className="pagination">
-                    <Pagination>
-                        <Pagination.Prev onClick={handlePrevClick} disabled={currentPage === 1} />
-                        {Array.from({ length: Math.ceil(tasks.length / tasksPerPage) }, (_, index) => (
-                            <Pagination.Item
-                                key={index + 1}
-                                active={currentPage === index + 1}
-                                onClick={() => handlePaginationClick(index + 1)}
-                            >
-                                {index + 1}
-                            </Pagination.Item>
-                        ))}
-                        <Pagination.Next onClick={handleNextClick} disabled={currentPage === Math.ceil(tasks.length / tasksPerPage)} />
-                    </Pagination>
-                    <ToastContainer position="bottom-right" />
+                        {showEditPopup && selectedTaskIndex !== -1 && (
+                            <EditTaskPopup
+                                task={tasks[selectedTaskIndex]}
+                                onClose={handleClosePopup}
+                                onSave={handleSaveEditedTask}
+                            />
+                        )}
 
-                </div>
-
-                {showEditPopup && selectedTaskIndex !== -1 && (
-                    <EditTaskPopup
-                        task={tasks[selectedTaskIndex]}
-                        onClose={handleClosePopup}
-                        onSave={handleSaveEditedTask}
-                    />
-                )}
-
-                {selectedTaskIndex !== -1 && (
-                    <DescriptionPopUpWindow
-                        task={tasks[selectedTaskIndex]}
-                        show={showDescriptionModal}
-                        onClose={handleCloseDescriptionModal}
-                    />
-                )}
-            </Container>
+                        {selectedTaskIndex !== -1 && (
+                            <DescriptionPopUpWindow
+                                task={tasks[selectedTaskIndex]}
+                                show={showDescriptionModal}
+                                onClose={handleCloseDescriptionModal}
+                            />
+                        )}
+                    </Container>
+                </>}
         </>
     );
 }

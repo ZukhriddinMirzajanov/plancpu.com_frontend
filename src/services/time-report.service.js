@@ -18,6 +18,21 @@ const getAllTimeReportsByCompanyId = (companyId) => {
     });
 };
 
+const getAllTimeReportsByUserId = (id) => {
+    return axios
+      .get(API_BASE_URL + "/userId/" + id, { headers: authHeader() })
+      .then((response) => {
+        if (response.data) {
+          return response.data;
+        } else {
+          return null;
+        }
+      })
+      .catch((err) => {
+        return err;
+      });
+  };
+
 const getTimeReportById = (id) => {
   return axios
     .get(API_BASE_URL + "/" + id, { headers: authHeader() })
@@ -78,6 +93,7 @@ const deleteTimeReport = (id) => {
 
 const timeReportService = {
   getAllTimeReportsByCompanyId,
+  getAllTimeReportsByUserId,
   getTimeReportById,
   createTimeReport,
   updateTimeReport,

@@ -15,7 +15,7 @@ function EditTaskPopup({ task, onClose, onSave }) {
             assignedBy: task.assignedBy,
             name: editedName,
             hour: editedHour,
-            createdAt: Date.now(),
+            createdAt: task.createdAt,
             statusOfTask: 0,
             description: editedDescription,
         });
