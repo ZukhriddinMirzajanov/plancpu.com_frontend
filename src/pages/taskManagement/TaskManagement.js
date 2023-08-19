@@ -8,6 +8,7 @@ import DescriptionPopUpWindow from "./DescriptionPopUpWindow";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import taskService from "../../services/task.service";
+import { useNavigate } from "react-router-dom";
 
 
 function TaskManagment() {
@@ -21,20 +22,23 @@ function TaskManagment() {
     const [currentPage, setCurrentPage] = useState(1);
     const tasksPerPage = 10;
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
+    const navigate = useNavigate();
 
     // Load tasks from local storage on component mount
     useEffect(() => {
         taskService.getAllTasksByCompanyId(userFromLocal.companyId)
             .then(res => {
 
-                if (res != null) {
+                if (res.length > 0) {
                     let data = [];
                     res.map(task => {
                         return data.push(task);
-                    });                    
+                    });
                     setTasks(data);
                 } else {
-                    toast.error("Error!",);
+                    toast.error("Error!");
+                    navigate("/login");
+
                 }
             })
 
@@ -163,46 +167,34 @@ function TaskManagment() {
                 <div className="tasks-form">
                     <h2 className="title">Create Tasks</h2>
                     <Form onSubmit={handleFormSubmit}>
-                        <Row>
-                            <Col>
-                                <Form.Group controlId="title">
-                                    <Form.Label>Title:</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        required
-                                    />
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Form.Group controlId="description">
-                                    <Form.Label>Description:</Form.Label>
-                                    <Form.Control
-                                        as="textarea"
-                                        rows={3}
-                                        value={description}
-                                        onChange={(e) => setDescription(e.target.value)}
-                                        required
-                                    />
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Form.Group controlId="time">
-                                    <Form.Label>Hour:</Form.Label>
-                                    <Form.Control
-                                        type="number"
-                                        value={hour}
-                                        onChange={(e) => setHour(e.target.value)}
-                                        required
-                                    />
-                                </Form.Group>
-                            </Col>
-                        </Row>
+                        <Form.Group controlId="title">
+                            <Form.Label>Title:</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="description">
+                            <Form.Label>Description:</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={3}
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="time">
+                            <Form.Label>Hour:</Form.Label>
+                            <Form.Control
+                                type="number"
+                                value={hour}
+                                onChange={(e) => setHour(e.target.value)}
+                                required
+                            />
+                        </Form.Group>
                         <Button className="mt-3" variant="outline-success" type="submit">
                             Add Task
                         </Button>
@@ -234,13 +226,13 @@ function TaskManagment() {
                                     </Button>
                                     {(task.createdByEmail === userFromLocal.email || userFromLocal.role === "ADMIN") && (
                                         <Button
-                                        variant="outline-danger"
-                                        onClick={() => handleDeleteTask(index)}
-                                    >
-                                        Delete
-                                    </Button>
+                                            variant="outline-danger"
+                                            onClick={() => handleDeleteTask(index)}
+                                        >
+                                            Delete
+                                        </Button>
                                     )}
-                                    
+
                                 </div>
                             </div>
                         </li>

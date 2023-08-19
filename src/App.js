@@ -25,8 +25,8 @@ function App() {
             <Route path="/employeeManagement" element={<EmployeeManagement/>} />
             <Route path="/profile" element={<Profile/>} />
             <Route path="/taskManagement" element={<TaskManagement/>} />
+            <Route path="/timeReport" element={<TimeRegistrationPage/>}/>
         </Route>
-            <Route path="/timeRegistration" element={<TimeRegistrationPage/>}/>
       </Routes>
     </>
   );

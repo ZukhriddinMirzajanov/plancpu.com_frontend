@@ -5,6 +5,7 @@ import taskService from "../../services/task.service";
 import { toast } from "react-toastify";
 import { Button, Pagination, ToastContainer } from "react-bootstrap";
 import DescriptionPopUpWindow from "./DescriptionPopUpWindow";
+import { useNavigate } from "react-router-dom";
 
 const Backlogg = () => {
     const [tasks, setTasks] = useState([]);
@@ -13,12 +14,13 @@ const Backlogg = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const tasksPerPage = 10;
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
+    const navigate = useNavigate();
 
     // Load tasks from local storage on component mount
     useEffect(() => {
         taskService.getAllTasksByCompanyId(userFromLocal.companyId)
             .then(res => {
-                if (res != null) {
+                if (res.length > 0) {
                     const tasks = [];
                     res.map(task => {
                         if (task.statusOfTask === 0) {
@@ -29,11 +31,15 @@ const Backlogg = () => {
                     })
                     setTasks(tasks);
                 } else {
+                    navigate("/login");
                     toast.error("Error!",);
                 }
             })
+            .catch(err => {
+                toast.error("Error while getting Tasks!",);
+            })
 
-    }, [userFromLocal.companyId]);
+    }, [userFromLocal.companyId, navigate]);
 
     const handleEditTask = (index) => {
         const taskToOpen = tasks[index];
@@ -64,7 +70,6 @@ const Backlogg = () => {
             })
             .catch(err => {
                 toast.error("Error while updating :(")
-                throw err;
             })
 
     };

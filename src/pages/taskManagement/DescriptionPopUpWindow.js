@@ -21,11 +21,11 @@ function DescriptionPopUpWindow({ task, show, onClose }) {
         // return formattedDate.substring(8,10);
         return formattedDate;
     }
-    const getFormatTime = (date) => {
-        const createdAtDate = new Date(task.createdAt); // Convert seconds to milliseconds
-        const formattedTime = createdAtDate.toLocaleTimeString();
-        return formattedTime;
-    }
+    // const getFormatTime = (date) => {
+    //     const createdAtDate = new Date(task.createdAt); // Convert seconds to milliseconds
+    //     const formattedTime = createdAtDate.toLocaleTimeString();
+    //     return formattedTime;
+    // }
     return (
         <Modal show={show} onHide={onClose}>
             <Modal.Header closeButton>

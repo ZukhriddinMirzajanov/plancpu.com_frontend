@@ -10,6 +10,7 @@ import EmployeeManagement from "../../pages/employeeManagement/EmployeeManagemen
 import Profile from "../../pages/profile/Profile";
 import LoginPage from "../../pages/loginPage/LoginPage";
 import * as Icon from "react-bootstrap-icons";
+import TimeRegistrationPage from "../../pages/timeRegistration/TimeRegistrationPage";
 
 const NavbarComponent = () => {
     const location = useLocation();
@@ -70,6 +71,13 @@ const NavbarComponent = () => {
                             element={<TaskManagement />}
                         >
                             <Icon.ListTask className="navbar-card-btn"/>
+                        </Link>
+                        <Link
+                            className={`links ${location.pathname === "/timeReport" ? "active" : ""}`}
+                            to="/timeReport"
+                            element={<TimeRegistrationPage />}
+                        >
+                            <Icon.Clock className="navbar-card-btn"/>
                         </Link>
                         <Link
                             className={`links ${location.pathname === "/profile" ? "active" : ""}`}

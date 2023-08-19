@@ -1,229 +1,453 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import "./TimeRegistrationPage.css";
 import * as Icon from "react-bootstrap-icons";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
+import timeReportService from "../../services/time-report.service";
+import { toast } from "react-toastify";
 
 const TimeRegistrationPage = () => {
-  const storedMonth = localStorage.getItem("selectedMonth");
-  const initialMonth = storedMonth ? new Date(storedMonth) : new Date();
-  const [selectedMonth, setSelectedMonth] = useState(initialMonth);
-  const [timeEntries, setTimeEntries] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDay, setSelectedDay] = useState(null);
-  const [title, setTitle] = useState("");
-  const [time, setTime] = useState("");
+    const initialMonth = new Date();
+    const [selectedMonth, setSelectedMonth] = useState(initialMonth);
+    const [timeReportData, setTimeReportData] = useState([]);
+    const [actionTimeReportData, setActionTimeReportData] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    // const [selectedDay, setSelectedDay] = useState(null);
+    const [title, setTitle] = useState("");
+    const [hour, setHour] = useState("");
+    const [dayAction, setDayAction] = useState("");
+    const [indexData, setIndexData] = useState("");
+    const userFromLocal = JSON.parse(localStorage.getItem("user"));
+    const [isLoading, setIsLoading] = useState(false);
 
-  const storedEntries = useMemo(
-    () => JSON.parse(localStorage.getItem("timeEntries")) || {},
-    []
-  );
+    useEffect(() => {
+        timeReportService.getAllTimeReportsByCompanyId(userFromLocal.companyId)
+            .then(res => {
+                // if (res) {
+                //     setTimeReportData(res);
+                // }
+                // print();
+                if (res.length > 0) {
+                    let entrNum = 0;
+                    let filteredRes = [];
+                    res.map(data => {
+                        const currentDate = new Date(data.createdAt);
+                        const formattedCurrentDate = currentDate.toLocaleString("default", {
+                            month: "long",
+                            year: "numeric",
+                        });
+                        const formattedSelectedMonth = selectedMonth.toLocaleString("default", {
+                            month: "long",
+                            year: "numeric",
+                        });
+                        if (formattedCurrentDate === formattedSelectedMonth) {
+                            filteredRes.push(data);
+                            entrNum+=1;
+                        }
+                        return data;
+                    })
+                    if (entrNum !== 0) {
+                        setTimeReportData(filteredRes);
+                        setIsLoading(false);
+                    }
+                    if (entrNum === 0) {
+                        setTimeReportData([]);
+                        setIsLoading(false);
+                    }
+                    entrNum = 0;
+                }
+            })
+            .catch(err => {
+                toast.error("Server is not responding!");
+            })
+    });
 
-  useEffect(() => {
-    setTimeEntries(storedEntries[selectedMonth.toISOString()] || []);
-  }, [selectedMonth, storedEntries]);
+    const calculateTotalHours = () => {
+        if (timeReportData.length > 0) {
+            const totalHours = timeReportData.reduce(
+                (total, data) => total + data.hour,
+                0
+            );
+            return totalHours;
+        }
+    };
 
-  useEffect(() => {
-    localStorage.setItem("timeEntries", JSON.stringify(storedEntries));
-  }, [storedEntries]);
+    const getWeekDayName = (day) => {
+        const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const date = new Date(
+            selectedMonth.getFullYear(),
+            selectedMonth.getMonth(),
+            day
+        );
+        return weekdays[date.getDay()];
+    };
 
-  useEffect(() => {
-    localStorage.setItem("selectedMonth", selectedMonth.toISOString());
-  }, [selectedMonth]);
+    const handleMonthChange = (offset) => {
+        setSelectedMonth((prevMonth) => {
+            const newMonth = new Date(prevMonth);
+            newMonth.setMonth(newMonth.getMonth() + offset);
+            return newMonth;
+        });
+    };
 
-  useEffect(() => {
-    if (selectedDay !== null) {
-      const existingEntry = timeEntries.find(
-        (entry) => entry.day === selectedDay
-      );
+    const getFormattedDay = (date) => {
+        const createdAtDate = new Date(date);
+        const formattedDate = createdAtDate.toDateString();
+        return Number(formattedDate.slice(8, 10));
+    }
 
-      if (existingEntry) {
-        setTitle(existingEntry.title);
-        setTime(existingEntry.time.toString());
-      } else {
+    const createTimeReport = (e) => {
+        e.preventDefault();
+        let newTimeReportData = {
+            companyId: userFromLocal.companyId,
+            createdByEmail: userFromLocal.email,
+            createdByName: userFromLocal.firstName + " " + userFromLocal.lastName,
+            title: title,
+            hour: hour,
+            createdAt: selectedMonth.setDate(dayAction)
+        }
+        const updatedTimeReportData = [...timeReportData, newTimeReportData]
+        timeReportService.createTimeReport(newTimeReportData)
+            .then(res => {
+                if (res) {
+                    setTimeReportData(updatedTimeReportData);
+                    toast.info("Time Registered");
+                    setTitle("");
+                    setHour("");
+                    toast.info("Registered");
+                    setIsCreateModalOpen(false);
+                    setDayAction("");
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                toast.error("Error while registering");
+            })
+    }
+    const editTimeReport = (e) => {
+        e.preventDefault();
+        const updatedData = [...timeReportData];
+
+        const editedData = {
+            id: actionTimeReportData.id,
+            companyId: actionTimeReportData.companyId,
+            createdByEmail: actionTimeReportData.createdByEmail,
+            createdByName: actionTimeReportData.createdByName,
+            title: title,
+            hour: hour,
+            createdAt: actionTimeReportData.createdAt
+        };
+        updatedData[indexData] = editedData;
+
+        timeReportService.updateTimeReport(editedData.id, editedData)
+            .then(res => {
+                if (res) {
+                    setTimeReportData(updatedData);
+                    toast.info("Updated");
+                    setIsModalOpen(false);
+                    setTitle("");
+                    setHour("");
+                    setIndexData("");
+                    setActionTimeReportData("");
+                    toast.info("Updated")
+                }
+            })
+            .catch(err => {
+                toast.info("Error while updating");
+            })
+    }
+
+    const deleteTimeReport = (day) => {
+        let id = 0;
+        timeReportData.map(data => {
+            if (getFormattedDay(data.createdAt) === day) {
+                return id += data.id;
+            }
+            return data;
+        })
+        if (id !== 0) {
+            timeReportService.deleteTimeReport(id)
+                .then(res => {
+                    if (res) {
+                        toast.info("Deleted");
+                        console.log("deleted")
+                    }
+                })
+                .catch(err => {
+                    toast.error("Error while deleting!");
+                })
+        }
+    }
+
+    const openModal = (day) => {
+        setIsModalOpen(true);
+        timeReportData.map((data, index) => {
+            if (getFormattedDay(data.createdAt) === day) {
+                setTitle(data.title)
+                setHour(data.hour)
+                setActionTimeReportData(data)
+                setIndexData(index);
+            }
+            return data;
+        })
+    };
+    const createOpenModal = (day) => {
+        setIsCreateModalOpen(true);
+        setDayAction(day);
+        let qa = selectedMonth.toLocaleString("default", {
+            month: "long",
+            year: "numeric",
+        })
+        console.log(qa);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
         setTitle("");
-        setTime("");
-      }
+        setHour("");
+        setIndexData("");
+        setActionTimeReportData("");
+        setDayAction("");
+    };
+    const createCloseModal = () => {
+        setIsCreateModalOpen(false);
+        setTitle("");
+        setHour("");
+        // setIndexData("");
+    };
+
+    const displayBtn = (day) => {
+        let enteredNum = 0;
+        timeReportData.map(data => {
+            if (getFormattedDay(data.createdAt) === day) {
+                return enteredNum += 1;
+            }
+            return data;
+        })
+        if (enteredNum !== 0 && enteredNum === 1) {
+            return (
+                <>
+                    <Icon.Pencil className="time-register-edit-btn" onClick={() => openModal(day)} />
+                    <Icon.Trash className="time-register-clear-btn" onClick={() => deleteTimeReport(day)} />
+                </>
+            )
+        }
+        if (enteredNum === 0) {
+            return <Icon.PlusCircle className="time-register-add-btn" onClick={() => createOpenModal(day)} />
+        }
     }
-  }, [selectedDay, timeEntries]);
 
-  const openModal = (day) => {
-    setSelectedDay(day);
-    setIsModalOpen(true);
-  };
+    const renderCalendar = () => {
+        const daysInMonth = new Date(
+            selectedMonth.getFullYear(),
+            selectedMonth.getMonth() + 1,
+            0
+        ).getDate();
+        const daysArray = Array.from(
+            { length: daysInMonth },
+            (_, index) => index + 1
+        );
 
-  const closeModal = () => {
-    setSelectedDay(null);
-    setIsModalOpen(false);
-    setTitle("");
-    setTime("");
-  };
+        return daysArray.map((day) => {
+            const dayOfWeek = new Date(
+                selectedMonth.getFullYear(),
+                selectedMonth.getMonth(),
+                day
+            ).getDay();
+            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
 
-  const addTimeEntry = () => {
-    const updatedEntries = { ...storedEntries };
-    const monthEntries = updatedEntries[selectedMonth.toISOString()] || [];
-    const existingEntryIndex = monthEntries.findIndex(
-      (entry) => entry.day === selectedDay
+            const dayClass = isWeekend ? "weekend-bg" : "";
+
+            const weekdayColumnClass =
+                dayOfWeek > 0 && dayOfWeek < 6 ? "weekday-bg" : " ";
+            if (timeReportData.length > 0) {
+                return (
+                    <tr key={day}>
+                        <td className={dayClass + weekdayColumnClass}>
+                            <b>{getWeekDayName(day)}</b>
+                        </td>
+                        <td>{day}</td>
+                        <td>
+                            {timeReportData.find((data) => getFormattedDay(data.createdAt) === day)?.title}
+                        </td>
+                        <td>{timeReportData.find((data) => getFormattedDay(data.createdAt) === day)?.hour}</td>
+                        <td>{displayBtn(day)}</td>
+                    </tr>
+                );
+            } else {
+                return (
+                    <tr key={day}>
+                        <td className={dayClass + weekdayColumnClass}>
+                            <b>{getWeekDayName(day)}</b>
+                        </td>
+                        <td className="dayBtn">{day}</td>
+                        <td>
+                            {timeReportData.find((data) => getFormattedDay(data.createdAt) === day)?.title}
+                        </td>
+                        <td>{timeReportData.find((data) => getFormattedDay(data.createdAt) === day)?.hour}</td>
+                        <td>{displayBtn(day)}</td>
+                    </tr>
+                );
+            }
+        });
+
+    };
+
+    return (
+        <>
+            <NavbarComponent />
+            <div className="time-registration-page">
+                <div className="months-header">
+                    <div className="months">
+                        <button onClick={() => handleMonthChange(-1)}>
+                            <Icon.ArrowLeftCircle className="time-register-btn" />
+                        </button>
+                        <b>
+                            {selectedMonth.toLocaleString("default", {
+                                month: "long",
+                                year: "numeric",
+                            })}
+                        </b>
+                        <button onClick={() => handleMonthChange(1)}>
+                            <Icon.ArrowRightCircle className="time-register-btn" />
+                        </button>
+                    </div>
+                    <div className="total-hours-display">
+                        Total Hours: {calculateTotalHours()}
+                    </div>
+                </div>
+                <div className="time-table-container">
+                    <table className="time-table">
+                        <thead>
+                            <tr>
+                                <th>Week day</th>
+                                <th>Day</th>
+                                <th>Title</th>
+                                <th>Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {renderCalendar()}
+                            {/* {timeReportData.map((data, index) => (
+                                <tr key={index}>
+                                    <td>{getFormattedDayName(data.createdAt)}</td>
+                                    <td>{getFormattedDay(data.createdAt)}</td>
+                                    <td>{data.title}</td>
+                                    <td>{data.hour}</td>
+                                    <td>
+                                        <Icon.Pencil className="time-register-edit-btn" onClick={() => editTimeReport(data, index)} />
+                                        <Icon.Trash className="time-register-clear-btn" onClick={() => deleteTimeReport2(data.id)} />
+                                    </td>
+                                </tr>
+                            ))} */}
+                        </tbody>
+                    </table>
+                </div>
+
+                {isModalOpen && (
+                    <Modal
+                        className="register-modal"
+                        show={isModalOpen}
+                        onHide={closeModal}
+                    >
+                        <Form onSubmit={editTimeReport}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Edit time report</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <Form.Group controlId="title">
+                                    <Form.Label>Title:</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        rows={3}
+                                        value={title}
+                                        onChange={(e) => setTitle(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+                                <Form.Group controlId="time">
+                                    <Form.Label>Time (in hour):</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        value={hour}
+                                        onChange={(e) => setHour(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="outline-danger" onClick={closeModal}>
+                                    Cancel
+                                </Button>
+                                <Button type="submit" variant="outline-success">
+                                    Update
+                                </Button>
+                            </Modal.Footer>
+                        </Form>
+
+                    </Modal>
+                )}
+                {isCreateModalOpen && (
+                    <Modal
+                        className="register-modal"
+                        show={isCreateModalOpen}
+                        onHide={createCloseModal}
+                    >
+                        <Form onSubmit={createTimeReport}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Add time report</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <Form.Group controlId="title">
+                                    <Form.Label>Title:</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        rows={3}
+                                        value={title}
+                                        onChange={(e) => setTitle(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+                                <Form.Group controlId="time">
+                                    <Form.Label>Time (in hour):</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        value={hour}
+                                        onChange={(e) => setHour(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="outline-danger" onClick={createCloseModal}>
+                                    Cancel
+                                </Button>
+                                <Button type="submit" variant="outline-success">
+                                    Add
+                                </Button>
+                            </Modal.Footer>
+                        </Form>
+
+                    </Modal>
+                )}
+                {isLoading && (
+                    <Modal
+                        className="register-modal"
+                        show={isLoading}
+                    >
+                        <Form>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Loading</Modal.Title>
+                            </Modal.Header>
+                        </Form>
+
+                    </Modal>
+                )}
+            </div>
+        </>
     );
-
-    if (existingEntryIndex !== -1) {
-      monthEntries[existingEntryIndex] = {
-        ...monthEntries[existingEntryIndex],
-        title,
-        time: parseInt(time),
-      };
-    } else {
-      monthEntries.push({ day: selectedDay, title, time: parseInt(time) });
-    }
-
-    updatedEntries[selectedMonth.toISOString()] = monthEntries;
-    setTimeEntries(monthEntries);
-    localStorage.setItem("timeEntries", JSON.stringify(updatedEntries));
-    closeModal();
-  };
-
-  const calculateTotalHours = () => {
-    const totalHours = timeEntries.reduce(
-      (total, entry) => total + entry.time,
-      0
-    );
-    return totalHours;
-  };
-
-  const getWeekDayName = (day) => {
-    const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const date = new Date(
-      selectedMonth.getFullYear(),
-      selectedMonth.getMonth(),
-      day
-    );
-    return weekdays[date.getDay()];
-  };
-
-  const handleMonthChange = (offset) => {
-    setSelectedMonth((prevMonth) => {
-      const newMonth = new Date(prevMonth);
-      newMonth.setMonth(newMonth.getMonth() + offset);
-      return newMonth;
-    });
-  };
-
-  const renderCalendar = () => {
-    const daysInMonth = new Date(
-      selectedMonth.getFullYear(),
-      selectedMonth.getMonth() + 1,
-      0
-    ).getDate();
-    const daysArray = Array.from(
-      { length: daysInMonth },
-      (_, index) => index + 1
-    );
-
-    return daysArray.map((day) => {
-      const dayOfWeek = new Date(
-        selectedMonth.getFullYear(),
-        selectedMonth.getMonth(),
-        day
-      ).getDay();
-      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-
-      const dayClass = isWeekend ? "weekend-bg" : "";
-
-      const weekdayColumnClass =
-        dayOfWeek > 0 && dayOfWeek < 6 ? "weekday-bg" : "";
-
-      return (
-        <tr key={day} onClick={() => openModal(day)}>
-          <td className={dayClass}>
-            <b>{getWeekDayName(day)}</b>
-          </td>
-          <td className={weekdayColumnClass}>{day}</td>
-          <td>
-            Task: {timeEntries.find((entry) => entry.day === day)?.title || "-"}
-          </td>
-          <td>{timeEntries.find((entry) => entry.day === day)?.time || "-"}</td>
-        </tr>
-      );
-    });
-  };
-
-  return (
-    <>
-      <NavbarComponent />
-      <div className="time-registration-page">
-        <div className="months-header">
-          <div className="months">
-            <button onClick={() => handleMonthChange(-1)}>
-              <Icon.ArrowLeftCircle className="time-register-btn" />
-            </button>
-            <b>
-              {selectedMonth.toLocaleString("default", {
-                month: "long",
-                year: "numeric",
-              })}
-            </b>
-            <button onClick={() => handleMonthChange(1)}>
-              <Icon.ArrowRightCircle className="time-register-btn" />
-            </button>
-          </div>
-          <div className="total-hours-display">
-            Total Hours: {calculateTotalHours()}
-          </div>
-        </div>
-        <div className="time-table-container">
-          <table className="time-table">
-            <thead>
-              <tr>
-                <th>Week day</th>
-                <th className="weekday-bg">Day</th>
-                <th>Title</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-            <tbody>{renderCalendar()}</tbody>
-          </table>
-        </div>
-
-        {isModalOpen && (
-          <Modal
-            className="register-modal"
-            show={isModalOpen}
-            onHide={closeModal}
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Time Registration!</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div>
-                <label>Title:</label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-              </div>
-              <div>
-                <label>Time (hours):</label>
-                <input
-                  type="number"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                />
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="outline-danger" onClick={closeModal}>
-                Cancel
-              </Button>
-              <Button variant="outline-success" onClick={addTimeEntry}>
-                Register
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        )}
-      </div>
-    </>
-  );
 };
 
 export default TimeRegistrationPage;

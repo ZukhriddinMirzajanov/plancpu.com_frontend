@@ -13,6 +13,9 @@ const getAllTasksByCompanyId = (companyId) => {
                 console.log("some error happend");
                 return null;
             }
+        })
+        .catch(err => {
+            return err;
         });
 };
 
@@ -27,7 +30,7 @@ const getTaskById = (taskId) => {
             }
         })
         .catch(error => {
-            throw error;
+            return error;
         });
 };
 
@@ -42,7 +45,7 @@ const createTask = (taskData) => {
             }
         })
         .catch(error => {
-            throw error;
+            return error;
         });
 };
 const updateTask = (id, updatedTask) => {
@@ -56,7 +59,7 @@ const updateTask = (id, updatedTask) => {
             }
         })
         .catch(error => {
-            throw error;
+            return error;
         });
 };
 const deleteTask = (id) => {
@@ -70,7 +73,7 @@ const deleteTask = (id) => {
             }
         })
         .catch(error => {
-            throw error;
+            return error;
         });
 };
 
