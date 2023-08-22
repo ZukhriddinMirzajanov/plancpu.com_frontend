@@ -7,6 +7,8 @@ import userService from "../../services/user.service";
 import managerService from "../../services/manager.service";
 // import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
+import { HashLoader } from "react-spinners";
 
 function EmployeeManagement() {
 
@@ -20,18 +22,29 @@ function EmployeeManagement() {
     const [currentPage, setCurrentPage] = useState(1);
     const employeesPerPage = 10;
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
+    const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
+    function fetchUsersByCompanyId() {
+        setIsLoading(true);
         managerService.getUsersByCompanyId(userFromLocal.companyId)
             .then((res) => {
+                setIsLoading(false);
                 if (res) {
                     setEmployees(res);
                 }
             })
             .catch((err) => {
+                setIsLoading(false);
                 console.log(err);
+                toast.error("Error while fetching employees!")
             })
-    }, [userFromLocal.companyId]);
+    }
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
+
+    useEffect(fetchUsersByCompanyId, [userFromLocal.companyId]);
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
@@ -130,11 +143,29 @@ function EmployeeManagement() {
     const handleNextClick = () => {
         setCurrentPage((prevPage) => Math.min(prevPage + 1, Math.ceil(employees.length / employeesPerPage)));
     };
+    const spinnerContainerCss = {
+        position: "fixed",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        zIndex: "9999"
+    };
 
     return (
         <>
             <NavbarComponent />
+            {isLoading && (
+                <div style={spinnerContainerCss}>
+                    <HashLoader loading={isLoading} color="#62bdea" size={50} />
+                </div>
+            )}
             <Container className="employees-container" fluid>
+                <ToastContainer position="top-center" />
                 <div className="employees-form">
                     <h2 className="title">Create Employees</h2>
                     <Form onSubmit={handleFormSubmit}>

@@ -3,8 +3,12 @@ import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import "./HomePage.css";
 import PopUpWindow from "../../components/modal/PopUpWindow";
 import taskService from "../../services/task.service";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import * as Icon from "react-bootstrap-icons";
+import { HashLoader } from "react-spinners";
+// import authHeader from "../../services/auth-header";
+// import SockJS from 'sockjs-client';
+// import { Stomp } from "@stomp/stompjs";
 
 const HomePage = () => {
     const [selectedTask, setSelectedTask] = useState(null);
@@ -12,17 +16,15 @@ const HomePage = () => {
     const [inProgressTasks, setInProgressTasks] = useState([]);
     const [inReviewTasks, setInReviewTasks] = useState([]);
     const [closedTasks, setClosedTasks] = useState([]);
-    // const [selectedTaskIndex, setSelectedTaskIndex] = useState(-1);
-    // const [showDescriptionModal, setShowDescriptionModal] = useState(false);
-    // const [currentPage, setCurrentPage] = useState(1);
-    // const tasksPerPage = 10;
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
+    const [isLoading, setIsLoading] = useState(false);
 
-    // Load tasks from local storage on component mount
-    useEffect(() => {
+    function fetchAllTasks() {
+        setIsLoading(true)
         taskService.getAllTasksByCompanyId(userFromLocal.companyId)
             .then(res => {
-                if (res != null) {
+                setIsLoading(false);
+                if (res.length > 0) {
                     const tasks1 = [];
                     const tasks2 = [];
                     const tasks3 = [];
@@ -47,15 +49,77 @@ const HomePage = () => {
                     setInReviewTasks(tasks3);
                     setClosedTasks(tasks4);
                 } else {
-                    toast.error("Error!",);
+                    toast.info("No active tasks!",);
                 }
             })
             .catch(err => {
+                setIsLoading(false);
                 toast.error("Server error!",);
                 console.log(err);
             })
+    }
 
-    }, [openTasks, inProgressTasks, inReviewTasks, closedTasks, userFromLocal.companyId]);
+    useEffect(fetchAllTasks, [userFromLocal.companyId]);
+
+    // useEffect(() => {
+    //     try {
+    //         const socket = new SockJS(`http://localhost:5000/ws`);
+    //         const client = Stomp.over(socket);
+    //         // client.connect({}, () => {
+    //         //     console.log("WebSocket connection established.");
+
+    //         //     // Subscribe and send data here
+    //         // });
+
+    //         client.connect({companyId:userFromLocal.companyId}, () => {
+    //             console.log("Looooo")
+    //             client.subscribe(`/topic/companyTasks`, (message) => {
+    //                 console.log(`Received: ${message.body}`)
+    //                 // const updatedTasks = JSON.parse(message.body);
+    //                 // console.log("Received updated company tasks:", updatedTasks);
+    //                 // if (updatedTasks != null) {
+    //                 //     const tasks1 = [];
+    //                 //     const tasks2 = [];
+    //                 //     const tasks3 = [];
+    //                 //     const tasks4 = [];
+    //                 //     updatedTasks.map(task => {
+    //                 //         if (task.statusOfTask === 1) {
+    //                 //             tasks1.push(task);
+    //                 //         }
+    //                 //         if (task.statusOfTask === 2) {
+    //                 //             tasks2.push(task);
+    //                 //         }
+    //                 //         if (task.statusOfTask === 3) {
+    //                 //             tasks3.push(task);
+    //                 //         }
+    //                 //         if (task.statusOfTask === 4) {
+    //                 //             tasks4.push(task);
+    //                 //         }
+    //                 //         return task;
+    //                 //     })
+    //                 //     setOpentasks(tasks1);
+    //                 //     setInProgressTasks(tasks2);
+    //                 //     setInReviewTasks(tasks3);
+    //                 //     setClosedTasks(tasks4);
+    //                 // } else {
+    //                 //     toast.error("Error!",);
+    //                 // }
+    //             });
+    //         });
+
+    //         // return () => {
+    //         //     if (client) {
+    //         //         client.disconnect();
+    //         //     }
+    //         // };
+    //     } catch (err) {
+    //         toast.error("Error!",);
+    //         console.log(err);
+    //     }
+
+    // }, [userFromLocal.companyId]);
+
+
 
     const handleTaskClick = (task) => {
         setSelectedTask(task);
@@ -74,7 +138,7 @@ const HomePage = () => {
             companyId: task.companyId,
             createdByEmail: task.createdByEmail,
             createdByName: task.createdByName,
-            assignedBy: task.assignedBy,
+            assignedBy: userFromLocal.firstName,
             taskReviewer: task.taskReviewer,
             name: task.name,
             hour: task.hour,
@@ -83,13 +147,17 @@ const HomePage = () => {
             description: task.description
         }
 
+        setIsLoading(true);
         taskService.updateTask(editedTask.id, editedTask)
             .then(res => {
+                setIsLoading(false);
                 if (res != null) {
                     setOpentasks(updatedTasks);
+                    setInProgressTasks([...inProgressTasks, editedTask]);
                 }
             })
             .catch(err => {
+                setIsLoading(false);
                 toast.error("Error while updating :(")
                 console.log(err);
             })
@@ -114,13 +182,17 @@ const HomePage = () => {
             description: task.description
         }
 
+        setIsLoading(true);
         taskService.updateTask(editedTask.id, editedTask)
             .then(res => {
+                setIsLoading(false);
                 if (res != null) {
-                    setOpentasks(updatedTasks);
+                    setInProgressTasks(updatedTasks);
+                    setInReviewTasks([...inReviewTasks, editedTask]);
                 }
             })
             .catch(err => {
+                setIsLoading(false);
                 toast.error("Error while updating :(")
                 console.log(err);
             })
@@ -145,13 +217,17 @@ const HomePage = () => {
             description: task.description
         }
 
+        setIsLoading(true);
         taskService.updateTask(editedTask.id, editedTask)
             .then(res => {
+                setIsLoading(false);
                 if (res != null) {
-                    setOpentasks(updatedTasks);
+                    setInReviewTasks(updatedTasks);
+                    setClosedTasks([...closedTasks, editedTask]);
                 }
             })
             .catch(err => {
+                setIsLoading(false);
                 toast.error("Error while updating :(")
                 console.log(err);
             })
@@ -159,7 +235,7 @@ const HomePage = () => {
     };
 
     const updateTaskStatus4 = (task, index) => {
-        const updatedTasks = [...inReviewTasks];
+        const updatedTasks = [...closedTasks];
         updatedTasks.splice(index, 1);
 
         const editedTask = {
@@ -176,21 +252,94 @@ const HomePage = () => {
             description: task.description
         }
 
+        setIsLoading(true);
         taskService.updateTask(editedTask.id, editedTask)
             .then(res => {
+                setIsLoading(false);
                 if (res != null) {
-                    setOpentasks(updatedTasks);
+                    setClosedTasks(updatedTasks);
+                    setOpentasks([...openTasks, editedTask]);
                 }
             })
             .catch(err => {
+                setIsLoading(false);
                 toast.error("Error while updating :(")
                 console.log(err);
             })
 
     };
 
-    const assignToMeToWork = (task, index) => {
+    const backFrom2to1 = (task, index) => {
+        const updatedTasks = [...inProgressTasks];
+        updatedTasks.splice(index, 1);
+
+        const editedTask = {
+            id: task.id,
+            companyId: task.companyId,
+            createdByEmail: task.createdByEmail,
+            createdByName: task.createdByName,
+            assignedBy: task.assignedBy,
+            taskReviewer: task.taskReviewer,
+            name: task.name,
+            hour: task.hour,
+            createdAt: task.createdAt,
+            statusOfTask: 1,
+            description: task.description
+        }
+
+        setIsLoading(true);
+        taskService.updateTask(editedTask.id, editedTask)
+            .then(res => {
+                setIsLoading(false);
+                if (res != null) {
+                    setInProgressTasks(updatedTasks);
+                    setOpentasks([...openTasks, editedTask]);
+                }
+            })
+            .catch(err => {
+                setIsLoading(false);
+                toast.error("Error while updating :(")
+                console.log(err);
+            })
+
+    };
+
+    const backFrom3to2 = (task, index) => {
         const updatedTasks = [...inReviewTasks];
+        updatedTasks.splice(index, 1);
+
+        const editedTask = {
+            id: task.id,
+            companyId: task.companyId,
+            createdByEmail: task.createdByEmail,
+            createdByName: task.createdByName,
+            assignedBy: task.assignedBy,
+            taskReviewer: task.taskReviewer,
+            name: task.name,
+            hour: task.hour,
+            createdAt: task.createdAt,
+            statusOfTask: 2,
+            description: task.description
+        }
+
+        setIsLoading(true);
+        taskService.updateTask(editedTask.id, editedTask)
+            .then(res => {
+                setIsLoading(false);
+                if (res != null) {
+                    setInReviewTasks(updatedTasks);
+                    setInProgressTasks([...inProgressTasks, editedTask]);
+                }
+            })
+            .catch(err => {
+                setIsLoading(false);
+                toast.error("Error while updating :(")
+                console.log(err);
+            })
+    }
+
+    const assignToMeToWork = (task, index) => {
+        const updatedTasks = [...openTasks];
 
         const editedTask = {
             id: task.id,
@@ -208,13 +357,16 @@ const HomePage = () => {
 
         updatedTasks[index] = editedTask;
 
+        setIsLoading(true);
         taskService.updateTask(editedTask.id, editedTask)
             .then(res => {
+                setIsLoading(false);
                 if (res != null) {
                     setOpentasks(updatedTasks);
                 }
             })
             .catch(err => {
+                setIsLoading(false);
                 toast.error("Error while updating :(")
                 console.log(err);
             })
@@ -239,21 +391,43 @@ const HomePage = () => {
 
         updatedTasks[index] = editedTask;
 
+        setIsLoading(true);
         taskService.updateTask(editedTask.id, editedTask)
             .then(res => {
+                setIsLoading(false);
                 if (res != null) {
-                    setOpentasks(updatedTasks);
+                    setInReviewTasks(updatedTasks);
                 }
             })
             .catch(err => {
+                setIsLoading(false);
                 toast.error("Error while updating :(")
                 console.log(err);
             })
     }
 
+    const spinnerContainerCss = {
+        position: "fixed",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        zIndex: "9999"
+    };
+
     return (
         <>
             <NavbarComponent />
+            {isLoading && (
+                <div style={spinnerContainerCss}>
+                    <HashLoader loading={isLoading} color="#62bdea" size={50} />
+                </div>
+            )}
+            <ToastContainer position="top-center" />
             <div className="container-fluid">
                 <div className="body-nav">
                     <h4>
@@ -301,8 +475,7 @@ const HomePage = () => {
                                     <div className="progress-card-bottom">
                                         <strong className="task-hour">{task.hour} h</strong>
                                         <span>
-                                            <small onClick={() => updateTaskStatus4(task, index)}><Icon.ArrowLeftCircle className="home-card-btn" /></small>
-                                            <small onClick={() => assignToMeToWork(task, index)}><Icon.PlusCircle className="home-card-btn" /></small>
+                                            <small onClick={() => backFrom2to1(task, index)}><Icon.ArrowLeftCircle className="home-card-btn" /></small>
                                             <small onClick={() => updateTaskStatus2(task, index)} size="sm" variant="outline-primary"><Icon.ArrowRightCircle className="home-card-btn" /></small>
                                         </span>
                                     </div>
@@ -325,7 +498,7 @@ const HomePage = () => {
                                     <div className="review-card-bottom">
                                         <strong className="task-hour">{task.hour} h</strong>
                                         <span>
-                                            <small onClick={() => updateTaskStatus1(task, index)} size="sm" variant="outline-primary"><Icon.ArrowLeftCircle className="home-card-btn" /></small>
+                                            <small onClick={() => backFrom3to2(task, index)} size="sm" variant="outline-primary"><Icon.ArrowLeftCircle className="home-card-btn" /></small>
                                             <small onClick={() => assignToMeToReview(task, index)} size="sm" variant="outline-primary"><Icon.PlusCircle className="home-card-btn" /></small>
                                             <small onClick={() => updateTaskStatus3(task, index)} size="sm" variant="outline-primary"><Icon.CheckCircle className="home-card-btn" /></small>
                                         </span>
@@ -349,7 +522,7 @@ const HomePage = () => {
                                     <div className="close-card-bottom">
                                         <strong className="task-hour">{task.hour} h</strong>
                                         <span>
-                                            <small onClick={() => updateTaskStatus2(task, index)} size="sm" variant="outline-primary"><Icon.ArrowLeftCircle className="home-card-btn" /></small>
+                                            {/* <small onClick={() => updateTaskStatus2(task, index)} size="sm" variant="outline-primary"><Icon.ArrowLeftCircle className="home-card-btn" /></small> */}
                                             <small onClick={() => updateTaskStatus4(task, index)} size="sm" variant="outline-primary"><Icon.ArrowClockwise className="home-card-btn" /></small>
                                         </span>
                                     </div>

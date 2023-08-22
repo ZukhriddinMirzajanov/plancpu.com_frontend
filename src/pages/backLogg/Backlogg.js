@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import './Backlogg.css'
 import taskService from "../../services/task.service";
-import { toast } from "react-toastify";
-import { Button, Pagination, ToastContainer } from "react-bootstrap";
+import { ToastContainer, toast } from "react-toastify";
+import { Button, Pagination } from "react-bootstrap";
 import DescriptionPopUpWindow from "./DescriptionPopUpWindow";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { HashLoader } from "react-spinners";
 
 const Backlogg = () => {
@@ -15,7 +15,7 @@ const Backlogg = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const tasksPerPage = 10;
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
 
     function fetchAllTasks() {
@@ -34,17 +34,17 @@ const Backlogg = () => {
                     })
                     setTasks(tasks);
                 } else {
-                    navigate("/login");
-                    toast.error("Error!",);
+                    toast.info("No tasks found!");
                 }
             })
             .catch(err => {
+                // navigate("/login");
                 setIsLoading(false);
                 toast.error("Error while getting Tasks!",);
             })
     }
     // Load tasks from local storage on component mount
-    useEffect(fetchAllTasks, [userFromLocal.companyId, navigate]);
+    useEffect(fetchAllTasks, [userFromLocal.companyId]);
 
     const handleEditTask = (index) => {
         const taskToOpen = tasks[index];
@@ -109,69 +109,81 @@ const Backlogg = () => {
     const handleNextClick = () => {
         setCurrentPage((prevPage) => Math.min(prevPage + 1, Math.ceil(tasks.length / tasksPerPage)));
     };
+
+    const spinnerContainerCss = {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        zIndex: "9999"
+    };
     return (
         <>
-            {
-                isLoading ? <HashLoader cssOverride={{ margin: "20% 50%" }} loading={isLoading} color="#62bdea" size={50} />
-                    : <>
-                        <NavbarComponent />
-                        <div className="backlog-body">
-                            <h2 className="title">All Tasks:</h2>
-                            <ul>
-                                {tasksToDisplay.map((task, index) => (
-                                    <li className="task-wrapper" key={task.id}>
-                                        <h5>{task.name}</h5>
-                                        <div className="time-btn">
-                                            <div className="list-title">
-                                                <i>Time to spend</i> {task.hour} hr
-                                            </div>
-                                            <div className="list-btn">
-                                                <Button
-                                                    variant="outline-primary"
-                                                    onClick={() => handleShowDescription(index)}
-                                                >
-                                                    See Description
-                                                </Button>
-                                                <Button
-                                                    className="task-edite-btn"
-                                                    onClick={() => handleEditTask(index)}
-                                                    variant="outline-primary"
-                                                >
-                                                    Open
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                            <div className="pagination">
-                                <Pagination>
-                                    <Pagination.Prev onClick={handlePrevClick} disabled={currentPage === 1} />
-                                    {Array.from({ length: Math.ceil(tasks.length / tasksPerPage) }, (_, index) => (
-                                        <Pagination.Item
-                                            key={index + 1}
-                                            active={currentPage === index + 1}
-                                            onClick={() => handlePaginationClick(index + 1)}
-                                        >
-                                            {index + 1}
-                                        </Pagination.Item>
-                                    ))}
-                                    <Pagination.Next onClick={handleNextClick} disabled={currentPage === Math.ceil(tasks.length / tasksPerPage)} />
-                                </Pagination>
-                                <ToastContainer position="bottom-right" />
-
+            <NavbarComponent />
+            {isLoading && (
+                <div style={spinnerContainerCss}>
+                    <HashLoader loading={isLoading} color="#62bdea" size={50} />
+                </div>
+            )}
+            <ToastContainer position="top-center" />
+            <div className="backlog-body">
+                <h2 className="title">All Tasks:</h2>
+                <ul>
+                    {tasksToDisplay.map((task, index) => (
+                        <li className="task-wrapper" key={task.id}>
+                            <h5>{task.name}</h5>
+                            <div className="time-btn">
+                                <div className="list-title">
+                                    <i>Time to spend</i> {task.hour} hr
+                                </div>
+                                <div className="list-btn">
+                                    <Button
+                                        variant="outline-primary"
+                                        onClick={() => handleShowDescription(index)}
+                                    >
+                                        See Description
+                                    </Button>
+                                    <Button
+                                        className="task-edite-btn"
+                                        onClick={() => handleEditTask(index)}
+                                        variant="outline-primary"
+                                    >
+                                        Open
+                                    </Button>
+                                </div>
                             </div>
+                        </li>
+                    ))}
+                </ul>
+                <div className="pagination">
+                    <Pagination>
+                        <Pagination.Prev onClick={handlePrevClick} disabled={currentPage === 1} />
+                        {Array.from({ length: Math.ceil(tasks.length / tasksPerPage) }, (_, index) => (
+                            <Pagination.Item
+                                key={index + 1}
+                                active={currentPage === index + 1}
+                                onClick={() => handlePaginationClick(index + 1)}
+                            >
+                                {index + 1}
+                            </Pagination.Item>
+                        ))}
+                        <Pagination.Next onClick={handleNextClick} disabled={currentPage === Math.ceil(tasks.length / tasksPerPage)} />
+                    </Pagination>
+                </div>
 
-                            {selectedTaskIndex !== -1 && (
-                                <DescriptionPopUpWindow
-                                    task={tasks[selectedTaskIndex]}
-                                    show={showDescriptionModal}
-                                    onClose={handleCloseDescriptionModal}
-                                />
-                            )}
-                        </div>
-                    </>
-            }
+                {selectedTaskIndex !== -1 && (
+                    <DescriptionPopUpWindow
+                        task={tasks[selectedTaskIndex]}
+                        show={showDescriptionModal}
+                        onClose={handleCloseDescriptionModal}
+                    />
+                )}
+            </div>
         </>
     );
 };

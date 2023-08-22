@@ -6,6 +6,7 @@ import { Button, Form, Modal } from "react-bootstrap";
 import timeReportService from "../../services/time-report.service";
 import { ToastContainer, toast } from "react-toastify";
 import { HashLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
 
 const TimeRegistrationPage = () => {
     const initialMonth = new Date();
@@ -21,40 +22,50 @@ const TimeRegistrationPage = () => {
     const [indexData, setIndexData] = useState("");
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
     const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     function fetchTimeReportData() {
         setIsLoading(true);
         timeReportService.getAllTimeReportsByUserId(userFromLocal.id)
             .then(res => {
-                const filteredRes = res.filter(data => {
-                    const currentDate = new Date(data.createdAt);
-                    const formattedCurrentDate = currentDate.toLocaleString("default", {
-                        month: "long",
-                        year: "numeric",
+                setIsLoading(false);
+                if (res.length > 0) {
+                    const filteredRes = res.filter(data => {
+                        const currentDate = new Date(data.createdAt);
+                        const formattedCurrentDate = currentDate.toLocaleString("default", {
+                            month: "long",
+                            year: "numeric",
+                        });
+                        const formattedSelectedMonth = selectedMonth.toLocaleString("default", {
+                            month: "long",
+                            year: "numeric",
+                        });
+                        return formattedCurrentDate === formattedSelectedMonth;
                     });
-                    const formattedSelectedMonth = selectedMonth.toLocaleString("default", {
-                        month: "long",
-                        year: "numeric",
-                    });
-                    return formattedCurrentDate === formattedSelectedMonth;
-                });
 
-                if (filteredRes.length > 0) {
-                    setTimeReportData(filteredRes);
-                    setIsLoading(false);
+                    if (filteredRes.length > 0) {
+                        setTimeReportData(filteredRes);
+                    } else {
+                        setTimeReportData([]);
+                        setIsLoading(false);
+                    }
                 } else {
-                    setTimeReportData([]);
-                    setIsLoading(false);
+                    // navigate("/login");
                 }
+
             })
             .catch(err => {
                 console.error(err);
                 toast.error("Server is not responding!");
                 setIsLoading(false);
+                navigate("/login");
             });
     }
+    useEffect(() => {
+        window.scrollTo(0, 0)
+      }, [])
 
-    useEffect(fetchTimeReportData, [userFromLocal.id, selectedMonth]);
+    useEffect(fetchTimeReportData, [userFromLocal.id, selectedMonth, navigate]);
 
     const calculateTotalHours = () => {
         if (timeReportData.length > 0) {
@@ -291,48 +302,61 @@ const TimeRegistrationPage = () => {
         });
 
     };
+    const spinnerContainerCss = {
+        position: "fixed",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        zIndex: "9999"
+    };
     return (
         <>
-            {
-                isLoading ? <HashLoader cssOverride={{ margin: "20% 50%" }} loading={isLoading} color="#62bdea" size={50} />
-                    : <>
-                        <NavbarComponent />
-                        
-                        <div className="time-registration-page">
-                            <ToastContainer position="top-center" />
-                            <div className="months-header">
-                                <div className="months">
-                                    <button onClick={() => handleMonthChange(-1)}>
-                                        <Icon.ArrowLeftCircle className="time-register-btn" />
-                                    </button>
-                                    <b>
-                                        {selectedMonth.toLocaleString("default", {
-                                            month: "long",
-                                            year: "numeric",
-                                        })}
-                                    </b>
-                                    <button onClick={() => handleMonthChange(1)}>
-                                        <Icon.ArrowRightCircle className="time-register-btn" />
-                                    </button>
-                                </div>
-                                <div className="total-hours-display">
-                                    Total Hours: {calculateTotalHours()}
-                                </div>
-                            </div>
-                            <div className="time-table-container">
-                                <table className="time-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Week day</th>
-                                            <th>Day</th>
-                                            <th>Title</th>
-                                            <th>Time</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {renderCalendar()}
-                                        {/* {timeReportData.map((data, index) => (
+            <NavbarComponent />
+            {isLoading && (
+                <div style={spinnerContainerCss}>
+                    <HashLoader loading={isLoading} color="#62bdea" size={50} />
+                </div>
+            )}
+            <div className="time-registration-page">
+                <ToastContainer position="top-center" />
+                <div className="months-header">
+                    <div className="months">
+                        <button onClick={() => handleMonthChange(-1)}>
+                            <Icon.ArrowLeftCircle className="time-register-btn" />
+                        </button>
+                        <b>
+                            {selectedMonth.toLocaleString("default", {
+                                month: "long",
+                                year: "numeric",
+                            })}
+                        </b>
+                        <button onClick={() => handleMonthChange(1)}>
+                            <Icon.ArrowRightCircle className="time-register-btn" />
+                        </button>
+                    </div>
+                    <div className="total-hours-display">
+                        Total Hours: {calculateTotalHours()}
+                    </div>
+                </div>
+                <div className="time-table-container">
+                    <table className="time-table">
+                        <thead>
+                            <tr>
+                                <th>Week day</th>
+                                <th>Day</th>
+                                <th>Title</th>
+                                <th>Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {renderCalendar()}
+                            {/* {timeReportData.map((data, index) => (
                                 <tr key={index}>
                                     <td>{getFormattedDayName(data.createdAt)}</td>
                                     <td>{getFormattedDay(data.createdAt)}</td>
@@ -344,102 +368,97 @@ const TimeRegistrationPage = () => {
                                     </td>
                                 </tr>
                             ))} */}
-                                    </tbody>
-                                </table>
-                            </div>
+                        </tbody>
+                    </table>
+                </div>
 
-                            {isModalOpen && (
-                                <Modal
-                                    className="register-modal"
-                                    show={isModalOpen}
-                                    onHide={closeModal}
-                                >
-                                    <Form onSubmit={editTimeReport}>
-                                        <Modal.Header closeButton>
-                                            <Modal.Title>Edit time report</Modal.Title>
-                                        </Modal.Header>
-                                        <Modal.Body>
-                                            <Form.Group controlId="title">
-                                                <Form.Label>Title:</Form.Label>
-                                                <Form.Control
-                                                    as="textarea"
-                                                    rows={3}
-                                                    value={title}
-                                                    onChange={(e) => setTitle(e.target.value)}
-                                                    required
-                                                />
-                                            </Form.Group>
-                                            <Form.Group controlId="time">
-                                                <Form.Label>Time (in hour):</Form.Label>
-                                                <Form.Control
-                                                    type="number"
-                                                    value={hour}
-                                                    onChange={(e) => setHour(e.target.value)}
-                                                    required
-                                                />
-                                            </Form.Group>
-                                        </Modal.Body>
-                                        <Modal.Footer>
-                                            <Button variant="outline-danger" onClick={closeModal}>
-                                                Cancel
-                                            </Button>
-                                            <Button type="submit" variant="outline-success">
-                                                Update
-                                            </Button>
-                                        </Modal.Footer>
-                                    </Form>
+                {isModalOpen && (
+                    <Modal
+                        className="register-modal"
+                        show={isModalOpen}
+                        onHide={closeModal}
+                    >
+                        <Form onSubmit={editTimeReport}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Edit time report</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <Form.Group controlId="title">
+                                    <Form.Label>Title:</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        rows={3}
+                                        value={title}
+                                        onChange={(e) => setTitle(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+                                <Form.Group controlId="time">
+                                    <Form.Label>Time (in hour):</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        value={hour}
+                                        onChange={(e) => setHour(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="outline-danger" onClick={closeModal}>
+                                    Cancel
+                                </Button>
+                                <Button type="submit" variant="outline-success">
+                                    Update
+                                </Button>
+                            </Modal.Footer>
+                        </Form>
 
-                                </Modal>
-                            )}
-                            {isCreateModalOpen && (
-                                <Modal
-                                    className="register-modal"
-                                    show={isCreateModalOpen}
-                                    onHide={createCloseModal}
-                                >
-                                    <Form onSubmit={createTimeReport}>
-                                        <Modal.Header closeButton>
-                                            <Modal.Title>Add time report</Modal.Title>
-                                        </Modal.Header>
-                                        <Modal.Body>
-                                            <Form.Group controlId="title">
-                                                <Form.Label>Title:</Form.Label>
-                                                <Form.Control
-                                                    as="textarea"
-                                                    rows={3}
-                                                    value={title}
-                                                    onChange={(e) => setTitle(e.target.value)}
-                                                    required
-                                                />
-                                            </Form.Group>
-                                            <Form.Group controlId="time">
-                                                <Form.Label>Time (in hour):</Form.Label>
-                                                <Form.Control
-                                                    type="number"
-                                                    value={hour}
-                                                    onChange={(e) => setHour(e.target.value)}
-                                                    required
-                                                />
-                                            </Form.Group>
-                                        </Modal.Body>
-                                        <Modal.Footer>
-                                            <Button variant="outline-danger" onClick={createCloseModal}>
-                                                Cancel
-                                            </Button>
-                                            <Button type="submit" variant="outline-success">
-                                                Add
-                                            </Button>
-                                        </Modal.Footer>
-                                    </Form>
+                    </Modal>
+                )}
+                {isCreateModalOpen && (
+                    <Modal
+                        className="register-modal"
+                        show={isCreateModalOpen}
+                        onHide={createCloseModal}
+                    >
+                        <Form onSubmit={createTimeReport}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Add time report</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <Form.Group controlId="title">
+                                    <Form.Label>Title:</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        rows={3}
+                                        value={title}
+                                        onChange={(e) => setTitle(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+                                <Form.Group controlId="time">
+                                    <Form.Label>Time (in hour):</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        value={hour}
+                                        onChange={(e) => setHour(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="outline-danger" onClick={createCloseModal}>
+                                    Cancel
+                                </Button>
+                                <Button type="submit" variant="outline-success">
+                                    Add
+                                </Button>
+                            </Modal.Footer>
+                        </Form>
 
-                                </Modal>
-                            )}
-                            
-                        </div>
-                    </>
-
-            }
-
+                    </Modal>
+                )}
+            </div>
         </>
     );
 };

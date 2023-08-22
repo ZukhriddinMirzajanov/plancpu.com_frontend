@@ -1,7 +1,8 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_BASE_URL = 'https://www.softlatency.com/api/tasks';
+// const API_BASE_URL_PROD = 'https://www.softlatency.com/api/tasks';
+const API_BASE_URL = 'http://localhost:5000/api/tasks';
 
 const getAllTasksByCompanyId = (companyId) => {
     return axios
@@ -11,7 +12,7 @@ const getAllTasksByCompanyId = (companyId) => {
                 return response.data;
             } else {
                 console.log("some error happend");
-                return null;
+                return response;
             }
         })
         .catch(err => {

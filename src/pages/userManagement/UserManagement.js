@@ -7,7 +7,8 @@ import "./UserManagement.css";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import adminService from "../../services/admin.service";
 import "react-toastify/dist/ReactToastify.css";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import { HashLoader } from "react-spinners";
 
 function UserManagement() {
     // const [firstname, setFirstname] = useState("");
@@ -19,21 +20,26 @@ function UserManagement() {
     const [selectedUserIndex, setSelectedUserIndex] = useState(-1);
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 10;
+    const [isLoading, setIsLoading] = useState(false);
 
-    // Load users from local storage on component mount
-    useEffect(() => {
-        adminService.getUsers()
+    function fetchUsers() {
+        setIsLoading(true);
+        adminService.getManagers()
             .then((res) => {
-                console.log(res);
-                if (res) {
-                    setUsers(res);
-                }
+                setIsLoading(false);
+                setUsers(res);
             })
-            .catch((err) =>{
+            .catch((err) => {
+                setIsLoading(false);
                 console.log(err);
-                toast.error("Error retrieving tasks from local storage.");
+                toast.error("Error!");
             })
-    }, []);
+    }
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
+
+    useEffect(fetchUsers, []);
 
     // const handleFormSubmit = (e) => {
     //     e.preventDefault();
@@ -98,7 +104,7 @@ function UserManagement() {
     // Calculate the index of the first user to display on the current page
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
     // Get the users to display on the current page
-    const usersToDisplay = users.slice(indexOfFirstUser, indexOfLastUser);
+    const usersToDisplay = users.length > 0 ? users.slice(indexOfFirstUser, indexOfLastUser) : [];
 
     const handlePaginationClick = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -111,11 +117,29 @@ function UserManagement() {
     const handleNextClick = () => {
         setCurrentPage((prevPage) => Math.min(prevPage + 1, Math.ceil(users.length / usersPerPage)));
     };
+    const spinnerContainerCss = {
+        position: "fixed",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        zIndex: "9999"
+    };
 
     return (
         <>
             <NavbarComponent />
+            {isLoading && (
+                <div style={spinnerContainerCss}>
+                    <HashLoader loading={isLoading} color="#62bdea" size={50} />
+                </div>
+            )}
             <Container className="users-container" fluid>
+                <ToastContainer position="top-center" />
                 {/* <div className="users-form">
                     <h2 className="title">Create Users</h2>
                     <Form onSubmit={handleFormSubmit}>

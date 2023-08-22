@@ -116,6 +116,15 @@
     background-color: rgba(16, 171, 16, 0.685);
 }
 
+.hashLoaderSpinner {
+    position: absolute;
+    /* height: 100%; */
+    /* width: 100%; */
+    z-index: 8;
+    margin: 100% 100%;
+    background-color: rgba(0, 0, 0, 1);
+}
+
 /* .register-modal .modal-content {
   background-color: white;
   padding: 40px 20px;
