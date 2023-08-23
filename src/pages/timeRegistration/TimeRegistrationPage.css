@@ -67,7 +67,6 @@
 .time-table td {
     border: 1px solid #ddd;
     padding: 8px;
-    /* text-align: center; */
 }
 
 .trActionBtn {
@@ -83,46 +82,29 @@
     color: black;
 }
 
-.dayBtn {
+.time-table .day-cell {
     cursor: pointer;
-}
-
-.time-table th:nth-child(1),
-.time-table td:nth-child(1) {
-    width: 95px;
-    text-align: center;
-}
-
-.time-table th:nth-child(2),
-.time-table td:nth-child(2) {
     width: 40px;
     text-align: center;
     color: black;
 }
 
-.time-table th:nth-child(4),
-.time-table td:nth-child(4) {
-    width: 50px;
+.time-table .week-cell{
+    width: 95px;
     text-align: center;
 }
 
-.time-table th:nth-child(5),
-.time-table td:nth-child(5) {
+.time-table .hour-cell{
+    width: 50px;
+    text-align: center;
+}
+.time-table .action-cell{
     width: 70px;
     text-align: center;
 }
 
 .weekday-bg {
     background-color: rgba(16, 171, 16, 0.685);
-}
-
-.hashLoaderSpinner {
-    position: absolute;
-    /* height: 100%; */
-    /* width: 100%; */
-    z-index: 8;
-    margin: 100% 100%;
-    background-color: rgba(0, 0, 0, 1);
 }
 
 /* .register-modal .modal-content {
@@ -139,3 +121,4 @@
         font-size: 7px;
     }
 }
+

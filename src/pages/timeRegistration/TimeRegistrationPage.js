@@ -15,7 +15,6 @@ const TimeRegistrationPage = () => {
     const [actionTimeReportData, setActionTimeReportData] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    // const [selectedDay, setSelectedDay] = useState(null);
     const [title, setTitle] = useState("");
     const [hour, setHour] = useState("");
     const [dayAction, setDayAction] = useState("");
@@ -63,7 +62,7 @@ const TimeRegistrationPage = () => {
     }
     useEffect(() => {
         window.scrollTo(0, 0)
-      }, [])
+    }, [])
 
     useEffect(fetchTimeReportData, [userFromLocal.id, selectedMonth, navigate]);
 
@@ -248,59 +247,46 @@ const TimeRegistrationPage = () => {
     }
 
     const renderCalendar = () => {
-        const daysInMonth = new Date(
-            selectedMonth.getFullYear(),
-            selectedMonth.getMonth() + 1,
-            0
-        ).getDate();
-        const daysArray = Array.from(
-            { length: daysInMonth },
-            (_, index) => index + 1
-        );
+        // Calculate the number of days in the selected month
+        const daysInMonth = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1, 0).getDate();
 
-        return daysArray.map((day) => {
-            const dayOfWeek = new Date(
-                selectedMonth.getFullYear(),
-                selectedMonth.getMonth(),
-                day
-            ).getDay();
+        // Create an array of day numbers from 1 to the number of days in the month
+        const daysArray = Array.from({ length: daysInMonth }, (_, index) => index + 1);
+
+        // Generate table rows for each day in the month
+        return daysArray.map(day => {
+            // Calculate the day of the week (0-6, Sunday-Saturday) for the current day
+            const currentDate = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth(), day);
+            const dayOfWeek = currentDate.getDay();
+
+            // Check if the day is a weekend (Saturday or Sunday)
             const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
 
+            // Apply appropriate CSS classes based on the day of the week
             const dayClass = isWeekend ? "weekend-bg" : "";
+            const weekdayColumnClass = dayOfWeek > 0 && dayOfWeek < 6 ? "weekday-bg" : "";
 
-            const weekdayColumnClass =
-                dayOfWeek > 0 && dayOfWeek < 6 ? "weekday-bg" : " ";
-            if (timeReportData.length > 0) {
-                return (
-                    <tr key={day}>
-                        <td className={dayClass + weekdayColumnClass}>
-                            <b>{getWeekDayName(day)}</b>
-                        </td>
-                        <td>{day}</td>
-                        <td>
-                            {timeReportData.find((data) => getFormattedDay(data.createdAt) === day)?.title}
-                        </td>
-                        <td>{timeReportData.find((data) => getFormattedDay(data.createdAt) === day)?.hour}</td>
-                        <td>{displayBtn(day)}</td>
-                    </tr>
-                );
-            } else {
-                return (
-                    <tr key={day}>
-                        <td className={dayClass + weekdayColumnClass}>
-                            <b>{getWeekDayName(day)}</b>
-                        </td>
-                        <td className="dayBtn">{day}</td>
-                        <td>
-                            {timeReportData.find((data) => getFormattedDay(data.createdAt) === day)?.title}
-                        </td>
-                        <td>{timeReportData.find((data) => getFormattedDay(data.createdAt) === day)?.hour}</td>
-                        <td>{displayBtn(day)}</td>
-                    </tr>
-                );
-            }
+            // Find time report data for the current day
+            const timeReportForDay = timeReportData.find(data => getFormattedDay(data.createdAt) === day);
+
+            // Generate a table row for the current day
+            return (
+                <tr key={day}>
+                    {/* Day of the week cell */}
+                    <td className={`${dayClass} ${weekdayColumnClass} week-cell`}>
+                        <b>{getWeekDayName(day)}</b>
+                    </td>
+                    {/* Day cell */}
+                    <td className="day-cell">{day}</td>
+                    {/* Title cell */}
+                    <td className="title-cell">{timeReportForDay?.title}</td>
+                    {/* Hour cell */}
+                    <td className="hour-cell">{timeReportForDay?.hour}</td>
+                    {/* Display button cell */}
+                    <td className="action-cell">{displayBtn(day)}</td>
+                </tr>
+            );
         });
-
     };
     const spinnerContainerCss = {
         position: "fixed",
@@ -347,31 +333,18 @@ const TimeRegistrationPage = () => {
                     <table className="time-table">
                         <thead>
                             <tr>
-                                <th>Week day</th>
-                                <th>Day</th>
-                                <th>Title</th>
-                                <th>Time</th>
-                                <th>Action</th>
+                                <th className="week-cell">Week day</th>
+                                <th className="day-cell">Day</th>
+                                <th className="title-cell">Title</th>
+                                <th className="hour-cell">Time</th>
+                                <th className="action-cell">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {renderCalendar()}
-                            {/* {timeReportData.map((data, index) => (
-                                <tr key={index}>
-                                    <td>{getFormattedDayName(data.createdAt)}</td>
-                                    <td>{getFormattedDay(data.createdAt)}</td>
-                                    <td>{data.title}</td>
-                                    <td>{data.hour}</td>
-                                    <td>
-                                        <Icon.Pencil className="time-register-edit-btn" onClick={() => editTimeReport(data, index)} />
-                                        <Icon.Trash className="time-register-clear-btn" onClick={() => deleteTimeReport2(data.id)} />
-                                    </td>
-                                </tr>
-                            ))} */}
                         </tbody>
                     </table>
                 </div>
-
                 {isModalOpen && (
                     <Modal
                         className="register-modal"
