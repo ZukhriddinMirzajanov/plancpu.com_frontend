@@ -10,6 +10,8 @@ import AboutPage from "./pages/aboutPage/AboutPage";
 import Profile from "./pages/profile/Profile";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import TimeRegistrationPage from "./pages/timeRegistration/TimeRegistrationPage";
+import ProjectManagement from "./pages/projectManagement/ProjectManagment";
+import CompanyManagment from "./pages/companyManagment/CompanyManagment";
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
             <Route path="/profile" element={<Profile/>} />
             <Route path="/taskManagement" element={<TaskManagement/>} />
             <Route path="/timeReport" element={<TimeRegistrationPage/>}/>
+            <Route path="/projects" element={<ProjectManagement/>}/>
+            <Route path="/company" element={<CompanyManagment/>}/>
         </Route>
       </Routes>
     </>
