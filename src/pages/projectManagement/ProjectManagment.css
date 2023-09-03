@@ -1,0 +1,40 @@
+.project-container{
+  padding-top: 80px;
+}
+.search__add-project-box{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.project-list{
+  margin: 10px 0;
+  background-color: rgba(247, 244, 244, 0.463);
+}
+.project-box{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.project-right{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.truncate-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+  }
+  
+  .description-btn{
+    border-top: none;
+    border-radius: 45%;
+    border: none;
+    background-color: #a8a8a86f;
+    color: #000;
+  }
+
+  .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.4); 
+  }
