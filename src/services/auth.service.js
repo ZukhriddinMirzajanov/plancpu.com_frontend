@@ -1,5 +1,4 @@
 import axios from "axios";
-import userService from "./user.service";
 
 // const API_BASE_URL_PROD = 'https://www.softlatency.com/api/auth'; 
 const API_BASE_URL = 'http://localhost:5000/api/auth';
@@ -10,24 +9,14 @@ const signup = (userData) => {
       .then((response) => {
         if (
             response.data.token &&
-            response.data.id &&
-            response.data.companyName &&
             response.data.firstName &&
             response.data.lastName &&
             response.data.email &&
             response.data.role
         ) {
-            const userDataToUpdate = {
-                companyId: response.data.id,
-                companyName: response.data.companyName,
-                firstName: response.data.firstName,
-                lastName: response.data.lastName,
-                email: response.data.email,
-                role: response.data.role
-            }
-            userService.updateUser(response.data.id, userDataToUpdate);
             localStorage.setItem("user", JSON.stringify(response.data));                
-            console.log("Registered");  
+            console.log("Registered");
+            return response.data;  
         } else {
             console.log("some error happened");
             throw new Error("Some error occurred during registration");
@@ -49,8 +38,6 @@ const signup = (userData) => {
         if (
             response.data.token &&
             response.data.id &&
-            response.data.companyId &&
-            response.data.companyName &&
             response.data.firstName &&
             response.data.lastName &&
             response.data.email &&

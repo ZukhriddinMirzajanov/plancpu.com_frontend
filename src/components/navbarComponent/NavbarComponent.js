@@ -11,6 +11,8 @@ import Profile from "../../pages/profile/Profile";
 import LoginPage from "../../pages/loginPage/LoginPage";
 import * as Icon from "react-bootstrap-icons";
 import TimeRegistrationPage from "../../pages/timeRegistration/TimeRegistrationPage";
+import ProjectManagement from "../../pages/projectManagement/ProjectManagment";
+import CompanyManagment from "../../pages/companyManagment/CompanyManagment";
 
 const NavbarComponent = () => {
     const location = useLocation();
@@ -54,7 +56,7 @@ const NavbarComponent = () => {
                             to="/"
                             element={<HomePage />}
                         >
-                            <Icon.Table className="navbar-card-btn"/>
+                            <Icon.Table className="navbar-card-btn" />
                         </Link>
                         {isManager && (
                             <Link
@@ -62,7 +64,7 @@ const NavbarComponent = () => {
                                 to="/backlog"
                                 element={<Backlogg />}
                             >
-                                <Icon.Stack className="navbar-card-btn"/>
+                                <Icon.Stack className="navbar-card-btn" />
                             </Link>
                         )}
                         <Link
@@ -70,21 +72,21 @@ const NavbarComponent = () => {
                             to="/taskManagement"
                             element={<TaskManagement />}
                         >
-                            <Icon.ListTask className="navbar-card-btn"/>
+                            <Icon.ListTask className="navbar-card-btn" />
                         </Link>
                         <Link
                             className={`links ${location.pathname === "/timeReport" ? "active" : ""}`}
                             to="/timeReport"
                             element={<TimeRegistrationPage />}
                         >
-                            <Icon.Clock className="navbar-card-btn"/>
+                            <Icon.Clock className="navbar-card-btn" />
                         </Link>
                         <Link
                             className={`links ${location.pathname === "/profile" ? "active" : ""}`}
                             to="/profile"
                             element={<Profile />}
                         >
-                            <Icon.Person className="navbar-card-btn"/>
+                            <Icon.Person className="navbar-card-btn" />
                         </Link>
                         {isManager && (
                             <Link
@@ -92,7 +94,16 @@ const NavbarComponent = () => {
                                 to="/employeeManagement"
                                 element={<EmployeeManagement />}
                             >
-                                <Icon.People className="navbar-card-btn"/>
+                                EM
+                            </Link>
+                        )}
+                        {isManager && (
+                            <Link
+                                className={`links ${location.pathname === "/projectManagement" ? "active" : ""}`}
+                                to="/projectManagement"
+                                element={<ProjectManagement />}
+                            >
+                                PM
                             </Link>
                         )}
                         {isAdmin && (
@@ -101,10 +112,19 @@ const NavbarComponent = () => {
                                 to="/userManagement"
                                 element={<UserManagement />}
                             >
-                                <Icon.People className="navbar-card-btn"/>U
+                                UM
                             </Link>
                         )}
-                        <Link className="links" to="/login"  onClick={handleLogout}><Icon.BoxArrowRight className="navbar-card-btn"/></Link>
+                        {isAdmin && (
+                            <Link
+                                className={`links ${location.pathname === "/companyManagement" ? "active" : ""}`}
+                                to="/companyManagement"
+                                element={<CompanyManagment />}
+                            >
+                                CM
+                            </Link>
+                        )}
+                        <Link className="links" to="/login" onClick={handleLogout}><Icon.BoxArrowRight className="navbar-card-btn" /></Link>
                     </>
                 )}
                 {!isLoggedIn && ( // Display the Login link if not logged in
@@ -113,7 +133,7 @@ const NavbarComponent = () => {
                         to="/login"
                         element={<LoginPage />} // You need to replace with your actual Login page component
                     >
-                        <Icon.BoxArrowInRight className="navbar-card-btn"/>
+                        <Icon.BoxArrowInRight className="navbar-card-btn" />
                     </Link>
                 )}
             </div>

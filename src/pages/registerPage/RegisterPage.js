@@ -6,6 +6,9 @@ import "./RegisterPage.css";
 import authService from "../../services/auth.service";
 import { HashLoader } from "react-spinners";
 import { toast } from "react-toastify";
+import companyService from "../../services/company.service";
+import userService from "../../services/user.service";
+import managerService from "../../services/manager.service";
 
 const RegisterPage = () => {
     const [companyName, setCompanyName] = useState("");
@@ -41,8 +44,6 @@ const RegisterPage = () => {
         event.preventDefault();
 
         const userData = {
-            companyId: 2,
-            companyName: companyName,
             firstName: firstName,
             lastName: lastName,
             email: email,
@@ -50,16 +51,53 @@ const RegisterPage = () => {
             role: "MANAGER"
         }
 
+        const companyData = {
+            name: companyName,
+            isActive: false,
+            joinedDate: Date.now()
+        }
+
         setIsLoading(true);
         authService.signup(userData)
-            .then((data) => {
-                setIsLoading(false);
-                navigate("/");
-                toast.info("Registered")
-                console.log("Registered");
+            .then(resUserData => {
+                const userDataForUpdate1 = {
+                    id: resUserData.id,
+                    firstName: resUserData.firstName,
+                    lastName: resUserData.lastName,
+                    email: resUserData.email,
+                    role: resUserData.role
+                }
+                companyService.createCompany(companyData)
+                    .then(resCompnayData => {
+                        userService.addCompanyToUser(userDataForUpdate1, resCompnayData.id)
+                            .then(res => {
+                                if (res.id) {
+                                    console.log(res);
+                                    setIsLoading(false);
+                                    navigate("/blockedAccount");
+                                    toast.info("Registered");
+                                    setCompanyName("");
+                                } else {
+                                    setIsLoading(false);
+                                    console.log("errr");
+                                }
+
+                            })
+                            .catch(err => {
+                                setIsLoading(false);
+                                toast.error("Error while registration!");
+                                companyService.deleteCompany(resCompnayData.id);
+                                managerService.deleteEmployee(resUserData.id);
+                            })
+                    })
+                    .catch((error) => {
+                        toast.error("Error while registration!")
+                        setIsLoading(false);
+                        console.error("Error during registration:", error);
+                        managerService.deleteEmployee(resUserData.id);
+                    });
                 setFirstName("");
                 setLastName("");
-                setCompanyName("");
                 setEmail("");
                 setPassword("");
             })
@@ -68,7 +106,6 @@ const RegisterPage = () => {
                 setIsLoading(false);
                 console.error("Error during registration:", error);
             });
-        console.log(userData);
     };
 
     const spinnerContainerCss = {

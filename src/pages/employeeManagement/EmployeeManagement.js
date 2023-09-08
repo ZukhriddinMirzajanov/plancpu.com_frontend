@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Container, Form, Button, Pagination } from "react-bootstrap";
+import { Container, Form, Button, Pagination, Modal } from "react-bootstrap";
 import EditEmployeePopup from "./EditEmployeePopUp";
 import "./EmployeeManagement.css";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import userService from "../../services/user.service";
 import managerService from "../../services/manager.service";
-// import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 import { HashLoader } from "react-spinners";
@@ -14,29 +13,48 @@ function EmployeeManagement() {
 
     const [firstName, setFirstname] = useState("");
     const [lastName, setLastname] = useState("");
+    const [role, setRole] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [company, setCompany] = useState("");
     const [employees, setEmployees] = useState([]);
     const [showEditPopup, setShowEditPopup] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedEmployeeIndex, setSelectedEmployeeIndex] = useState(-1);
     const [currentPage, setCurrentPage] = useState(1);
     const employeesPerPage = 10;
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
     const [isLoading, setIsLoading] = useState(false);
+    const [indexForDel, setIndexForDel] = useState("");
 
     function fetchUsersByCompanyId() {
         setIsLoading(true);
-        managerService.getUsersByCompanyId(userFromLocal.companyId)
-            .then((res) => {
-                setIsLoading(false);
-                if (res) {
-                    setEmployees(res);
+        userService.getUserById(userFromLocal.id)
+            .then(resUser => {
+                if (resUser !== null) {
+                    setCompany(resUser.company);
+                    managerService.getUsersByCompanyId(resUser.company.id)
+                        .then(resUsers => {
+                            if (resUsers != null) {
+                                setIsLoading(false);
+                                let dataForEmp = [];
+                                if (resUsers.length > 0) {
+                                    resUsers.map(user => {
+                                        if (user.id !== userFromLocal.id) {
+                                            dataForEmp.push(user);
+                                        }
+                                        return resUser;
+                                    })
+                                    setEmployees(dataForEmp);
+                                } else {
+                                    setEmployees([])
+                                }
+
+                            };
+                        })
+                } else {
+                    setIsLoading(false);
                 }
-            })
-            .catch((err) => {
-                setIsLoading(false);
-                console.log(err);
-                toast.error("Error while fetching employees!")
             })
     }
 
@@ -44,40 +62,43 @@ function EmployeeManagement() {
         window.scrollTo(0, 0)
     }, [])
 
-    useEffect(fetchUsersByCompanyId, [userFromLocal.companyId]);
+    useEffect(fetchUsersByCompanyId, [userFromLocal.id]);
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
 
         const newEmployee = {
-            companyId: userFromLocal.companyId,
-            companyName: userFromLocal.companyName,
             firstName: firstName,
             lastName: lastName,
+            role: role,
             email: email,
             password: password,
-            role: "USER",
         };
 
-        // Add the new employee to the employees array
-        setEmployees([...employees, newEmployee]);
-
+        setIsLoading(true);
         managerService.addEmployee(newEmployee)
             .then((res) => {
-                console.log(res);
+                userService.addCompanyToUser(res, company.id)
+                    .then(res => {
+                        if (res !== null) {
+                            setIsLoading(false);
+                            toast.info("Employee added");
+                            setEmployees([...employees, newEmployee]);
+                            setFirstname("");
+                            setLastname("");
+                            setEmail("");
+                            setPassword("");
+                            setRole("");
+                            fetchUsersByCompanyId();
+                        } else {
+                            setIsLoading(false);
+                            toast.error("Error happened while deleting");
+                        }
+                    })
             })
             .catch((err) => {
                 console.log(err);
             })
-
-        // Clear input fields for the next employee entry
-        setFirstname("");
-        setLastname("");
-        setEmail("");
-        setPassword("");
-
-        // Update employees in local storage with the modified array
-        localStorage.setItem("employees", JSON.stringify([...employees, newEmployee]));
     };
 
     const handleEditEmployee = (index) => {
@@ -91,29 +112,36 @@ function EmployeeManagement() {
         setEmployees(updatedEmployees);
         setShowEditPopup(false);
 
-        // Update employees in local storage with the modified array
+        setIsLoading(true)
         userService.updateUser(editedEmployee.id, editedEmployee)
             .then((res) => {
-                console.log("Updated");
+                if (res !== null) {
+                    setIsLoading(false);
+                    toast.info("Updated");
+                } else {
+                    setIsLoading(false);
+                    toast.error("Error happened while deleting");
+                }
             })
             .catch((err) => {
-                console.log(err);
+                toast.error("Error happened while deleting");
             })
     };
 
-    const handleDeleteEmployee = (index) => {
+    const handleDeleteEmployee = () => {
         // Create a copy of the employees array
-        const updatedEmployees = [...employees];
-        const deletedEmployee = updatedEmployees[index];
-        updatedEmployees.splice(index, 1);
+        const updatedEmployeesForDel = [...employees];
 
-        // Update the employees state with the modified array
-        setEmployees(updatedEmployees);
+        const deletedEmployee = updatedEmployeesForDel[Number(indexForDel)];
 
-        // Update employees in local storage with the modified array
+        updatedEmployeesForDel.splice(Number(indexForDel), 1);
+
         managerService.deleteEmployee(deletedEmployee.id)
             .then((res) => {
+                setEmployees(updatedEmployeesForDel);
                 console.log("deleted")
+                setShowDeleteModal(false);
+                setIndexForDel("");
             })
             .catch((err) => {
                 console.log(err);
@@ -122,15 +150,25 @@ function EmployeeManagement() {
 
     const handleClosePopup = () => {
         setSelectedEmployeeIndex(-1);
-        setShowEditPopup(false);
+        setShowEditPopup(true);
     };
+
+    const showMadalForDel = (index) => {
+        setIndexForDel(index);
+        console.log(index);
+        setShowDeleteModal(true);
+    }
+    const closeModalForDel = () => {
+        setShowDeleteModal(false);
+        setIndexForDel("");
+    }
 
     // Calculate the index of the last employee to display on the current page
     const indexOfLastEmployee = currentPage * employeesPerPage;
     // Calculate the index of the first employee to display on the current page
     const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
     // Get the employees to display on the current page
-    const employeesToDisplay = employees.slice(indexOfFirstEmployee, indexOfLastEmployee);
+    let employeesToDisplay = employees.length > 0 ? employees.slice(indexOfFirstEmployee, indexOfLastEmployee) : [];
 
     const handlePaginationClick = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -188,6 +226,19 @@ function EmployeeManagement() {
                                     required
                                 />
                             </Form.Group>
+                            <Form.Group controlId="employeeRole">
+                                <Form.Label>Employee role:</Form.Label>
+                                <Form.Select aria-label="Default select example"
+                                    value={role}
+                                    onChange={e => {
+                                        setRole(e.target.value);
+                                    }}
+                                >
+                                    <option>Select</option>
+                                    <option value="USER">Simple user</option>
+                                    <option value="TEAM_LEAD">Team lead</option>
+                                </Form.Select>
+                            </Form.Group>
                             <Form.Group controlId="email">
                                 <Form.Label>Email:</Form.Label>
                                 <Form.Control
@@ -234,7 +285,7 @@ function EmployeeManagement() {
                                     </Button>
                                     <Button
                                         variant="outline-danger"
-                                        onClick={() => handleDeleteEmployee(index)}
+                                        onClick={() => showMadalForDel(index)}
                                     >
                                         Delete
                                     </Button>
@@ -261,12 +312,22 @@ function EmployeeManagement() {
 
                 {showEditPopup && selectedEmployeeIndex !== -1 && (
                     <EditEmployeePopup
-                        key={userFromLocal.id}
+                        key={employees[selectedEmployeeIndex].id}
                         employee={employees[selectedEmployeeIndex]}
                         onClose={handleClosePopup}
                         onSave={handleSaveEditedEmployee}
                     />
                 )}
+
+                <Modal show={showDeleteModal}>
+                    <Modal.Body>
+                        <Modal.Title>Delete Employee?</Modal.Title>
+                        <Modal.Body className="showDelModalBody">
+                            <Button variant="outline-success" onClick={() => closeModalForDel()}>Cancel</Button>
+                            <Button style={{ marginLeft: "10px" }} variant="outline-danger" onClick={() => handleDeleteEmployee()}>Yes</Button>
+                        </Modal.Body>
+                    </Modal.Body>
+                </Modal>
             </Container>
         </>
     );

@@ -22,8 +22,11 @@ const addEmployee = (userData) => {
     return axios
         .post(ADD_EMPLOYEE_URL, userData)
         .then((response) => {
-            console.log("Employee added");
-            return response;
+            if (response.data) {
+                return response.data;
+            } else {
+                return null;
+            }
         })
         .catch((error) => {
             console.error("Error during signup:", error);
@@ -33,10 +36,13 @@ const addEmployee = (userData) => {
 
 const deleteEmployee = (id) => {
     return axios
-        .delete(API_BASE_URL + "/users/delete/" + id, {headers:authHeader()})
+        .delete(API_BASE_URL + "/users/delete/" + id, { headers: authHeader() })
         .then((res) => {
-            console.log("deleted");
-            return res;
+            if (res.data) {
+                return res.data;
+            } else {
+                return null;
+            }
         })
         .catch((err) => {
             console.log(err);

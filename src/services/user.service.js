@@ -14,6 +14,21 @@ const getUserById = (id) => {
             return error;
         })
 };
+const addCompanyToUser = (userData, companyId) => {
+    return axios
+        .put(API_BASE_URL + "/" + userData.id + "/company/" + companyId, userData, { headers: authHeader() })
+        .then(res => {
+            if (res.data) {
+                return res.data;
+            } else {
+                return null;
+            }
+        })
+        .catch((error) => {
+            console.log({headers: authHeader()});
+            return error;
+        })
+}
 const updateUser = (id, updatedUser) => {
     return axios
         .put(API_BASE_URL + "/update/" + id, updatedUser, { headers: authHeader() })
@@ -27,7 +42,7 @@ const updateUser = (id, updatedUser) => {
                 firstName: updatedUser.firstName,
                 lastName: updatedUser.lastName,
                 email: updatedUser.email,
-                role:user.role
+                role: user.role
             }
             localStorage.setItem("user", JSON.stringify(userDataToLocal));
             console.log("success")
@@ -41,7 +56,8 @@ const updateUser = (id, updatedUser) => {
 
 const userService = {
     getUserById,
-    updateUser
+    updateUser,
+    addCompanyToUser
 };
 
 export default userService;
