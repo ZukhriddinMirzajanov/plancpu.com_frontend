@@ -3,7 +3,7 @@ import "./CompanyManagment.css";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import { Button, Form, FormControl, ToastContainer } from "react-bootstrap";
 import { CircleFill } from "react-bootstrap-icons";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import companyService from "../../services/company.service";
 import { HashLoader } from "react-spinners";
 import { toast } from "react-toastify";
@@ -12,7 +12,7 @@ import userService from "../../services/user.service";
 const CompanyManagment = () => {
     // const tasksPerPage = 10;
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [companies, setCompanies] = useState([]);
     const [searchCompany, setSearchCompany] = useState("");
@@ -23,6 +23,9 @@ const CompanyManagment = () => {
         userService.getUserById(userFromLocal.id)
             .then(resUser => {
                 if (resUser !== null) {
+                    if (resUser.status === 403) {
+                        navigate("/login");
+                    }
                     companyService.getAllCompany(resUser.company.id)
                         .then(resCompany => {
                             if (resCompany.length > 0) {
@@ -32,11 +35,12 @@ const CompanyManagment = () => {
                         })
                 } else {
                     setIsLoading(false);
+                    toast.error("Error while getting user");
                 }
             })
     }
 
-    useEffect(fetchAllData, [userFromLocal.id]);
+    useEffect(fetchAllData, [userFromLocal.id, navigate]);
 
     const handleSearchInputChange = (event) => {
         setSearchCompany(event.target.value);

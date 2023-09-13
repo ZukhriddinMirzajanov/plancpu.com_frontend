@@ -35,14 +35,14 @@ const ProfileModal = ({ closeModal }) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         const userData = {
-            companyId: user.companyId,
-            companyName: user.companyName,
+            id: user.id,
             firstName: firstName,
             lastName: lastName,
             email: email,
-            role: user.role
+            role: user.role,
+            company: user.company,
+            companyProjects: user.companyProjects
         }
-        console.log(userData);
         userService.updateUser(user.id, userData)
             .then((response) => {
                 console.log("ok");

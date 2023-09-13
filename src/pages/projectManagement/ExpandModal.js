@@ -5,7 +5,7 @@ function ExpandModal({ show, onHide, project }) {
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>
-        <Modal.Title> <b>Title:</b> {project.title}</Modal.Title>
+        <Modal.Title> <b>Name:</b> {project.name}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <p><b>Project Id:</b> {project.id}</p>

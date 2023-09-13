@@ -63,6 +63,21 @@ const updateCompanyProject = (id, updatedProjectCompany) => {
             return error;
         });
 };
+
+const addCompanyToCompanyProject = (companyProjectId, companyId, companyProject) => {
+    return axios
+        .put(API_BASE_URL + "/" + companyProjectId + "/company/" + companyId, companyProject, {headers: authHeader()})
+        .then((res) => {
+            if (res.data) {
+                return res.data;
+            } else {
+                return null;
+            }
+        })
+        .catch(error => {
+            return error;
+        });
+}
 const deleteCompanyProject = (id) => {
     return axios
         .delete(API_BASE_URL + "/delete/" + id, { headers: authHeader() })
@@ -83,6 +98,7 @@ const companyProjectService = {
     getCompanyProjectById,
     createCompanyProject,
     updateCompanyProject,
+    addCompanyToCompanyProject,
     deleteCompanyProject
 };
 

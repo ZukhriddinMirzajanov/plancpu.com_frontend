@@ -5,32 +5,32 @@ import ProfileModal from "./ProfileModal";
 import { Button } from "react-bootstrap";
 import { HashLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
+import userService from "../../services/user.service";
 
 const Profile = () => {
     const [showModal, setShowModal] = useState(false);
-    const [companyName, setCompanyName] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [role, setRole] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [user, setUser] = useState({});
     const navigate = useNavigate();
 
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
 
     function fetchUser() {
         setIsLoading(true);
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (user) {
-            setAll(user);
-            setIsLoading(false);
-        } else {
-            navigate("/login");
-        }
+        userService.getUserById(userFromLocal.id)
+            .then(user => {
+                if (user !== null) {
+                    if (user.status === 403) {
+                        navigate("/login");
+                    }
+                    setUser(user);
+                    setIsLoading(false);
+                }
+            })
 
     }
 
-    useEffect(fetchUser, [userFromLocal, navigate]);
+    useEffect(fetchUser, [userFromLocal.id, navigate]);
 
     const openModal = () => {
         setShowModal(true);
@@ -39,14 +39,6 @@ const Profile = () => {
     const closeModal = () => {
         setShowModal(false);
     };
-
-    const setAll = (user) => {
-        setCompanyName(user.companyName);
-        setFirstName(user.firstName);
-        setLastName(user.lastName);
-        setEmail(user.email);
-        setRole(user.role);
-    }
     const spinnerContainerCss = {
         position: "fixed",
         top: "0",
@@ -72,26 +64,21 @@ const Profile = () => {
             <div className="profile">
                 <div className="profile-box">
                     <h2 className="text-center mb-3">Your Profile</h2>
-                    <img
-                        src="https://c4.wallpaperflare.com/wallpaper/912/429/111/technology-anonymous-hacker-hd-wallpaper-preview.jpg"
-                        alt="profile"
-                        className="profiile-image"
-                    />
                     <div className="profile-body">
                         <p>
-                            <b>First Name:</b> <span>{firstName}</span>
+                            <b>First Name:</b> <span>{user.firstName}</span>
                         </p>
                         <p>
-                            <b>Last Name:</b> <span>{lastName}</span>
+                            <b>Last Name:</b> <span>{user.lastName}</span>
                         </p>
                         <p>
-                            <b>Company Name:</b> <span>{companyName}</span>
+                            {/* <b>Company Name:</b> <span>{user.company.name}</span> */}
                         </p>
                         <p>
-                            <b>Email:</b> <span>{email}</span>
+                            <b>Email:</b> <span>{user.email}</span>
                         </p>
                         <p>
-                            <b>Role:</b> <span>{role}</span>
+                            <b>Role:</b> <span>{user.role}</span>
                         </p>
                     </div>
                     <Button variant="outline-primary" onClick={openModal}>Edit Profile</Button>

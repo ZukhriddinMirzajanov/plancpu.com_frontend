@@ -1,373 +1,417 @@
 import React, { useState, useEffect } from "react";
 import {
-  Button,
-  Container,
-  Form,
-  Col,
-  Modal,
-  Row,
-  ListGroup,
+    Button,
+    Container,
+    Form,
+    Col,
+    Modal,
+    Row,
+    ListGroup
 } from "react-bootstrap";
-import axios from "axios";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import "./ProjectManagment.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ProjectEditeModal from "./ProjectEditeModal";
 import ExpandModal from "./ExpandModal";
 import ProjectUsersModal from "./ProjectUsersModal";
+import companyProjectService from "../../services/company-project.service";
+import userService from "../../services/user.service";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import { HashLoader } from "react-spinners";
+import managerService from "../../services/manager.service";
 
 function ProjectManagement() {
-  const [projects, setProjects] = useState([]);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [editProject, setEditProject] = useState({});
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [showExpandModal, setShowExpandModal] = useState(false);
-  const [searchProject, setSearchProject] = useState("");
-  const [showAddModal, setShowAddModal] = useState(false);
+    const [projects, setProjects] = useState([]);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editProject, setEditProject] = useState({});
+    const [indexEdit, setIndexEdit] = useState("");
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [createdDate, setCreatedDate] = useState("");
+    const [finishedDate, setFinishedDate] = useState("");
+    const [showExpandModal, setShowExpandModal] = useState(false);
+    const [searchProject, setSearchProject] = useState("");
+    const [showAddModal, setShowAddModal] = useState(false);
 
-  const [selectedProjectId, setSelectedProjectId] = useState(null);
-  const [showUserModal, setShowUserModal] = useState(false);
+    const [showUserModal, setShowUserModal] = useState(false);
+    const userFromLocal = JSON.parse(localStorage.getItem("user"));
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
+    const [userList, setUserList] = useState([]);
+    const [company, setCompany] = useState("");
+    const [selectedProject, setSelectedProject] = useState("");
+    const [indexForDel, setIndexForDel] = useState("");
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  useEffect(() => {
-    fetchProjects();
-  }, []);
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [])
 
-  const handleSearch = (event) => {
-    setSearchProject(event.target.value);
-  };
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                setIsLoading(true);
 
-  const handleExpandModalShow = (project) => {
-    setEditProject(project);
-    setShowExpandModal(true);
-  };
+                const resUser = await userService.getUserById(userFromLocal.id);
 
-  const handleExpandModalClose = () => {
-    setShowExpandModal(false);
-    setEditProject({});
-  };
+                if (resUser.status === 403) {
+                    navigate("/login");
+                    return;
+                }
 
-  const fetchProjects = () => {
-    axios
-      .get("http://localhost:3001/projects")
-      .then((response) => {
-        setProjects(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching projects:", error);
-      });
-  };
+                if (resUser !== null) {
 
-  const handleAddProject = () => {
-    if (!title || !description || !startDate || !endDate) {
-      alert("Please fill in all fields");
-      return;
-    }
+                    if (resUser.company !== undefined) {
+                        setCompany(resUser.company);
+                        const resPC = await companyProjectService.getAllCompanyProjectsByCompanyId(resUser.company.id);
 
-    const newProject = {
-      title,
-      description,
-      startDate,
-      endDate,
+                        if (resPC !== null) {
+                            setProjects(resPC);
+                        } else {
+                            toast.error("Error while getting Company projects");
+                        }
+
+                        const resUsers = await managerService.getUsersByCompanyId(resUser.company.id);
+
+                        if (resUsers !== null) {
+                            setUserList(resUsers);
+                        } else {
+                            toast.error("Error while getting Employees")
+                        }
+                    }
+                }
+
+                setIsLoading(false);
+            } catch (error) {
+                console.error("An error occurred:", error);
+                setIsLoading(false);
+            }
+        }
+
+        fetchData();
+    }, [userFromLocal.id, navigate]);
+
+    const handleSearch = (event) => {
+        setSearchProject(event.target.value);
     };
 
-    axios
-      .post("http://localhost:3001/projects", newProject)
-      .then((response) => {
-        fetchProjects();
-        clearForm();
-        setShowAddModal(false); // Close the add project modal
-      })
-      .catch((error) => {
-        console.error("Error adding project:", error);
-      });
-  };
+    const handleExpandModalShow = (project) => {
+        setEditProject(project);
+        setShowExpandModal(true);
+    };
 
-  const handleShowAddModal = () => {
-    setShowAddModal(true);
-  };
+    const handleExpandModalClose = () => {
+        setShowExpandModal(false);
+        setEditProject({});
+    };
 
-  const handleCloseAddModal = () => {
-    setShowAddModal(false);
-  };
+    const handleAddProject = () => {
 
-  const handleEditModalShow = (project) => {
-    setEditProject(project);
-    setShowEditModal(true);
-  };
+        const newComProject = {
+            name: name,
+            description: description,
+            createdDate: createdDate,
+            finishedDate: finishedDate
+        };
 
-  const handleEditModalClose = () => {
-    setShowEditModal(false);
-    setEditProject({});
-  };
+        setIsLoading(true);
+        companyProjectService.createCompanyProject(newComProject)
+            .then(resCP => {
+                if (resCP !== null) {
+                    companyProjectService.addCompanyToCompanyProject(resCP.id, company.id, resCP)
+                        .then(res => {
+                            if (res !== null) {
+                                setIsLoading(false);
+                                toast.info("Created");
+                                setProjects([...projects, res]);
+                                setName("");
+                                setDescription("");
+                                setCreatedDate("");
+                                setFinishedDate("");
+                                setShowAddModal(false);
+                            } else {
+                                setIsLoading(false)
+                                toast.error("Error happened while creating!")
+                                companyProjectService.deleteCompanyProject(resCP.id)
+                            }
+                        })
 
-  const handleEditProject = (
-    updatedTitle,
-    updatedDescription,
-    updatedStartDate,
-    updatedEndDate
-  ) => {
-    handleUpdateProject(
-      editProject.id,
-      updatedTitle,
-      updatedDescription,
-      updatedStartDate,
-      updatedEndDate
-    );
-    handleEditModalClose();
-  };
+                } else {
+                    setIsLoading(false)
+                    toast.error("Error happened while creating!")
+                }
+            })
 
-  const handleUpdateProject = (
-    projectId,
-    updatedTitle,
-    updatedDescription,
-    updatedStartDate,
-    updatedEndDate
-  ) => {
-    const updatedProjects = projects.map((project) =>
-      project.id === projectId
-        ? {
-            ...project,
-            title: updatedTitle,
-            description: updatedDescription,
-            startDate: updatedStartDate,
-            endDate: updatedEndDate,
-          }
-        : project
-    );
+    };
 
-    setProjects(updatedProjects);
+    const handleShowAddModal = () => {
+        setShowAddModal(true);
+    };
 
-    axios
-      .put(`http://localhost:3001/projects/${projectId}`, {
-        title: updatedTitle,
-        description: updatedDescription,
-        startDate: updatedStartDate,
-        endDate: updatedEndDate,
-      })
-      .catch((error) => {
-        console.error("Error updating project:", error);
-      });
-  };
+    const handleCloseAddModal = () => {
+        setShowAddModal(false);
+    };
 
-  const handleDeleteProject = (projectId) => {
-    const updatedProjects = projects.filter(
-      (project) => project.id !== projectId
-    );
-    setProjects(updatedProjects);
+    const handleEditModalShow = (project, index) => {
+        setEditProject(project);
+        setIndexEdit(index)
+        setShowEditModal(true);
+    };
 
-    axios
-      .delete(`http://localhost:3001/projects/${projectId}`)
-      .catch((error) => {
-        console.error("Error deleting project:", error);
-      });
-  };
+    const handleEditModalClose = () => {
+        setShowEditModal(false);
+        setEditProject({});
+    };
 
-  const clearForm = () => {
-    setTitle("");
-    setDescription("");
-    setStartDate("");
-    setEndDate("");
-  };
+    const handleEditProject = (editedProject) => {
+        setIsLoading(true);
+        let updatedProjects = projects;
+        updatedProjects[indexEdit] = editedProject;
 
-  let projectList = [
-    {
-      id: 1,
-      title: "suhgjmjgrob",
-      description: "as  sfsr f   fsrgfrs grsg rsgasa",
-    },
-    { id: 2, title: "suhfhgrob", description: "asasa" },
-    { id: 3, title: "sufsfhrob", description: "asasa" },
-    { id: 4, title: "ssuhrob", description: "asasa" },
-    { id: 5, title: "sudfsfshrob", description: "asasa" },
-  ];
+        companyProjectService.updateCompanyProject(editedProject.id, editedProject)
+            .then(res => {
+                if (res !== null) {
+                    setProjects(updatedProjects);
+                    setIsLoading(false);
+                    toast.info("Project updated");
 
-  let userList = [
-    { id: 1, name: "surgrehrob" },
-    { id: 2, name: "surgrhrob" },
-    { id: 3, name: "sfrgfsuhrob" },
-    { id: 5, name: "suhrob" },
-    { id: 6, name: "sufsrghrob" },
-    { id: 7, name: "susdfsshrob" },
-  ];
+                } else {
+                    toast.error("Error while updating");
+                    setIsLoading(false);
+                }
+            })
+        handleEditModalClose();
+    };
 
-  const handleAssignUser = (projectId, userId) => {
-    // Here you can make an API call to assign the user to the project
-    // using the project ID and user ID.
-    // Then update the state or refetch the data accordingly.
-    console.log(`Assigning user ${userId} to project ${projectId}`);
-  };
+    const assignUserToComPro = (updatedUser) => {
+        userList.map((user, index) => {
+            if (user.id === updatedUser.id) {
+                let updatedUserList = userList;
+                updatedUserList[index] = updatedUser;
+                setUserList(updatedUserList);
+            }
+            return user;
+        })
+    }
 
-  const handleAddUserClick = (projectId) => {
-    setSelectedProjectId(projectId);
-    setShowUserModal(true);
-  };
+    const hideUserModal = () => {
+        setShowUserModal(false);
+        setSelectedProject("");
+    } 
 
-  return (
-    <>
-      <NavbarComponent />
-      <Container fluid className="project-container">
-        <div className="search__add-project-box">
-          <Form.Group controlId="search">
-            <Form.Control
-              type="text"
-              placeholder="Search by title"
-              value={searchProject}
-              onChange={handleSearch}
-            />
-          </Form.Group>
-          <Button variant="outline-primary" onClick={handleShowAddModal}>
-            Add new project
-          </Button>
-        </div>
+    const showMadalForDel = (index) => {
+        setIndexForDel(index);
+        setShowDeleteModal(true);
+    }
+    const closeModalForDel = () => {
+        setShowDeleteModal(false);
+        setIndexForDel("");
+    }
 
-        <Modal show={showAddModal} onHide={handleCloseAddModal}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add New Project</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group controlId="title">
-                <Form.Label>Title</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-              </Form.Group>
-              <Form.Group controlId="description">
-                <Form.Label>Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </Form.Group>
-              <Row>
-                <Col>
-                  <Form.Group controlId="startDate">
-                    <Form.Label>From</Form.Label>
-                    <Form.Control
-                      type="date"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                    />
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group controlId="endDate">
-                    <Form.Label>To</Form.Label>
-                    <Form.Control
-                      type="date"
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="outline-secondary" onClick={handleCloseAddModal}>
-              Cancel
-            </Button>
-            <Button variant="outline-primary" onClick={handleAddProject}>
-              Add Project
-            </Button>
-          </Modal.Footer>
-        </Modal>
+    const handleDeleteProject = () => {
+        const updatedProjects = projects;
+        const deletedProject = projects[indexForDel];
+        updatedProjects.splice(indexForDel, 1);
 
-        <h2 className="text-center mt-5">All Projects:</h2>
-        <ListGroup>
-          {projectList
-            .filter(
-              (project) =>
-                project.title &&
-                typeof project.title === "string" &&
-                project.title
-                  .toLowerCase()
-                  .includes(searchProject.toLowerCase())
-            )
-            .map((project) => (
-              <ListGroup.Item className="project-list" key={project.id}>
-                <div className="project-box">
-                  <div className="project-left">
-                    <h5>Title: {project.title}</h5>
-                    <h6 className="description-h6">
-                      <span
-                        className="truncate-text"
-                        title={project.description}
-                      >
-                        <b> Description:</b>{" "}
-                        {project.description.length > 20
-                          ? project.description.slice(0, 20) + "...  "
-                          : project.description}
-                      </span>
-                      {project.description.length > 20 && (
-                        <Button
-                          className="description-btn"
-                          size="sm"
-                          onClick={() => handleExpandModalShow(project)}
-                        >
-                          <i>full description</i>
-                        </Button>
-                      )}
-                    </h6>
-                  </div>
-                  <div className="project-right">
-                    <b>
-                      {project.startDate} <b>← to →</b> {project.endDate}
-                    </b>
-                    <Button
-                      variant="outline-success"
-                      onClick={() => handleEditModalShow(project)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="outline-warning"
-                      onClick={() => handleAddUserClick(project.id)}
-                    >
-                      Add User
-                    </Button>
+        setIsLoading(true);
+        companyProjectService.deleteCompanyProject(deletedProject.id)
+            .then(res => {
+                if (res !== null) {
+                    setIsLoading(false);
+                    toast.info("Deleted");
+                    setProjects(updatedProjects);
+                    setShowDeleteModal(false);
+                } else {
+                    toast.error("Error while deleting Company Project");
+                    setIsLoading(false);
+                }
+            })
 
-                    <ProjectUsersModal
-                      show={showUserModal}
-                      onHide={() => setShowUserModal(false)}
-                      userList={userList}
-                      onAssignUser={(userId) =>
-                        handleAssignUser(selectedProjectId, userId)
-                      } // Pass both project and user ID
-                    />
-                    <Button
-                      variant="outline-danger"
-                      onClick={() => handleDeleteProject(project.id)}
-                    >
-                      Delete
-                    </Button>
-                  </div>
+
+    };
+
+    const handleAddUserClick = (project) => {
+        setSelectedProject(project);
+        setShowUserModal(true);
+    };
+
+    const spinnerContainerCss = {
+        position: "fixed",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        zIndex: "9999"
+    };
+
+    return (
+        <>
+            <NavbarComponent />
+            {isLoading && (
+                <div style={spinnerContainerCss}>
+                    <HashLoader loading={isLoading} color="#62bdea" size={50} />
                 </div>
-              </ListGroup.Item>
-            ))}
-        </ListGroup>
+            )}
+            <Container fluid className="project-container">
+                <ToastContainer position="top-center" />
+                <div className="search__add-project-box">
+                    <Form.Group controlId="search">
+                        <Form.Control
+                            type="text"
+                            placeholder="Search by title"
+                            value={searchProject}
+                            onChange={handleSearch}
+                        />
+                    </Form.Group>
+                    <Button variant="outline-primary" onClick={handleShowAddModal}>
+                        Add new project
+                    </Button>
+                </div>
 
-        <ProjectEditeModal
-          show={showEditModal}
-          onHide={handleEditModalClose}
-          onSave={handleEditProject}
-          project={editProject}
-        />
-        <ExpandModal
-          show={showExpandModal}
-          onHide={handleExpandModalClose}
-          project={editProject}
-        />
-      </Container>
-    </>
-  );
+                <Modal show={showAddModal} onHide={handleCloseAddModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Add New Project</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Group controlId="title">
+                                <Form.Label>Title</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    required
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="description">
+                                <Form.Label>Description</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    required
+                                />
+                            </Form.Group>
+                            <Row>
+                                <Col>
+                                    <Form.Group controlId="startDate">
+                                        <Form.Label>From</Form.Label>
+                                        <Form.Control
+                                            type="date"
+                                            value={createdDate}
+                                            onChange={(e) => setCreatedDate(e.target.value)}
+                                            required
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col>
+                                    <Form.Group controlId="endDate">
+                                        <Form.Label>To</Form.Label>
+                                        <Form.Control
+                                            type="date"
+                                            value={finishedDate}
+                                            onChange={(e) => setFinishedDate(e.target.value)}
+                                            required
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="outline-secondary" onClick={handleCloseAddModal}>
+                            Cancel
+                        </Button>
+                        <Button variant="outline-primary" onClick={handleAddProject}>
+                            Add Project
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <h2 className="text-center mt-5">All Projects:</h2>
+                <ListGroup>
+                    {projects
+                        .filter(
+                            (project) =>
+                                project.name &&
+                                typeof project.name === "string" &&
+                                project.name
+                                    .toLowerCase()
+                                    .includes(searchProject.toLowerCase())
+                        )
+                        .map((project, index) => (
+                            <ListGroup.Item className="project-list" key={project.id}>
+                                <div className="project-box">
+                                    <div className="project-left">
+                                        <h5>Name: {project.name}</h5>
+                                        <h6 className="description-h6" onClick={() => handleExpandModalShow(project)}>
+                                            See more...
+                                        </h6>
+                                    </div>
+                                    <div className="project-right">
+                                        <b>
+                                            Duration: {project.createdDate} - {project.finishedDate}
+                                        </b>
+                                        <Button
+                                            variant="outline-success"
+                                            onClick={() => handleEditModalShow(project, index)}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            variant="outline-warning"
+                                            onClick={() => handleAddUserClick(project)}
+                                        >
+                                            Add User
+                                        </Button>
+                                        <Button
+                                            variant="outline-danger"
+                                            onClick={() => showMadalForDel(index)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </div>
+                            </ListGroup.Item>
+                        ))}
+                </ListGroup>
+
+                <ProjectEditeModal
+                    show={showEditModal}
+                    onHide={handleEditModalClose}
+                    onSave={handleEditProject}
+                    project={editProject}
+                />
+                <ExpandModal
+                    show={showExpandModal}
+                    onHide={handleExpandModalClose}
+                    project={editProject}
+                />
+                <ProjectUsersModal
+                    show={showUserModal}
+                    onHide={hideUserModal}
+                    userList={userList}
+                    selectedProject={selectedProject}
+                    onAsiggn={assignUserToComPro}
+                />
+                <Modal show={showDeleteModal}>
+                    <Modal.Body>
+                        <Modal.Title>Do you want to Delete?</Modal.Title>
+                        <Modal.Body className="showDelModalBody">
+                            <Button variant="outline-success" onClick={() => closeModalForDel()}>No</Button>
+                            <Button style={{ marginLeft: "10px" }} variant="outline-danger" onClick={() => handleDeleteProject()}>Yes</Button>
+                        </Modal.Body>
+                    </Modal.Body>
+                </Modal>
+            </Container>
+        </>
+    );
 }
 
 export default ProjectManagement;

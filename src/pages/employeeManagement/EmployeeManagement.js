@@ -8,6 +8,7 @@ import managerService from "../../services/manager.service";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 import { HashLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
 
 function EmployeeManagement() {
 
@@ -26,43 +27,53 @@ function EmployeeManagement() {
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
     const [isLoading, setIsLoading] = useState(false);
     const [indexForDel, setIndexForDel] = useState("");
+    const navigate = useNavigate();
 
     function fetchUsersByCompanyId() {
         setIsLoading(true);
         userService.getUserById(userFromLocal.id)
             .then(resUser => {
                 if (resUser !== null) {
+                    if (resUser.status === 403) {
+                        navigate("/login");
+                    }
                     setCompany(resUser.company);
-                    managerService.getUsersByCompanyId(resUser.company.id)
-                        .then(resUsers => {
-                            if (resUsers != null) {
-                                setIsLoading(false);
-                                let dataForEmp = [];
-                                if (resUsers.length > 0) {
-                                    resUsers.map(user => {
-                                        if (user.id !== userFromLocal.id) {
-                                            dataForEmp.push(user);
-                                        }
-                                        return resUser;
-                                    })
-                                    setEmployees(dataForEmp);
-                                } else {
-                                    setEmployees([])
-                                }
+                    if (resUser.company !== undefined) {
+                        managerService.getUsersByCompanyId(resUser.company.id)
+                            .then(resUsers => {
+                                if (resUsers != null) {
+                                    setIsLoading(false);
+                                    let dataForEmp = [];
+                                    if (resUsers.length > 0) {
+                                        resUsers.map(user => {
+                                            if (user.id !== userFromLocal.id) {
+                                                dataForEmp.push(user);
+                                            }
+                                            return resUser;
+                                        })
+                                        setEmployees(dataForEmp);
+                                    } else {
+                                        setEmployees([])
+                                    }
 
-                            };
-                        })
+                                } else {
+                                    toast.error("Error while getting Employees");
+                                }
+                            })
+                    }
+
                 } else {
                     setIsLoading(false);
                 }
             })
+
     }
 
     useEffect(() => {
-        window.scrollTo(0, 0)
+        window.scrollTo(0, 0);
     }, [])
 
-    useEffect(fetchUsersByCompanyId, [userFromLocal.id]);
+    useEffect(fetchUsersByCompanyId, [userFromLocal.id, navigate]);
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
@@ -155,7 +166,6 @@ function EmployeeManagement() {
 
     const showMadalForDel = (index) => {
         setIndexForDel(index);
-        console.log(index);
         setShowDeleteModal(true);
     }
     const closeModalForDel = () => {
@@ -321,9 +331,9 @@ function EmployeeManagement() {
 
                 <Modal show={showDeleteModal}>
                     <Modal.Body>
-                        <Modal.Title>Delete Employee?</Modal.Title>
+                        <Modal.Title>Do you want to Delete?</Modal.Title>
                         <Modal.Body className="showDelModalBody">
-                            <Button variant="outline-success" onClick={() => closeModalForDel()}>Cancel</Button>
+                            <Button variant="outline-success" onClick={() => closeModalForDel()}>No</Button>
                             <Button style={{ marginLeft: "10px" }} variant="outline-danger" onClick={() => handleDeleteEmployee()}>Yes</Button>
                         </Modal.Body>
                     </Modal.Body>
