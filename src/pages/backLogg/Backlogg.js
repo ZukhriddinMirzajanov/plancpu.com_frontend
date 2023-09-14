@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import './Backlogg.css'
 import taskService from "../../services/task.service";
@@ -14,7 +14,7 @@ const Backlogg = () => {
     const [showDescriptionModal, setShowDescriptionModal] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const tasksPerPage = 10;
-    const userFromLocal = JSON.parse(localStorage.getItem("user"));
+    // const userFromLocal = JSON.parse(localStorage.getItem("user"));
     // const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
 

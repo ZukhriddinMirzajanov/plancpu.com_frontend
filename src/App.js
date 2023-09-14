@@ -15,27 +15,27 @@ import CompanyManagment from "./pages/companyManagment/CompanyManagment";
 import BlockedAccountPage from "./pages/blockedAccountPage/BlockedAccountPage";
 
 function App() {
-  return (
-    <>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/about" element={<AboutPage/>}/>
-        <Route element={<PrivateRoutes/>}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/backlog" element={<Backlogg />} />
-            <Route path="/userManagement" element={<UserManagement/>} />
-            <Route path="/employeeManagement" element={<EmployeeManagement/>} />
-            <Route path="/profile" element={<Profile/>} />
-            <Route path="/taskManagement" element={<TaskManagement/>} />
-            <Route path="/timeReport" element={<TimeRegistrationPage/>}/>
-            <Route path="/projectManagement" element={<ProjectManagement/>}/>
-            <Route path="/companyManagement" element={<CompanyManagment/>}/>
-            <Route path="/blockedAccount" element={<BlockedAccountPage/>}/>
-        </Route>
-      </Routes>
-    </>
-  );
+    return (
+        <>
+            <Routes>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route element={<PrivateRoutes />}>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/backlog" element={<Backlogg />} />
+                    <Route path="/userManagement" element={<UserManagement />} />
+                    <Route path="/employeeManagement" element={<EmployeeManagement />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/taskManagement" element={<TaskManagement />} />
+                    <Route path="/timeReport" element={<TimeRegistrationPage />} />
+                    <Route path="/projectManagement" element={<ProjectManagement />} />
+                    <Route path="/companyManagement" element={<CompanyManagment />} />
+                    <Route path="/blockedAccount" element={<BlockedAccountPage />} />
+                </Route>
+            </Routes>
+        </>
+    );
 }
 
 export default App;

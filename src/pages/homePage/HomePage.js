@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import "./HomePage.css";
 import PopUpWindow from "../../components/modal/PopUpWindow";
@@ -6,6 +6,8 @@ import taskService from "../../services/task.service";
 import { ToastContainer, toast } from "react-toastify";
 import * as Icon from "react-bootstrap-icons";
 import { HashLoader } from "react-spinners";
+import userService from "../../services/user.service";
+import { useNavigate } from "react-router-dom";
 // import authHeader from "../../services/auth-header";
 // import SockJS from 'sockjs-client';
 // import { Stomp } from "@stomp/stompjs";
@@ -18,6 +20,20 @@ const HomePage = () => {
     const [closedTasks, setClosedTasks] = useState([]);
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
     const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
+    
+    userService.getUserById(userFromLocal.id)
+        .then(res => {
+            if (res !== null) {
+                if (res.status === 403) {
+                    console.log(res.status);
+                    return navigate("/login");
+                }
+                if (!res.company.isActive) {
+                    return navigate("/blockedAccount");
+                }
+            }
+        })
 
     // function fetchAllTasks() {
     //     setIsLoading(true)

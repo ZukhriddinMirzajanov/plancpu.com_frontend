@@ -13,8 +13,8 @@ function BlockedAccountPage() {
         setIsLoading(true)
         userService.getUserById(userFromLocal.id)
             .then(res => {
+                setIsLoading(false);
                 if (res.status === 403) {
-                    setIsLoading(false);
                     navigate("/login");
                 }
                 if (res !== null) {
@@ -23,7 +23,6 @@ function BlockedAccountPage() {
                     }
 
                 } else {
-                    setIsLoading(false);
                     toast.error("Error while getting user");
                 }
             })
