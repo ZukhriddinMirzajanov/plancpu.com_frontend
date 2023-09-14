@@ -4,9 +4,9 @@ import authHeader from "./auth-header";
 // const API_BASE_URL_PROD = 'https://www.softlatency.com/api/tasks';
 const API_BASE_URL = 'http://localhost:5000/api/tasks';
 
-const getAllTasksByCompanyId = (companyId) => {
+const getAllTasksByCompanyProjectId = (companyProjectId) => {
     return axios
-        .get(API_BASE_URL + "/companyId/" + companyId, { headers: authHeader() })
+        .get(API_BASE_URL + "/companyProjectId/" + companyProjectId, { headers: authHeader() })
         .then((response) => {
             if (response.data) {
                 return response.data;
@@ -79,7 +79,7 @@ const deleteTask = (id) => {
 };
 
 const taskService = {
-    getAllTasksByCompanyId,
+    getAllTasksByCompanyProjectId,
     getTaskById,
     createTask,
     updateTask,

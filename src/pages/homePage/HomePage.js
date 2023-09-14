@@ -19,47 +19,47 @@ const HomePage = () => {
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
     const [isLoading, setIsLoading] = useState(false);
 
-    function fetchAllTasks() {
-        setIsLoading(true)
-        taskService.getAllTasksByCompanyId(userFromLocal.companyId)
-            .then(res => {
-                setIsLoading(false);
-                if (res.length > 0) {
-                    const tasks1 = [];
-                    const tasks2 = [];
-                    const tasks3 = [];
-                    const tasks4 = [];
-                    res.map(task => {
-                        if (task.statusOfTask === 1) {
-                            tasks1.push(task);
-                        }
-                        if (task.statusOfTask === 2) {
-                            tasks2.push(task);
-                        }
-                        if (task.statusOfTask === 3) {
-                            tasks3.push(task);
-                        }
-                        if (task.statusOfTask === 4) {
-                            tasks4.push(task);
-                        }
-                        return task;
-                    })
-                    setOpentasks(tasks1);
-                    setInProgressTasks(tasks2);
-                    setInReviewTasks(tasks3);
-                    setClosedTasks(tasks4);
-                } else {
-                    toast.info("No active tasks!",);
-                }
-            })
-            .catch(err => {
-                setIsLoading(false);
-                toast.error("Server error!",);
-                console.log(err);
-            })
-    }
+    // function fetchAllTasks() {
+    //     setIsLoading(true)
+    //     taskService.getAllTasksByCompanyId(userFromLocal.companyId)
+    //         .then(res => {
+    //             setIsLoading(false);
+    //             if (res.length > 0) {
+    //                 const tasks1 = [];
+    //                 const tasks2 = [];
+    //                 const tasks3 = [];
+    //                 const tasks4 = [];
+    //                 res.map(task => {
+    //                     if (task.statusOfTask === 1) {
+    //                         tasks1.push(task);
+    //                     }
+    //                     if (task.statusOfTask === 2) {
+    //                         tasks2.push(task);
+    //                     }
+    //                     if (task.statusOfTask === 3) {
+    //                         tasks3.push(task);
+    //                     }
+    //                     if (task.statusOfTask === 4) {
+    //                         tasks4.push(task);
+    //                     }
+    //                     return task;
+    //                 })
+    //                 setOpentasks(tasks1);
+    //                 setInProgressTasks(tasks2);
+    //                 setInReviewTasks(tasks3);
+    //                 setClosedTasks(tasks4);
+    //             } else {
+    //                 toast.info("No active tasks!",);
+    //             }
+    //         })
+    //         .catch(err => {
+    //             setIsLoading(false);
+    //             toast.error("Server error!",);
+    //             console.log(err);
+    //         })
+    // }
 
-    useEffect(fetchAllTasks, [userFromLocal.companyId]);
+    // useEffect(fetchAllTasks, [userFromLocal.companyId]);
 
     // useEffect(() => {
     //     try {

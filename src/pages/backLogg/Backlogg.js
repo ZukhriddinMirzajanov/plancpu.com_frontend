@@ -18,33 +18,33 @@ const Backlogg = () => {
     // const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
 
-    function fetchAllTasks() {
-        setIsLoading(true);
-        taskService.getAllTasksByCompanyId(userFromLocal.companyId)
-            .then(res => {
-                setIsLoading(false);
-                if (res.length > 0) {
-                    const tasks = [];
-                    res.map(task => {
-                        if (task.statusOfTask === 0) {
-                            return tasks.push(task);
-                        } else {
-                            return tasks;
-                        }
-                    })
-                    setTasks(tasks);
-                } else {
-                    toast.info("No tasks found!");
-                }
-            })
-            .catch(err => {
-                // navigate("/login");
-                setIsLoading(false);
-                toast.error("Error while getting Tasks!",);
-            })
-    }
-    // Load tasks from local storage on component mount
-    useEffect(fetchAllTasks, [userFromLocal.companyId]);
+    // function fetchAllTasks() {
+    //     setIsLoading(true);
+    //     taskService.getAllTasksByCompanyId(userFromLocal.companyId)
+    //         .then(res => {
+    //             setIsLoading(false);
+    //             if (res.length > 0) {
+    //                 const tasks = [];
+    //                 res.map(task => {
+    //                     if (task.statusOfTask === 0) {
+    //                         return tasks.push(task);
+    //                     } else {
+    //                         return tasks;
+    //                     }
+    //                 })
+    //                 setTasks(tasks);
+    //             } else {
+    //                 toast.info("No tasks found!");
+    //             }
+    //         })
+    //         .catch(err => {
+    //             // navigate("/login");
+    //             setIsLoading(false);
+    //             toast.error("Error while getting Tasks!",);
+    //         })
+    // }
+    // // Load tasks from local storage on component mount
+    // useEffect(fetchAllTasks, [userFromLocal.companyId]);
 
     const handleEditTask = (index) => {
         const taskToOpen = tasks[index];

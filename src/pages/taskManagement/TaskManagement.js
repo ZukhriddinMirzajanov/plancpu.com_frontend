@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import taskService from "../../services/task.service";
 import { useNavigate } from "react-router-dom";
 import { HashLoader } from "react-spinners";
+import userService from "../../services/user.service";
 
 
 function TaskManagment() {
@@ -25,42 +26,57 @@ function TaskManagment() {
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
+    // const [company, setCompany] = useState({});
 
     function fetchAllTasksData() {
         setIsLoading(true);
-        taskService.getAllTasksByCompanyId(userFromLocal.companyId)
-            .then(res => {
-                setIsLoading(false);
-                if (res.length > 0) {
-                    let data = [];
-                    res.map(task => {
-                        return data.push(task);
-                    });
-                    setTasks(data);
-                } else {
-                    toast.info("No tasks found!");
+        userService.getUserById(userFromLocal.id)
+            .then(resUser => {
+                if (resUser !== null) {
+                    if (resUser.status === 403) {
+                        navigate("/login");
+                    }
+                    // setCompany(resUser.company);
+                    if (resUser.company !== undefined) {
+                        taskService.getAllTasksByCompanyProjectId(resUser.company.id)
+                            .then(res => {
+                                setIsLoading(false);
+                                if (res !== null) {
+                                    if (res.length > 0) {
+                                        let data = [];
+                                        res.map(task => {
+                                            return data.push(task);
+                                        });
+                                        setTasks(data);
+                                    } else {
+                                        toast.info("No tasks found!");
+                                    }
+                                } else {
+                                    toast.error("Error while getting tasks");
+                                }
+
+                            })
+                            .catch(err => {
+                                toast.error("Error!");
+                                setIsLoading(false);
+                                console.log(err);
+                                // navigate("/login");
+                            })
+                    }
                 }
             })
-            .catch(err => {
-                toast.error("Error!");
-                setIsLoading(false);
-                console.log(err);
-                // navigate("/login");
-            })
     }
-    
+
     useEffect(() => {
         window.scrollTo(0, 0)
-      }, [])
+    }, [])
 
-    useEffect(fetchAllTasksData, [userFromLocal.companyId, userFromLocal.email, navigate]);
+    useEffect(fetchAllTasksData, [userFromLocal.id, navigate]);
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
 
         const newTask = {
-            companyId: userFromLocal.companyId,
-            companyName: userFromLocal.companyName,
             createdByEmail: userFromLocal.email,
             createdByName: userFromLocal.firstName + " " + userFromLocal.lastName,
             assignedBy: "Unassigned",
