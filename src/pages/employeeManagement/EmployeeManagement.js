@@ -38,9 +38,11 @@ function EmployeeManagement() {
                         navigate("/login");
                     }
                     setCompany(resUser.company);
+                    console.log(resUser.company);
                     if (resUser.company !== undefined) {
                         managerService.getUsersByCompanyId(resUser.company.id)
                             .then(resUsers => {
+                                console.log(resUsers);
                                 if (resUsers != null) {
                                     setIsLoading(false);
                                     let dataForEmp = [];
@@ -52,6 +54,7 @@ function EmployeeManagement() {
                                             return resUser;
                                         })
                                         setEmployees(dataForEmp);
+                                        console.log(dataForEmp);
                                     } else {
                                         setEmployees([])
                                     }

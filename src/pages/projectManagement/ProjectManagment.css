@@ -5,6 +5,8 @@
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  
+  
 }
 .project-list{
   margin: 10px 0;
@@ -38,3 +40,26 @@
   .modal-backdrop {
     background-color: rgba(0, 0, 0, 0.4); 
   }
+
+  /* for edite modal  */
+
+.scrollable-list {
+  max-height: 200px;
+  overflow-y: scroll;
+  border: 1px solid #ccc; 
+}
+
+
+/* pagination for projects */
+
+.pagination-projects{
+  display: flex;
+  justify-content: center;
+}
+
+/* search for projects -list */
+
+.search-projects {
+  max-width: 800px;
+ margin: 0 auto;
+}

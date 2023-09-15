@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const API_BASE_URL_PROD = 'https://www.softlatency.com/api/auth'; 
-const API_BASE_URL = 'http://localhost:5000/api/auth';
+const API_BASE_URL = 'https://www.softlatency.com/api/auth'; 
+// const API_BASE_URL = 'http://localhost:5000/api/auth';
 
 const signup = (userData) => {
     return axios
