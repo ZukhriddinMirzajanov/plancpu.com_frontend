@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./CompanyManagment.css";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
-import { Button, Form, FormControl, ToastContainer } from "react-bootstrap";
+import { Button, Form, FormControl, Modal, ToastContainer } from "react-bootstrap";
 import { CircleFill } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import companyService from "../../services/company.service";
@@ -16,6 +16,8 @@ const CompanyManagment = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [companies, setCompanies] = useState([]);
     const [searchCompany, setSearchCompany] = useState("");
+    const [indexForDel, setIndexForDel] = useState("");
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
 
     function fetchAllData() {
@@ -31,7 +33,9 @@ const CompanyManagment = () => {
                             if (resCompany.length > 0) {
                                 setIsLoading(false);
                                 setCompanies(resCompany);
-                            };
+                            } else {
+                                setIsLoading(false);
+                            }
                         })
                 } else {
                     setIsLoading(false);
@@ -50,19 +54,33 @@ const CompanyManagment = () => {
         company.name.toLowerCase().includes(searchCompany.toLowerCase())
     );
 
-    function deleteCompany(id) {
+    function deleteCompany() {
+        const updatedCompanies = [...companies];
+        const deletedCompany = companies[Number(indexForDel)];
+        updatedCompanies.splice(Number(indexForDel), 1)
         setIsLoading(true);
-        companyService.deleteCompany(id)
+        companyService.deleteCompany(deletedCompany.id)
             .then(res => {
-                if (res) {
+                if (res !== null) {
+                    setCompanies(updatedCompanies);
                     setIsLoading(false);
                     toast.info("Deleted");
+                    setShowDeleteModal(false);
                 } else {
                     setIsLoading(false);
                     toast.error("Error happened while deleting");
                 }
 
             })
+    }
+
+    const showMadalForDel = (index) => {
+        setIndexForDel(index);
+        setShowDeleteModal(true);
+    }
+    const closeModalForDel = () => {
+        setShowDeleteModal(false);
+        setIndexForDel("");
     }
 
     const toggleCompanyStatus = (company, index) => {
@@ -162,7 +180,7 @@ const CompanyManagment = () => {
                                 <Button
                                     variant="outline-danger"
                                     className="company-delete-btn"
-                                    onClick={() => deleteCompany(company.id, company.name)}
+                                    onClick={() => showMadalForDel(index)}
                                 >
                                     Delete
                                 </Button>
@@ -170,6 +188,15 @@ const CompanyManagment = () => {
                         </div>
                     ))}
                 </div>
+                <Modal show={showDeleteModal}>
+                    <Modal.Body>
+                        <Modal.Title>Do you want to Delete?</Modal.Title>
+                        <Modal.Body className="showDelModalBody">
+                            <Button variant="outline-success" onClick={() => closeModalForDel()}>No</Button>
+                            <Button style={{ marginLeft: "10px" }} variant="outline-danger" onClick={() => deleteCompany()}>Yes</Button>
+                        </Modal.Body>
+                    </Modal.Body>
+                </Modal>
             </div>
         </>
     );
