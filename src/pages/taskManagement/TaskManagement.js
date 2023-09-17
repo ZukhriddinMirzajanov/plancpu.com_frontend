@@ -60,7 +60,7 @@ function TaskManagment() {
     }, [userFromLocal.id, navigate]);
 
     function fetchAllTasksByCompanyProject() {
-        if (selectedProjectId) {
+        if (companyProjects.length && selectedProjectId) {
             setIsLoading(true);
             taskService
                 .getAllTasksByCompanyProjectId(selectedProjectId)
@@ -95,7 +95,7 @@ function TaskManagment() {
         window.scrollTo(0, 0);
     }, []);
 
-    useEffect(fetchAllTasksByCompanyProject, [selectedProjectId]);
+    useEffect(fetchAllTasksByCompanyProject, [selectedProjectId, companyProjects.length]);
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
@@ -109,32 +109,36 @@ function TaskManagment() {
         };
 
         // Calling the task service for adding the new task
-        setIsLoading(true);
-        taskService
-            .createTask(newTask)
-            .then((res) => {
-                setIsLoading(false);
-                if (res) {
-                    taskService.addCompanyProjectToTask(res, selectedProjectId)
-                        .then(res => {
-                            if (res !== null) {
-                                taskService.addUserCreatedToTask(res, user.id);
-                                // toast.info("Created:)");
-                                setTasks([...tasks, res]);
-                            }
-                        })
+        if (selectedProjectId) {
+            setIsLoading(true);
+            taskService
+                .createTask(newTask)
+                .then((resTask) => {
+                    setIsLoading(false);
+                    if (resTask) {
+                        taskService.addCompanyProjectToTask(resTask, selectedProjectId)
+                            .then(res => {
+                                if (res !== null) {
+                                    taskService.addUserCreatedToTask(res, user.id);
+                                    // toast.info("Created:)");
+                                    setTasks([...tasks, res]);
+                                }
+                            })
 
-                }
-            })
-            .catch((error) => {
-                setIsLoading(false);
-                toast.error("Error whiling creating a task:(");
-            });
+                    }
+                })
+                .catch((error) => {
+                    setIsLoading(false);
+                    toast.error("Error whiling creating a task:(");
+                });
 
-        // Clear input fields for the next task entry
-        setName("");
-        setHour("");
-        setDescription("");
+            // Clear input fields for the next task entry
+            setName("");
+            setHour("");
+            setDescription("");
+        } else {
+            toast.info("Please select a Company Project")
+        }
     };
 
     const handleEditTask = (index) => {

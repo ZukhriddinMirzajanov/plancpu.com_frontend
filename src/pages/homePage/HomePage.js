@@ -49,7 +49,11 @@ const HomePage = () => {
         if (selectedIndexFromLocal) {
             setSelectedIndex(selectedIndexFromLocal);
         }
-        if (userData.companyProjects !== undefined && userData.companyProjects.length > 0) {
+        if (userData.companyProjects && userData.companyProjects.length > 0) {
+            if (userData.companyProjects.length <= selectedIndex) {
+                localStorage.removeItem("plancpu.com.selectedIndexFromLocal");
+                selectedIndex(0)
+            }
             setIsLoading(true);
             taskService.getAllTasksByCompanyProjectId(userData.companyProjects[Number(selectedIndex)].id)
                 .then((res) => {
@@ -437,7 +441,7 @@ const HomePage = () => {
                             >
 
                                 <option>{selectedIndexFromLocal ? (
-                                    userData.companyProjects[selectedIndexFromLocal] ? userData.companyProjects[selectedIndexFromLocal].name : "") : (
+                                    userData.companyProjects[selectedIndexFromLocal] ? userData.companyProjects[selectedIndexFromLocal].name : "No project") : (
                                     userData.companyProjects.length > 0 ? userData.companyProjects[0].name : "No project")}</option>
                                 {userData.companyProjects.map((project, index) => (
                                     <option key={project.id} value={index}>
