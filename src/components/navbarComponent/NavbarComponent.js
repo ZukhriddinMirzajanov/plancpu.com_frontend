@@ -13,6 +13,7 @@ import * as Icon from "react-bootstrap-icons";
 import TimeRegistrationPage from "../../pages/timeRegistration/TimeRegistrationPage";
 import ProjectManagement from "../../pages/projectManagement/ProjectManagment";
 import CompanyManagment from "../../pages/companyManagment/CompanyManagment";
+import AnalyticsPage from "../../pages/analyticsPage/AnalyticsPage";
 
 const NavbarComponent = () => {
     const location = useLocation();
@@ -52,9 +53,9 @@ const NavbarComponent = () => {
                 {isLoggedIn && ( // Display links conditionally based on login status
                     <>
                         <Link
-                            className={`links ${location.pathname === "/s" ? "active" : ""}`}
-                            to="/x"
-                            element={<HomePage />}
+                            className={`links ${location.pathname === "/analytics" ? "active" : ""}`}
+                            to="/analytics"
+                            element={<AnalyticsPage/>}
                         >
                             <Icon.GraphUpArrow className="navbar-card-btn" />
                         </Link>

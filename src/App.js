@@ -13,6 +13,7 @@ import TimeRegistrationPage from "./pages/timeRegistration/TimeRegistrationPage"
 import ProjectManagement from "./pages/projectManagement/ProjectManagment";
 import CompanyManagment from "./pages/companyManagment/CompanyManagment";
 import BlockedAccountPage from "./pages/blockedAccountPage/BlockedAccountPage";
+import AnalyticsPage from "./pages/analyticsPage/AnalyticsPage";
 
 function App() {
     return (
@@ -32,6 +33,7 @@ function App() {
                     <Route path="/projectManagement" element={<ProjectManagement />} />
                     <Route path="/companyManagement" element={<CompanyManagment />} />
                     <Route path="/blockedAccount" element={<BlockedAccountPage />} />
+                    <Route path="/analytics" element={<AnalyticsPage/>}/>
                 </Route>
             </Routes>
         </>

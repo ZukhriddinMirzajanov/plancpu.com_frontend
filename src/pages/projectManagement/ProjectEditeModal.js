@@ -99,11 +99,11 @@ function ProjectModal({ show, onHide, onSave, project, userList }) {
                 <li key={user.id}>
                   → {user.firstName} {user.lastName}
                   <Button
-                   variant="outline-danger"
+                   variant="outline-none"
                    size="sm"
-                   className="mt-2"
+                   
                   >
-                    Unassign
+                   ⌊ <i style={{color:"red"}}>Unassign</i> ⌋
                   </Button>
                 </li>
               ))}
