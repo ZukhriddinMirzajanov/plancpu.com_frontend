@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import "./HomePage.css";
 import PopUpWindow from "../../components/modal/PopUpWindow";
@@ -8,9 +8,7 @@ import * as Icon from "react-bootstrap-icons";
 import { HashLoader } from "react-spinners";
 import userService from "../../services/user.service";
 import { useNavigate } from "react-router-dom";
-// import authHeader from "../../services/auth-header";
-// import SockJS from 'sockjs-client';
-// import { Stomp } from "@stomp/stompjs";
+import { Form } from "react-bootstrap";
 
 const HomePage = () => {
     const [selectedTask, setSelectedTask] = useState(null);
@@ -21,121 +19,91 @@ const HomePage = () => {
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-    
-    userService.getUserById(userFromLocal.id)
-        .then(res => {
-            if (res !== null) {
-                if (res.status === 403) {
-                    console.log(res.status);
-                    return navigate("/login");
+    const [userData, setUserData] = useState({});
+    const [selectedIndex, setSelectedIndex] = useState("");
+    const selectedIndexFromLocal = JSON.parse(localStorage.getItem("plancpu.com.selectedIndexFromLocal"));
+
+    function setProFunc(index) {
+        localStorage.setItem("plancpu.com.selectedIndexFromLocal", index);
+        setSelectedIndex(index);
+    }
+
+    useEffect(() => {
+        userService
+            .getUserById(userFromLocal.id)
+            .then((resUser) => {
+                if (resUser.status === 403) {
+                    navigate("/login");
+                    return;
                 }
-                if (!res.company.isActive) {
-                    return navigate("/blockedAccount");
+                if (resUser !== null && resUser.company !== undefined) {
+                    setUserData(resUser);
                 }
-            }
-        })
+            })
+            .catch((err) => {
+                console.error("Error fetching user data:", err);
+            });
+    }, [userFromLocal.id, navigate]);
 
-    // function fetchAllTasks() {
-    //     setIsLoading(true)
-    //     taskService.getAllTasksByCompanyId(userFromLocal.companyId)
-    //         .then(res => {
-    //             setIsLoading(false);
-    //             if (res.length > 0) {
-    //                 const tasks1 = [];
-    //                 const tasks2 = [];
-    //                 const tasks3 = [];
-    //                 const tasks4 = [];
-    //                 res.map(task => {
-    //                     if (task.statusOfTask === 1) {
-    //                         tasks1.push(task);
-    //                     }
-    //                     if (task.statusOfTask === 2) {
-    //                         tasks2.push(task);
-    //                     }
-    //                     if (task.statusOfTask === 3) {
-    //                         tasks3.push(task);
-    //                     }
-    //                     if (task.statusOfTask === 4) {
-    //                         tasks4.push(task);
-    //                     }
-    //                     return task;
-    //                 })
-    //                 setOpentasks(tasks1);
-    //                 setInProgressTasks(tasks2);
-    //                 setInReviewTasks(tasks3);
-    //                 setClosedTasks(tasks4);
-    //             } else {
-    //                 toast.info("No active tasks!",);
-    //             }
-    //         })
-    //         .catch(err => {
-    //             setIsLoading(false);
-    //             toast.error("Server error!",);
-    //             console.log(err);
-    //         })
-    // }
+    function fetchAllTasksByCompanyProject() {
+        if (selectedIndexFromLocal) {
+            setSelectedIndex(selectedIndexFromLocal);
+        }
+        if (userData.companyProjects !== undefined && userData.companyProjects.length > 0) {
+            setIsLoading(true);
+            taskService.getAllTasksByCompanyProjectId(userData.companyProjects[Number(selectedIndex)].id)
+                .then((res) => {
+                    setIsLoading(false);
+                    if (res !== null) {
+                        if (res.length > 0) {
+                            const tasks1 = [];
+                            const tasks2 = [];
+                            const tasks3 = [];
+                            const tasks4 = [];
+                            res.map(task => {
+                                if (task.statusOfTask === 1) {
+                                    tasks1.push(task);
+                                }
+                                if (task.statusOfTask === 2) {
+                                    tasks2.push(task);
+                                }
+                                if (task.statusOfTask === 3) {
+                                    tasks3.push(task);
+                                }
+                                if (task.statusOfTask === 4) {
+                                    tasks4.push(task);
+                                }
+                                return task;
+                            })
+                            setOpentasks(tasks1);
+                            setInProgressTasks(tasks2);
+                            setInReviewTasks(tasks3);
+                            setClosedTasks(tasks4);
+                        } else {
+                            setOpentasks([]);
+                            setInProgressTasks([]);
+                            setInReviewTasks([]);
+                            setClosedTasks([]);
+                            // toast.info("No tasks found!");
+                        }
+                    } else {
+                        toast.error("Error while getting tasks");
+                    }
+                })
+                .catch((err) => {
+                    toast.error("Error!");
+                    setIsLoading(false);
+                    console.log(err);
+                    // navigate("/login");
+                });
+        }
+    }
 
-    // useEffect(fetchAllTasks, [userFromLocal.companyId]);
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
-    // useEffect(() => {
-    //     try {
-    //         const socket = new SockJS(`http://localhost:5000/ws`);
-    //         const client = Stomp.over(socket);
-    //         // client.connect({}, () => {
-    //         //     console.log("WebSocket connection established.");
-
-    //         //     // Subscribe and send data here
-    //         // });
-
-    //         client.connect({companyId:userFromLocal.companyId}, () => {
-    //             console.log("Looooo")
-    //             client.subscribe(`/topic/companyTasks`, (message) => {
-    //                 console.log(`Received: ${message.body}`)
-    //                 // const updatedTasks = JSON.parse(message.body);
-    //                 // console.log("Received updated company tasks:", updatedTasks);
-    //                 // if (updatedTasks != null) {
-    //                 //     const tasks1 = [];
-    //                 //     const tasks2 = [];
-    //                 //     const tasks3 = [];
-    //                 //     const tasks4 = [];
-    //                 //     updatedTasks.map(task => {
-    //                 //         if (task.statusOfTask === 1) {
-    //                 //             tasks1.push(task);
-    //                 //         }
-    //                 //         if (task.statusOfTask === 2) {
-    //                 //             tasks2.push(task);
-    //                 //         }
-    //                 //         if (task.statusOfTask === 3) {
-    //                 //             tasks3.push(task);
-    //                 //         }
-    //                 //         if (task.statusOfTask === 4) {
-    //                 //             tasks4.push(task);
-    //                 //         }
-    //                 //         return task;
-    //                 //     })
-    //                 //     setOpentasks(tasks1);
-    //                 //     setInProgressTasks(tasks2);
-    //                 //     setInReviewTasks(tasks3);
-    //                 //     setClosedTasks(tasks4);
-    //                 // } else {
-    //                 //     toast.error("Error!",);
-    //                 // }
-    //             });
-    //         });
-
-    //         // return () => {
-    //         //     if (client) {
-    //         //         client.disconnect();
-    //         //     }
-    //         // };
-    //     } catch (err) {
-    //         toast.error("Error!",);
-    //         console.log(err);
-    //     }
-
-    // }, [userFromLocal.companyId]);
-
-
+    useEffect(fetchAllTasksByCompanyProject, [selectedIndex, userData, selectedIndexFromLocal]);
 
     const handleTaskClick = (task) => {
         setSelectedTask(task);
@@ -151,16 +119,23 @@ const HomePage = () => {
 
         const editedTask = {
             id: task.id,
-            companyId: task.companyId,
-            createdByEmail: task.createdByEmail,
-            createdByName: task.createdByName,
-            assignedBy: userFromLocal.firstName,
-            taskReviewer: task.taskReviewer,
             name: task.name,
             hour: task.hour,
-            createdAt: task.createdAt,
+            description: task.description,
+            statusOfTask: 2
+        }
+
+        const editedTask2 = {
+            id: task.id,
+            name: task.name,
+            hour: task.hour,
+            description: task.description,
             statusOfTask: 2,
-            description: task.description
+            createdAt: task.createdAt,
+            userCreated: task.userCreated,
+            userWorked: task.userWorked,
+            userReviewed: task.userReviewed,
+            companyProject: task.companyProject
         }
 
         setIsLoading(true);
@@ -169,7 +144,7 @@ const HomePage = () => {
                 setIsLoading(false);
                 if (res != null) {
                     setOpentasks(updatedTasks);
-                    setInProgressTasks([...inProgressTasks, editedTask]);
+                    setInProgressTasks([...inProgressTasks, editedTask2]);
                 }
             })
             .catch(err => {
@@ -186,16 +161,23 @@ const HomePage = () => {
 
         const editedTask = {
             id: task.id,
-            companyId: task.companyId,
-            createdByEmail: task.createdByEmail,
-            createdByName: task.createdByName,
-            assignedBy: task.assignedBy,
-            taskReviewer: task.taskReviewer,
             name: task.name,
             hour: task.hour,
-            createdAt: task.createdAt,
+            description: task.description,
+            statusOfTask: 3
+        }
+
+        const editedTask2 = {
+            id: task.id,
+            name: task.name,
+            hour: task.hour,
+            description: task.description,
             statusOfTask: 3,
-            description: task.description
+            createdAt: task.createdAt,
+            userCreated: task.userCreated,
+            userWorked: task.userWorked,
+            userReviewed: task.userReviewed,
+            companyProject: task.companyProject
         }
 
         setIsLoading(true);
@@ -204,7 +186,7 @@ const HomePage = () => {
                 setIsLoading(false);
                 if (res != null) {
                     setInProgressTasks(updatedTasks);
-                    setInReviewTasks([...inReviewTasks, editedTask]);
+                    setInReviewTasks([...inReviewTasks, editedTask2]);
                 }
             })
             .catch(err => {
@@ -221,16 +203,23 @@ const HomePage = () => {
 
         const editedTask = {
             id: task.id,
-            companyId: task.companyId,
-            createdByEmail: task.createdByEmail,
-            createdByName: task.createdByName,
-            assignedBy: task.assignedBy,
-            taskReviewer: task.taskReviewer,
             name: task.name,
             hour: task.hour,
-            createdAt: task.createdAt,
+            description: task.description,
+            statusOfTask: 4
+        }
+
+        const editedTask2 = {
+            id: task.id,
+            name: task.name,
+            hour: task.hour,
+            description: task.description,
             statusOfTask: 4,
-            description: task.description
+            createdAt: task.createdAt,
+            userCreated: task.userCreated,
+            userWorked: task.userWorked,
+            userReviewed: task.userReviewed,
+            companyProject: task.companyProject
         }
 
         setIsLoading(true);
@@ -239,7 +228,7 @@ const HomePage = () => {
                 setIsLoading(false);
                 if (res != null) {
                     setInReviewTasks(updatedTasks);
-                    setClosedTasks([...closedTasks, editedTask]);
+                    setClosedTasks([...closedTasks, editedTask2]);
                 }
             })
             .catch(err => {
@@ -256,16 +245,23 @@ const HomePage = () => {
 
         const editedTask = {
             id: task.id,
-            companyId: task.companyId,
-            createdByEmail: task.createdByEmail,
-            createdByName: task.createdByName,
-            assignedBy: task.assignedBy,
-            taskReviewer: task.taskReviewer,
             name: task.name,
             hour: task.hour,
-            createdAt: task.createdAt,
+            description: task.description,
+            statusOfTask: 1
+        }
+
+        const editedTask2 = {
+            id: task.id,
+            name: task.name,
+            hour: task.hour,
+            description: task.description,
             statusOfTask: 1,
-            description: task.description
+            createdAt: task.createdAt,
+            userCreated: task.userCreated,
+            userWorked: task.userWorked,
+            userReviewed: task.userReviewed,
+            companyProject: task.companyProject
         }
 
         setIsLoading(true);
@@ -274,7 +270,7 @@ const HomePage = () => {
                 setIsLoading(false);
                 if (res != null) {
                     setClosedTasks(updatedTasks);
-                    setOpentasks([...openTasks, editedTask]);
+                    setOpentasks([...openTasks, editedTask2]);
                 }
             })
             .catch(err => {
@@ -291,16 +287,23 @@ const HomePage = () => {
 
         const editedTask = {
             id: task.id,
-            companyId: task.companyId,
-            createdByEmail: task.createdByEmail,
-            createdByName: task.createdByName,
-            assignedBy: task.assignedBy,
-            taskReviewer: task.taskReviewer,
             name: task.name,
             hour: task.hour,
-            createdAt: task.createdAt,
+            description: task.description,
+            statusOfTask: 1
+        }
+
+        const editedTask2 = {
+            id: task.id,
+            name: task.name,
+            hour: task.hour,
+            description: task.description,
             statusOfTask: 1,
-            description: task.description
+            createdAt: task.createdAt,
+            userCreated: task.userCreated,
+            userWorked: task.userWorked,
+            userReviewed: task.userReviewed,
+            companyProject: task.companyProject
         }
 
         setIsLoading(true);
@@ -309,7 +312,7 @@ const HomePage = () => {
                 setIsLoading(false);
                 if (res != null) {
                     setInProgressTasks(updatedTasks);
-                    setOpentasks([...openTasks, editedTask]);
+                    setOpentasks([...openTasks, editedTask2]);
                 }
             })
             .catch(err => {
@@ -326,16 +329,23 @@ const HomePage = () => {
 
         const editedTask = {
             id: task.id,
-            companyId: task.companyId,
-            createdByEmail: task.createdByEmail,
-            createdByName: task.createdByName,
-            assignedBy: task.assignedBy,
-            taskReviewer: task.taskReviewer,
             name: task.name,
             hour: task.hour,
-            createdAt: task.createdAt,
+            description: task.description,
+            statusOfTask: 2
+        }
+
+        const editedTask2 = {
+            id: task.id,
+            name: task.name,
+            hour: task.hour,
+            description: task.description,
             statusOfTask: 2,
-            description: task.description
+            createdAt: task.createdAt,
+            userCreated: task.userCreated,
+            userWorked: task.userWorked,
+            userReviewed: task.userReviewed,
+            companyProject: task.companyProject
         }
 
         setIsLoading(true);
@@ -344,7 +354,7 @@ const HomePage = () => {
                 setIsLoading(false);
                 if (res != null) {
                     setInReviewTasks(updatedTasks);
-                    setInProgressTasks([...inProgressTasks, editedTask]);
+                    setInProgressTasks([...inProgressTasks, editedTask2]);
                 }
             })
             .catch(err => {
@@ -357,27 +367,12 @@ const HomePage = () => {
     const assignToMeToWork = (task, index) => {
         const updatedTasks = [...openTasks];
 
-        const editedTask = {
-            id: task.id,
-            companyId: task.companyId,
-            createdByEmail: task.createdByEmail,
-            createdByName: task.createdByName,
-            assignedBy: userFromLocal.firstName,
-            taskReviewer: task.taskReviewer,
-            name: task.name,
-            hour: task.hour,
-            createdAt: task.createdAt,
-            statusOfTask: task.statusOfTask,
-            description: task.description
-        }
-
-        updatedTasks[index] = editedTask;
-
         setIsLoading(true);
-        taskService.updateTask(editedTask.id, editedTask)
+        taskService.addUserWorkedToTask(task, userData.id)
             .then(res => {
                 setIsLoading(false);
-                if (res != null) {
+                if (res !== null) {
+                    updatedTasks[index] = res;
                     setOpentasks(updatedTasks);
                 }
             })
@@ -391,27 +386,12 @@ const HomePage = () => {
     const assignToMeToReview = (task, index) => {
         const updatedTasks = [...inReviewTasks];
 
-        const editedTask = {
-            id: task.id,
-            companyId: task.companyId,
-            createdByEmail: task.createdByEmail,
-            createdByName: task.createdByName,
-            assignedBy: task.assignedBy,
-            taskReviewer: userFromLocal.firstName,
-            name: task.name,
-            hour: task.hour,
-            createdAt: task.createdAt,
-            statusOfTask: task.statusOfTask,
-            description: task.description
-        }
-
-        updatedTasks[index] = editedTask;
-
         setIsLoading(true);
-        taskService.updateTask(editedTask.id, editedTask)
+        taskService.addUserReviewedToTask(task, userData.id)
             .then(res => {
                 setIsLoading(false);
-                if (res != null) {
+                if (res !== null) {
+                    updatedTasks[index] = res;
                     setInReviewTasks(updatedTasks);
                 }
             })
@@ -446,11 +426,26 @@ const HomePage = () => {
             <ToastContainer position="top-center" />
             <div className="container-fluid">
                 <div className="body-nav">
-                    <h4>
+                    <p>{userData.company ? userData.company.name : ""} selected project: </p>
+                    <p>
+                        {userData.companyProjects ? (
+                            <Form.Select
+                                as="select"
+                                value={selectedIndex}
+                                onChange={(e) => setProFunc(e.target.value)}
+                                required
+                            >
 
-                        <b>{userFromLocal.companyName}</b>
-                    </h4>
-                    {/* <p>🕐 5 days remaining</p> */}
+                                <option>{selectedIndexFromLocal ? userData.companyProjects[selectedIndexFromLocal].name : userData.companyProjects.length > 0 ? userData.companyProjects[0].name : "No project"}</option>
+                                {userData.companyProjects.map((project, index) => (
+                                    <option key={project.id} value={index}>
+                                        {project.name}
+                                    </option>
+                                ))}
+                            </Form.Select >
+                        ) : ""}
+
+                    </p>
                 </div>
                 <div className="table-box">
                     <div className="open-table">
@@ -459,7 +454,7 @@ const HomePage = () => {
                             {openTasks.map((task, index) => (
                                 <div key={task.id} className="open-task">
                                     <div className="card-top">
-                                        <small>{task.assignedBy}</small>
+                                        <small>{task.userWorked ? task.userWorked.firstName : "Unassigned"}</small>
                                         <small onClick={() => handleTaskClick(task)}><Icon.InfoCircle className="home-card-btn" /></small>
                                     </div>
                                     <div className="card-middle">
@@ -482,7 +477,7 @@ const HomePage = () => {
                             {inProgressTasks.map((task, index) => (
                                 <div key={task.id} className="progress-open-task">
                                     <div className="progress-card-top">
-                                        <small>{task.assignedBy}</small>
+                                        <small>{task.userWorked ? task.userWorked.firstName : "Unassigned"}</small>
                                         <small onClick={() => handleTaskClick(task)}><Icon.InfoCircle className="home-card-btn" /></small>
                                     </div>
                                     <div className="progress-card-middle">
@@ -505,7 +500,7 @@ const HomePage = () => {
                             {inReviewTasks.map((task, index) => (
                                 <div key={task.id} className="review-open-task">
                                     <div className="review-card-top">
-                                        <small>{task.taskReviewer}</small>
+                                        <small>{task.userReviewed ? task.userReviewed.firstName : "Unassigned"}</small>
                                         <small onClick={() => handleTaskClick(task)}><Icon.InfoCircle className="home-card-btn" /></small>
                                     </div>
                                     <div className="review-card-middle">
@@ -514,6 +509,7 @@ const HomePage = () => {
                                     <div className="review-card-bottom">
                                         <strong className="task-hour">{task.hour} h</strong>
                                         <span>
+                                            <small onClick={() => handleTaskClick(task)} size="sm" variant="outline-primary"><Icon.ChatDots className="home-card-btn" /></small>
                                             <small onClick={() => backFrom3to2(task, index)} size="sm" variant="outline-primary"><Icon.ArrowLeftCircle className="home-card-btn" /></small>
                                             <small onClick={() => assignToMeToReview(task, index)} size="sm" variant="outline-primary"><Icon.PlusCircle className="home-card-btn" /></small>
                                             <small onClick={() => updateTaskStatus3(task, index)} size="sm" variant="outline-primary"><Icon.CheckCircle className="home-card-btn" /></small>
@@ -529,7 +525,7 @@ const HomePage = () => {
                             {closedTasks.map((task, index) => (
                                 <div key={task.id} className="close-open-task">
                                     <div className="close-card-top">
-                                        <small>{task.createdByName}</small>
+                                        <small>{task.userCreated ? task.userCreated.firstName : "-"}</small>
                                         <small onClick={() => handleTaskClick(task)}><Icon.InfoCircle className="home-card-btn" /></small>
                                     </div>
                                     <div className="close-card-middle">

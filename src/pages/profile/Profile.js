@@ -72,7 +72,7 @@ const Profile = () => {
                             <b>Last Name:</b> <span>{user.lastName}</span>
                         </p>
                         <p>
-                            {/* <b>Company Name:</b> <span>{user.company.name}</span> */}
+                            <b>Company Name:</b> <span>{user.company ? user.company.name : ""}</span>
                         </p>
                         <p>
                             <b>Email:</b> <span>{user.email}</span>
@@ -80,6 +80,12 @@ const Profile = () => {
                         <p>
                             <b>Role:</b> <span>{user.role}</span>
                         </p>
+                        <b>Assigned Projects:</b>
+                        <ul>
+                            {user.companyProjects ? (user.companyProjects.map(project =>
+                                <li key={project.id}>{project.name}</li>
+                            )) : ""}
+                        </ul>
                     </div>
                     <Button variant="outline-primary" onClick={openModal}>Edit Profile</Button>
                 </div>

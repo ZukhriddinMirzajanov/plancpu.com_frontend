@@ -9,15 +9,11 @@ function EditTaskPopup({ task, onClose, onSave }) {
     const handleUpdate = () => {
         onSave({
             id: task.id,
-            companyId: task.companyId,
-            createdByEmail: task.createdByEmail,
-            createdByName: task.createdByName,
-            assignedBy: task.assignedBy,
             name: editedName,
             hour: editedHour,
-            createdAt: task.createdAt,
-            statusOfTask: 0,
             description: editedDescription,
+            statusOfTask: task.statusOfTask
+
         });
         onClose();
     };

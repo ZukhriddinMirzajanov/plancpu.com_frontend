@@ -72,7 +72,6 @@ const RegisterPage = () => {
                         userService.addCompanyToUser(userDataForUpdate1, resCompnayData.id)
                             .then(res => {
                                 if (res.id) {
-                                    console.log(res);
                                     setIsLoading(false);
                                     navigate("/blockedAccount");
                                     toast.info("Registered");

@@ -52,6 +52,13 @@ const NavbarComponent = () => {
                 {isLoggedIn && ( // Display links conditionally based on login status
                     <>
                         <Link
+                            className={`links ${location.pathname === "/s" ? "active" : ""}`}
+                            to="/x"
+                            element={<HomePage />}
+                        >
+                            <Icon.GraphUpArrow className="navbar-card-btn" />
+                        </Link>
+                        <Link
                             className={`links ${location.pathname === "/" ? "active" : ""}`}
                             to="/"
                             element={<HomePage />}

@@ -38,13 +38,13 @@ function DescriptionPopUpWindow({ task, show, onClose }) {
                 <hr />
                 <p>{taskStatus}</p>
                 <hr />
-                <small>Task created by {task.createdByName} on {getFormatDate(task.createdAt)}</small>
+                <small>Task created by {task.userCreated ? task.userCreated.firstName : ""} {task.userCreated ? task.userCreated.lastName : ""} on {getFormatDate(task.createdAt)}</small>
                 <hr />
-                {task.assignedBy === "Unassigned" && (
+                {!task.userWorked && (
                     <small>Task is Unassigned</small>
                 )}
-                {task.assignedBy !== "Unassigned" && (
-                    <small>Task is assigned by {task.assignedBy}</small>
+                {task.userWorked && (
+                    <small>Task is assigned by {task.userWorked.firstName} {task.userWorked.firstName}</small>
                 )}
             </Modal.Body>
             <Modal.Footer>

@@ -1,8 +1,8 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_BASE_URL = 'https://www.softlatency.com/api/companyProject';
-// const API_BASE_URL = 'http://localhost:5000/api/companyProject';
+// const API_BASE_URL = 'https://www.softlatency.com/api/companyProject';
+const API_BASE_URL = 'http://localhost:5000/api/companyProject';
 
 const getAllCompanyProjectsByCompanyId = (companyId) => {
     return axios
@@ -78,6 +78,8 @@ const addCompanyToCompanyProject = (companyProjectId, companyId, companyProject)
             return error;
         });
 }
+
+
 const deleteCompanyProject = (id) => {
     return axios
         .delete(API_BASE_URL + "/delete/" + id, { headers: authHeader() })
