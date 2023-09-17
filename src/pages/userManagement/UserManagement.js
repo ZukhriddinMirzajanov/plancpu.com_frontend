@@ -41,36 +41,6 @@ function UserManagement() {
 
     useEffect(fetchUsers, []);
 
-    // const handleFormSubmit = (e) => {
-    //     e.preventDefault();
-
-    //     const newUser = {
-    //         id: Date.now(),
-    //         firstname,
-    //         lastname,
-    //         email,
-    //         companyName,
-    //         createdTime: Date.now(),
-    //     };
-
-    //     // Add the new user to the users array
-    //     setUsers([...users, newUser]);
-
-    //     // Clear input fields for the next user entry
-    //     setFirstname("");
-    //     setLastname("");
-    //     setEmail("");
-    //     setCompanyName("");
-
-    //     // Update users in local storage with the modified array
-    //     localStorage.setItem("users", JSON.stringify([...users, newUser]));
-    // };
-
-    // const handleEditUser = (index) => {
-    //     setSelectedUserIndex(index);
-    //     setShowEditPopup(true);
-    // };
-
     const handleSaveEditedUser = (editedUser) => {
         const updatedUsers = [...users];
         updatedUsers[selectedUserIndex] = editedUser;
@@ -204,7 +174,7 @@ function UserManagement() {
                             <div className="user-info">
                                 <div className="list-email">
                                     <b>Email:</b><i> {user.email}</i> --
-                                    <b>Company:</b> {user.companyName}
+                                    <b>Company:</b> {user.company.name}
                                 </div>
 
                                 <div className="user-btns">

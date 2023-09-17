@@ -436,7 +436,9 @@ const HomePage = () => {
                                 required
                             >
 
-                                <option>{selectedIndexFromLocal ? userData.companyProjects[selectedIndexFromLocal].name : userData.companyProjects.length > 0 ? userData.companyProjects[0].name : "No project"}</option>
+                                <option>{selectedIndexFromLocal ? (
+                                    userData.companyProjects[selectedIndexFromLocal] ? userData.companyProjects[selectedIndexFromLocal].name : "") : (
+                                    userData.companyProjects.length > 0 ? userData.companyProjects[0].name : "No project")}</option>
                                 {userData.companyProjects.map((project, index) => (
                                     <option key={project.id} value={index}>
                                         {project.name}
