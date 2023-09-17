@@ -7,6 +7,7 @@ import timeReportService from "../../services/time-report.service";
 import { ToastContainer, toast } from "react-toastify";
 import { HashLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
+import userService from "../../services/user.service";
 
 const TimeRegistrationPage = () => {
     const initialMonth = new Date();
@@ -22,6 +23,24 @@ const TimeRegistrationPage = () => {
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const [user, setUser] = useState({});
+
+    function fetchUser() {
+        setIsLoading(true);
+        userService.getUserById(userFromLocal.id)
+            .then(res => {
+                if (res !== null) {
+                    if (res.status === 403) {
+                        navigate("/login");
+                    }
+                    setUser(res);
+                    setIsLoading(false);
+                }
+            })
+
+    }
+
+    useEffect(fetchUser, [userFromLocal.id, navigate]);
 
     function fetchTimeReportData() {
         setIsLoading(true);
@@ -103,26 +122,34 @@ const TimeRegistrationPage = () => {
     const createTimeReport = (e) => {
         e.preventDefault();
         let newTimeReportData = {
-            companyId: userFromLocal.companyId,
-            userId: userFromLocal.id,
-            createdByEmail: userFromLocal.email,
-            createdByName: userFromLocal.firstName + " " + userFromLocal.lastName,
             title: title,
             hour: hour,
             createdAt: selectedMonth.setDate(dayAction)
         }
-        const updatedTimeReportData = [...timeReportData, newTimeReportData]
         setIsLoading(true);
         timeReportService.createTimeReport(newTimeReportData)
-            .then(res => {
-                if (res) {
-                    setIsLoading(false);
-                    setTimeReportData(updatedTimeReportData);
-                    toast.info("Time Registered");
-                    setTitle("");
-                    setHour("");
-                    setIsCreateModalOpen(false);
-                    setDayAction("");
+            .then(resTimeRepo => {
+                if (resTimeRepo) {
+                    const newTimeReportData = {
+                        id: resTimeRepo.id,
+                        title: resTimeRepo.title,
+                        hour: resTimeRepo.hour,
+                        createdAt: resTimeRepo.createdAt
+                    }
+                    timeReportService.addUserToTimeReport(newTimeReportData, userFromLocal.id)
+                        .then(res => {
+                            if (res) {
+                                const updatedTimeReportData = [...timeReportData, res]
+                                setIsLoading(false);
+                                setTimeReportData(updatedTimeReportData);
+                                toast.info("Time Registered");
+                                setTitle("");
+                                setHour("");
+                                setIsCreateModalOpen(false);
+                                setDayAction("");
+                            }
+                        })
+
                 }
             })
             .catch(err => {
@@ -136,15 +163,20 @@ const TimeRegistrationPage = () => {
 
         const editedData = {
             id: actionTimeReportData.id,
-            companyId: actionTimeReportData.companyId,
-            userId: actionTimeReportData.id,
-            createdByEmail: actionTimeReportData.createdByEmail,
-            createdByName: actionTimeReportData.createdByName,
             title: title,
             hour: hour,
             createdAt: actionTimeReportData.createdAt
         };
-        updatedData[indexData] = editedData;
+
+        const editedData2 = {
+            id: actionTimeReportData.id,
+            title: title,
+            hour: hour,
+            createdAt: actionTimeReportData.createdAt,
+            user: user
+        };
+       
+        updatedData[indexData] = editedData2;
 
         setIsLoading(true);
         timeReportService.updateTimeReport(editedData.id, editedData)

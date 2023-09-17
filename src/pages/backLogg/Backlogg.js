@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NavbarComponent from "../../components/navbarComponent/NavbarComponent";
 import './Backlogg.css'
 import taskService from "../../services/task.service";
 import { ToastContainer, toast } from "react-toastify";
-import { Button, Pagination } from "react-bootstrap";
+import { Button, Form, Pagination } from "react-bootstrap";
 import DescriptionPopUpWindow from "./DescriptionPopUpWindow";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { HashLoader } from "react-spinners";
+import userService from "../../services/user.service";
+import companyProjectService from "../../services/company-project.service";
 
 const Backlogg = () => {
     const [tasks, setTasks] = useState([]);
@@ -14,37 +16,75 @@ const Backlogg = () => {
     const [showDescriptionModal, setShowDescriptionModal] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const tasksPerPage = 10;
-    // const userFromLocal = JSON.parse(localStorage.getItem("user"));
-    // const navigate = useNavigate();
+    const [selectedProjectId, setSelectedProjectId] = useState("");
+    const [companyProjects, setCompanyProjects] = useState([]);
+    const userFromLocal = JSON.parse(localStorage.getItem("user"));
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
 
-    // function fetchAllTasks() {
-    //     setIsLoading(true);
-    //     taskService.getAllTasksByCompanyId(userFromLocal.companyId)
-    //         .then(res => {
-    //             setIsLoading(false);
-    //             if (res.length > 0) {
-    //                 const tasks = [];
-    //                 res.map(task => {
-    //                     if (task.statusOfTask === 0) {
-    //                         return tasks.push(task);
-    //                     } else {
-    //                         return tasks;
-    //                     }
-    //                 })
-    //                 setTasks(tasks);
-    //             } else {
-    //                 toast.info("No tasks found!");
-    //             }
-    //         })
-    //         .catch(err => {
-    //             // navigate("/login");
-    //             setIsLoading(false);
-    //             toast.error("Error while getting Tasks!",);
-    //         })
-    // }
-    // // Load tasks from local storage on component mount
-    // useEffect(fetchAllTasks, [userFromLocal.companyId]);
+    useEffect(() => {
+        userService
+            .getUserById(userFromLocal.id)
+            .then((resUser) => {
+                if (resUser.status === 403) {
+                    navigate("/login");
+                    return;
+                }
+                if (resUser !== null && resUser.company !== undefined) {
+                    companyProjectService
+                        .getAllCompanyProjectsByCompanyId(resUser.company.id)
+                        .then((projects) => {
+                            if (projects) {
+                                setCompanyProjects(projects);
+                            }
+                        })
+                        .catch((err) => {
+                            console.error("Error fetching company projects:", err);
+                        });
+                }
+            })
+            .catch((err) => {
+                console.error("Error fetching user data:", err);
+            });
+    }, [userFromLocal.id, navigate]);
+
+    function fetchAllTasksByCompanyProject() {
+        if (selectedProjectId) {
+            setIsLoading(true);
+            taskService
+                .getAllStatusZeroTasksByCompanyProjectId(selectedProjectId)
+                .then((res) => {
+                    setIsLoading(false);
+                    if (res !== null) {
+                        if (res.length > 0) {
+                            // let data = [];
+                            // res.map((task) => {
+                            //     return data.push(task);
+                            // });
+                            setTasks(res);
+                        } else {
+                            setTasks([]);
+                            toast.info("No tasks found!");
+                        }
+                    } else {
+                        toast.error("Error while getting tasks");
+                    }
+                })
+                .catch((err) => {
+                    toast.error("Error!");
+                    setIsLoading(false);
+                    console.log(err);
+                    // navigate("/login");
+                });
+        }
+
+    }
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(fetchAllTasksByCompanyProject, [selectedProjectId]);
 
     const handleEditTask = (index) => {
         const taskToOpen = tasks[index];
@@ -53,16 +93,11 @@ const Backlogg = () => {
 
         const editedTask = {
             id: taskToOpen.id,
-            companyId: taskToOpen.companyId,
-            createdByEmail: taskToOpen.createdByEmail,
-            createdByName: taskToOpen.createdByName,
-            assignedBy: taskToOpen.assignedBy,
-            taskReviewer: taskToOpen.taskReviewer,
             name: taskToOpen.name,
             hour: taskToOpen.hour,
-            createdAt: taskToOpen.createdAt,
-            statusOfTask: 1,
-            description: taskToOpen.description
+            description: taskToOpen.description,
+            statusOfTask: 1
+
         }
 
         setIsLoading(true);
@@ -133,6 +168,28 @@ const Backlogg = () => {
             <ToastContainer position="top-center" />
             <div className="backlog-body">
                 <h2 className="title">All Tasks:</h2>
+                <div className="dropDownSelection">
+                    <Form.Select
+                        as="select"
+                        value={selectedProjectId}
+                        onChange={(e) => setSelectedProjectId(e.target.value)}
+                        required
+                    >
+                        <option value="">Select a Project</option>
+                        {companyProjects.map((project) => (
+                            <option key={project.id} value={project.id}>
+                                {project.name}
+                            </option>
+                        ))}
+                    </Form.Select>
+                    {/* <Form.Control
+                        type="text"
+                        placeholder="search..."
+                        // value={name}
+                        // onChange={(e) => setName(e.target.value)}
+                        required
+                    /> */}
+                </div>
                 <ul>
                     {tasksToDisplay.map((task, index) => (
                         <li className="task-wrapper" key={task.id}>

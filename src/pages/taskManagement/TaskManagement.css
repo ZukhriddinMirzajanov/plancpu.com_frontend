@@ -1,6 +1,9 @@
 .title {
   text-align: center;
 }
+.dropDownSelection {
+    margin: 14px 30%;
+}
 .tasks-container {
   padding-top: 100px;
 }

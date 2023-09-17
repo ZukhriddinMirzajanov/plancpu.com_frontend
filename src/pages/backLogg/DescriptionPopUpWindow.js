@@ -12,7 +12,7 @@ function DescriptionPopUpWindow({ task, show, onClose }) {
         <hr />
         {task.hour} hours to spend
         <hr />
-        <p>Task created by {task.createdByName}</p>
+        <p>Task created by {task.userCreated.firstName} {task.userCreated.lastName}</p>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="outline-secondary" onClick={onClose}>
