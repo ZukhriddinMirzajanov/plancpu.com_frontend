@@ -15,15 +15,18 @@ const PopUpWindow = ({ show, onHide, taskData }) => {
                 <h6>Task Id: {taskData.id}</h6>
                 <h5>Title: {taskData.name}</h5>
                 <p>Description: {taskData.description}</p>
-                <p>Task created by {taskData.createdByName}</p>
-                {taskData.assignedBy === "Unassigned" && (
+                {taskData.userCreated && (
+                    <p>Task created by {taskData.userCreated.firstName} {taskData.userCreated.lastName}</p>
+                )}
+                
+                {!taskData.userWorked && (
                     <p>Task is Unassigned</p>
                 )}
-                {taskData.assignedBy !== "Unassigned" && (
-                    <p>{taskData.assignedBy} is working on this task</p>
+                {taskData.userWorked && (
+                    <p>{taskData.userWorked.firstName} {taskData.userWorked.lastName} is working on this task</p>
                 )}
-                {taskData.taskReviewer !== "Unassigned" && (
-                    <p>Task is reviewing by {taskData.taskReviewer}</p>
+                {taskData.userReviewed && (
+                    <p>Task is reviewing by {taskData.userReviewed.firstName} {taskData.userReviewed.firstName}</p>
                 )}
                 {/* Render other task details as needed */}
             </Modal.Body>
