@@ -274,16 +274,6 @@ function ProjectManagement() {
       )}
       <Container fluid className="project-container">
         <ToastContainer position="top-center" />
-        <Form.Group controlId="search">
-           
-            <Form.Control
-           className="search-projects"
-              type="text"
-              placeholder="Search by title"
-              value={searchProject}
-              onChange={handleSearch}
-            />
-          </Form.Group>
 
         <Modal show={showAddModal} onHide={handleCloseAddModal}>
           <Modal.Header closeButton>
@@ -346,9 +336,21 @@ function ProjectManagement() {
           </Modal.Footer>
         </Modal>
 
-        <h2 className="text-center mt-5">All Projects:  <Button variant="outline-primary" onClick={handleShowAddModal}>
+        <h2 className="text-center mt-5">
+          All Projects:{" "}
+          <Button variant="outline-primary" onClick={handleShowAddModal}>
             Add new project
-          </Button></h2>
+          </Button>
+        </h2>
+        <Form.Group controlId="search">
+          <Form.Control
+            className="search-projects"
+            type="text"
+            placeholder="Search by title"
+            value={searchProject}
+            onChange={handleSearch}
+          />
+        </Form.Group>
         <ListGroup>
           {currentProjects
             .filter(
