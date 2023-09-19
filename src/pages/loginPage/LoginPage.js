@@ -6,6 +6,7 @@ import "./LoginPage.css";
 import authService from "../../services/auth.service";
 import { HashLoader } from "react-spinners";
 import { ToastContainer, toast } from "react-toastify";
+import logo from '../../plancpu.svg'
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
@@ -54,6 +55,10 @@ const LoginPage = () => {
     };
 
     return (
+        <>
+        <div className="login-logo">
+        <img src={logo} className="brand" alt="logo" />
+        </div>
         <div className="body">
             {isLoading && (
                 <div style={spinnerContainerCss}>
@@ -102,6 +107,7 @@ const LoginPage = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 

@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Mooli&display=swap');
+.comments-bg {
+  padding: 0 5px;
+  background-color: aliceblue;
+  height: 200px;
+  overflow-y: auto;
+}
+.comment {
+  padding: 0 5px;
+  font-family: 'Mooli', sans-serif;
+  color: rgb(0, 0, 0);
+}
+.commented-time {
+  font-size: 13px;
+  text-align: center;
+  text-decoration-line: underline;
+}
