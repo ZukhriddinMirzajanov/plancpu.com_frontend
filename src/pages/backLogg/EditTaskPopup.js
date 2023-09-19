@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
-const userFromLocal = JSON.parse(localStorage.getItem("user"));
 
 function EditTaskPopup({ task, onClose, onSave }) {
     const [editedName, setEditedName] = useState(task.name);
@@ -10,15 +9,11 @@ function EditTaskPopup({ task, onClose, onSave }) {
     const handleUpdate = () => {
         onSave({
             id: task.id,
-            companyId: userFromLocal.companyId,
-            companyName: userFromLocal.companyName,
-            createdByEmail: userFromLocal.email,
-            createdByName: userFromLocal.firstName + " " + userFromLocal.lastName,
             name: editedName,
             hour: editedHour,
-            createdAt: Date.now(),
             statusOfTask: 0,
             description: editedDescription,
+            lastUpdateDate: Date.now()
         });
         onClose();
     };

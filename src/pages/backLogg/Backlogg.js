@@ -23,9 +23,11 @@ const Backlogg = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+        setIsLoading(true);
         userService
             .getUserById(userFromLocal.id)
             .then((resUser) => {
+                setIsLoading(false);
                 if (resUser.status === 403) {
                     navigate("/login");
                     return;
@@ -96,8 +98,8 @@ const Backlogg = () => {
             name: taskToOpen.name,
             hour: taskToOpen.hour,
             description: taskToOpen.description,
-            statusOfTask: 1
-
+            statusOfTask: 1,
+            lastUpdatedDate: Date.now()
         }
 
         setIsLoading(true);

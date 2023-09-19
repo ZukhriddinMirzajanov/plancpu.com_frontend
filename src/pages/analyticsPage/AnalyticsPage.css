@@ -1,3 +1,15 @@
 .main-box{
+    padding-top: 125px;
+}
+.body-nav {
+    position: fixed;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* width: 80%; */
     padding-top: 60px;
+    border-bottom: 1px solid rgba(35, 35, 35, 0.441);
+    z-index: 7;
+    color: #6e6e6e;
+    background-color: white;
 }

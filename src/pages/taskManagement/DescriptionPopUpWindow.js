@@ -15,7 +15,7 @@ function DescriptionPopUpWindow({ task, show, onClose }) {
     if (task.statusOfTask === 4) {
         taskStatus = "Closed";
     }
-    const getFormatDate = (date) => {
+    const getFormatDate = () => {
         const createdAtDate = new Date(task.createdAt); // Convert seconds to milliseconds
         const formattedDate = createdAtDate.toDateString();
         // return formattedDate.substring(8,10);

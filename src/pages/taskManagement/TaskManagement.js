@@ -33,9 +33,11 @@ function TaskManagment() {
     const [indexForDel, setIndexForDel] = useState("");
 
     useEffect(() => {
+        setIsLoading(true);
         userService
             .getUserById(userFromLocal.id)
             .then((resUser) => {
+                setIsLoading(false);
                 if (resUser.status === 403) {
                     navigate("/login");
                     return;
@@ -75,7 +77,7 @@ function TaskManagment() {
                             setTasks(res);
                         } else {
                             setTasks([]);
-                            toast.info("No tasks found!");
+                            // toast.info("No tasks found!");
                         }
                     } else {
                         toast.error("Error while getting tasks");
@@ -105,7 +107,8 @@ function TaskManagment() {
             hour: hour,
             createdAt: Date.now(),
             statusOfTask: 0,
-            description: description
+            description: description,
+            lastUpdatedDate: Date.now()
         };
 
         // Calling the task service for adding the new task
