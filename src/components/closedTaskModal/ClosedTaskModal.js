@@ -3,7 +3,7 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
-const PopUpWindow = ({ show, onHide, taskData }) => {
+const ClosedTaskModal = ({ show, onHide, taskData }) => {
     return (
         <Modal show={show} onHide={onHide} size="lg" centered>
             <Modal.Header closeButton>
@@ -24,12 +24,11 @@ const PopUpWindow = ({ show, onHide, taskData }) => {
                 )}
                 {taskData.userWorked && (
                     <p>{taskData.userWorked.firstName} {taskData.userWorked.lastName} is worked on this task</p>
-                    
                 )}
                 {taskData.userReviewed && (
                     <p>Task is reviewing by {taskData.userReviewed.firstName} {taskData.userReviewed.firstName}</p>
                 )}
-                {/* Render other task details as needed */}
+               
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="outline-secondary" onClick={onHide}>Close</Button>
@@ -38,4 +37,4 @@ const PopUpWindow = ({ show, onHide, taskData }) => {
     );
 };
 
-export default PopUpWindow;
+export default ClosedTaskModal;
