@@ -1,17 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Mooli&display=swap');
 .comments-bg {
-  padding: 0 5px;
-  background-color: aliceblue;
-  height: 200px;
-  overflow-y: auto;
+    padding: 0 5px;
+    height: 200px;
+    overflow-y: auto;
+    border-style: outset;
+    border-radius: 2%;
+    margin-bottom: 10px;
 }
+
 .comment {
-  padding: 0 5px;
-  font-family: 'Mooli', sans-serif;
-  color: rgb(0, 0, 0);
+    padding: 0 5px;
+    /* font-family: 'Mooli', sans-serif; */
+    color: rgb(0, 0, 0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* background-color: rgb(249, 255, 252); */
+    border-radius: 2%;
+    width: 100%;
+    margin-top: 5px;
 }
+
 .commented-time {
-  font-size: 13px;
-  text-align: center;
-  text-decoration-line: underline;
+    font-size: 13px;
+    text-align: center;
+    text-decoration-line: underline;
 }
