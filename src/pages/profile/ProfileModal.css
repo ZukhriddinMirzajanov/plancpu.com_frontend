@@ -11,13 +11,13 @@
     z-index: 1000;
 }
 
-.modal-content {
+.profile-modal .modal-content {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
     width: 80%;
-    max-width: 400px;
+    max-width: 500px;
 }
 
 .profile-close {

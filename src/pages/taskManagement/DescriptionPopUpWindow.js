@@ -27,7 +27,7 @@ function DescriptionPopUpWindow({ task, show, onClose }) {
     //     return formattedTime;
     // }
     return (
-        <Modal show={show} onHide={onClose}>
+        <Modal show={show} size="lg" onHide={onClose} centered>
             <Modal.Header closeButton>
                 <Modal.Title>{task.name}</Modal.Title>
             </Modal.Header>

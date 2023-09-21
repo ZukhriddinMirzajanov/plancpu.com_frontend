@@ -108,7 +108,7 @@ const PopUpComment = ({ show, onHide, taskData }) => {
                     <HashLoader loading={isLoading} color="#62bdea" size={50} />
                 </div>
             )}
-            <Modal size="lg" show={show} onHide={onHide}>
+            <Modal size="lg" show={show} onHide={onHide} centered>
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">Comments</Modal.Title>
                 </Modal.Header>

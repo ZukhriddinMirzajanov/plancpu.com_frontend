@@ -188,7 +188,7 @@ const CompanyManagment = () => {
                         </div>
                     ))}
                 </div>
-                <Modal show={showDeleteModal}>
+                <Modal show={showDeleteModal} size="lg" centered>
                     <Modal.Body>
                         <Modal.Title>Do you want to Delete?</Modal.Title>
                         <Modal.Body className="showDelModalBody">

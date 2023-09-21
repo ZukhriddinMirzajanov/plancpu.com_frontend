@@ -19,7 +19,7 @@ function EditEmployeePopup({ employee, onClose, onSave }) {
   };
 
   return (
-    <Modal show={true} onHide={onClose}>
+    <Modal show={true} size="lg" onHide={onClose} centered>
       <Modal.Header closeButton>
         <Modal.Title>Edit Employee</Modal.Title>
       </Modal.Header>

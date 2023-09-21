@@ -382,6 +382,8 @@ const TimeRegistrationPage = () => {
                         className="register-modal"
                         show={isModalOpen}
                         onHide={closeModal}
+                        size="lg"
+                        centered
                     >
                         <Form onSubmit={editTimeReport}>
                             <Modal.Header closeButton>
@@ -425,6 +427,8 @@ const TimeRegistrationPage = () => {
                         className="register-modal"
                         show={isCreateModalOpen}
                         onHide={createCloseModal}
+                        size="lg"
+                        centered
                     >
                         <Form onSubmit={createTimeReport}>
                             <Modal.Header closeButton>

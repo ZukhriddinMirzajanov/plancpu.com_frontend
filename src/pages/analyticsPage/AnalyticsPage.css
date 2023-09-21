@@ -13,3 +13,9 @@
     color: #6e6e6e;
     background-color: white;
 }
+
+.line-graph{
+  display: flex;
+  justify-content: space-between;
+    
+}
