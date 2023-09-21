@@ -1,21 +1,54 @@
-.profile{
-    display: flex;
-    justify-content: center;
+.profile {
+  display: flex;
+  justify-content: center;
 }
 .profile-box {
-    padding: 20px 90px;
-    margin-top: 100px;
-     /* box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; */
-     border-radius: 5px;
+  padding: 20px 90px;
+  margin-top: 100px;
+  /* box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; */
+  border-radius: 5px;
 }
-.profile-box img{
-    max-width: 300px;
-    height: 150px;
-    border-radius: 25px;
+.profile-box img {
+  max-width: 300px;
+  height: 150px;
+  border-radius: 25px;
 }
-.profile-body{
-    padding-top: 25px;
+.profile-body {
+  padding-top: 25px;
 }
-.profile-body span{
-    font-size: 16px;
+.profile-body span {
+  font-size: 16px;
+}
+
+/* CSS for the dropdown */
+.dropdown-profile {
+  position: relative;
+  display: inline-block;
+}
+
+/* Style the dropdown button */
+.dropbtn {
+    margin-left: 15px;
+  border: none;
+  cursor: pointer;
+}
+
+/* Style the project list */
+.project-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  display: none;
+}
+
+/* Style the project items */
+.project-item {
+  background-color: #f9f9f9;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown-profile:hover .project-list {
+  display: block;
 }

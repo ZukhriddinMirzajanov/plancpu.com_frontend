@@ -77,7 +77,7 @@ const handleSearchInputChange = (e) => {
         </div>
       )}
       <ToastContainer position="top-center" />
-      <Modal show={show} onHide={onHide}>
+      <Modal show={show} size="lg" onHide={onHide} centered>
         <Modal.Header closeButton>
           <Modal.Title>Assign User to Compnay Project</Modal.Title>
         </Modal.Header>

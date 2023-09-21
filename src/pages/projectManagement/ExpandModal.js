@@ -3,7 +3,7 @@ import { Modal, Button } from "react-bootstrap";
 
 function ExpandModal({ show, onHide, project }) {
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
         <Modal.Title> <b>Name:</b> {project.name}</Modal.Title>
       </Modal.Header>

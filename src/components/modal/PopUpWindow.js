@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import taskCommentService from "../../services/taskComment.service";
 import { HashLoader } from "react-spinners";
+import "./PopUpWindow.css";
 
 const PopUpWindow = ({ show, onHide, taskData }) => {
     const [comments, setComments] = useState([]);
@@ -57,7 +58,7 @@ const PopUpWindow = ({ show, onHide, taskData }) => {
                     <HashLoader loading={isLoading} color="#62bdea" size={50} />
                 </div>
             )}
-            <Modal show={show} onHide={onHide} size="lg" centered>
+            <Modal  show={show} onHide={onHide} size="lg" centered>
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
                         Task Details

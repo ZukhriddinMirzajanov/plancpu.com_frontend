@@ -20,7 +20,7 @@ function EditTaskPopup({ task, onClose, onSave }) {
     };
 
     return (
-        <Modal show={true} onHide={onClose}>
+        <Modal show={true} size="lg" onHide={onClose} centered>
             <Modal.Header closeButton>
                 <Modal.Title>Edit Task</Modal.Title>
             </Modal.Header>

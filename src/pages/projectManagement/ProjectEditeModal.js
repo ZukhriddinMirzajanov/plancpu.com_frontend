@@ -37,7 +37,7 @@ function ProjectModal({ show, onHide, onSave, project, userList }) {
   };
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} size="lg" onHide={onHide} centered>
       <Modal.Header closeButton>
         <Modal.Title>Edit Project</Modal.Title>
       </Modal.Header>
