@@ -1,0 +1,22 @@
+.body-nav-hours-checks {
+    display: flex;
+    align-items: center;
+    z-index: 7;
+    color: #6e6e6e;
+    background-color: white;
+}
+
+.months-header-hours-checks {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.months-header-hours-checks .months button {
+    border: none;
+    border-radius: 10px;
+    background: none;
+    margin: 0 10px;
+}

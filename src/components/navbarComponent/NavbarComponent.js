@@ -14,6 +14,7 @@ import TimeRegistrationPage from "../../pages/timeRegistration/TimeRegistrationP
 import ProjectManagement from "../../pages/projectManagement/ProjectManagment";
 import CompanyManagment from "../../pages/companyManagment/CompanyManagment";
 import AnalyticsPage from "../../pages/analyticsPage/AnalyticsPage";
+import WorkingHoursChecksPage from "../../pages/workingHoursChecksPage/WorkingHoursChecksPage";
 
 const NavbarComponent = () => {
     const location = useLocation();
@@ -55,7 +56,7 @@ const NavbarComponent = () => {
                         <Link
                             className={`links ${location.pathname === "/analytics" ? "active" : ""}`}
                             to="/analytics"
-                            element={<AnalyticsPage/>}
+                            element={<AnalyticsPage />}
                         >
                             <Icon.GraphUpArrow className="navbar-card-btn" />
                         </Link>
@@ -89,6 +90,16 @@ const NavbarComponent = () => {
                         >
                             <Icon.Clock className="navbar-card-btn" />
                         </Link>
+                        {isManager && (
+                            <Link
+                                className={`links ${location.pathname === "/workingHoursChecks" ? "active" : ""}`}
+                                to="/workingHoursChecks"
+                                element={<WorkingHoursChecksPage />}
+                            >
+                                <Icon.Calendar4Week className="navbar-card-btn" />
+                            </Link>
+                        )}
+
                         <Link
                             className={`links ${location.pathname === "/profile" ? "active" : ""}`}
                             to="/profile"
