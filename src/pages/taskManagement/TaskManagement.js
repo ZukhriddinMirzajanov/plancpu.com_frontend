@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { HashLoader } from "react-spinners";
 import userService from "../../services/user.service";
 import companyProjectServicece from "../../services/company-project.service";
+import * as Icon from "react-bootstrap-icons";
 
 function TaskManagment() {
     const [name, setName] = useState("");
@@ -332,7 +333,12 @@ function TaskManagment() {
                 <ul>
                     {tasksToDisplay.map((task, index) => (
                         <li className="task-wrapper" key={task.id}>
-                            <h5>{task.name}</h5>
+                            <div className="time-btn">
+                                <h5>{task.name}</h5>
+                                {task.statusOfTask === 4 && (
+                                    <p><Icon.CheckCircle className="home-card-btn" /></p>
+                                )}
+                            </div>
                             <div className="time-btn">
                                 <div className="list-title">
                                     <i>Time to spend {task.hour} hr</i>
@@ -345,15 +351,18 @@ function TaskManagment() {
                                     >
                                         See Description
                                     </Button>
-                                    <Button
-                                        className="task-edite-btn"
-                                        onClick={() => handleEditTask(index)}
-                                        variant="outline-success"
-                                    >
-                                        Edit
-                                    </Button>
+                                    {task.statusOfTask !== 4 && (
+                                        <Button
+                                            className="task-edite-btn"
+                                            onClick={() => handleEditTask(index)}
+                                            variant="outline-success"
+                                        >
+                                            Edit
+                                        </Button>
+                                    )}
+
                                     {(task.createdByEmail === userFromLocal.email ||
-                                        userFromLocal.role === "ADMIN") && (
+                                        (userFromLocal.role === "ADMIN" && task.statusOfTask !== 4)) && (
                                             <Button
                                                 variant="outline-danger"
                                                 onClick={() => showMadalForDel(index)}
