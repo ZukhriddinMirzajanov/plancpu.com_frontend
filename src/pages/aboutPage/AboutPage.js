@@ -3,11 +3,13 @@ import Button from "react-bootstrap/Button";
 import "./AboutPage.css";
 import plancpu from "../../plancpu.svg";
 import { Link } from "react-router-dom";
-import SliderComponent from "../../components/slider/SliderComponent";
+import SliderCpu from "../../components/slider/SliderCpu";
+import { Nav } from "react-bootstrap";
 
 function AboutPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const currentDate = new Date().toLocaleDateString();
+ 
   useEffect(() => {
     // Check if the user is logged in based on localStorage data
     const storedUser = localStorage.getItem("user");
@@ -18,10 +20,11 @@ function AboutPage() {
 
   return (
     <>
+        <SliderCpu/>
       <div className="container project-body">
-        <SliderComponent/>
         <br />
         <img src={plancpu} alt="logo" className="plancpu" />
+
         <br />
         <br />
         {isLoggedIn && (
@@ -117,6 +120,25 @@ function AboutPage() {
           </small>
         </p>
       </div>
+      <footer>
+        <div className="container ">
+            <Nav className="footer-nav">
+            <div className="footer-left">
+                <h6>Address:</h6>
+                <p>Tashkent, Uzbekistan</p>
+                <p>Chilonzor 23</p>
+            </div>
+            <div className="footer-right">
+                <h6>Contacts:</h6>
+                <p>+998940644222</p>
+                <p>plancpu.com@gmail.com</p>
+            </div>
+            </Nav>
+           
+            <p className="f-bottom">©️ {currentDate}: Powered by Plancpu.</p>
+            .
+        </div>
+    </footer>
     </>
   );
 }
