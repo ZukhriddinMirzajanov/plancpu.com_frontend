@@ -11,6 +11,9 @@ import { useNavigate } from "react-router-dom";
 import { Form } from "react-bootstrap";
 import PopUpComment from "../../components/modalForComment/PopUpComment";
 import ClosedTaskModal from "../../components/closedTaskModal/ClosedTaskModal";
+// import io from '';
+import { over } from 'stompjs';
+import SockJS from 'sockjs-client';
 
 const HomePage = () => {
     const [selectedTask, setSelectedTask] = useState(null);
@@ -59,6 +62,22 @@ const HomePage = () => {
                 console.error("Error fetching user data:", err);
             });
     }, [userFromLocal.id, navigate]);
+
+    useEffect(() => {
+        const socket = new SockJS("http://localhost:5000/ws");
+        const stompClient = over(socket);
+
+        // Connect to the WebSocket server
+        stompClient.connect({}, () => {
+            stompClient.subscribe('/topic/updated', (message) => {
+                fetchAllTasksByCompanyProject();
+            });
+        });
+        // return () => {
+        //     // Disconnect the WebSocket when the component unmounts
+        //     stompClient.disconnect();
+        // };
+    });
 
     function fetchAllTasksByCompanyProject() {
         if (selectedIndexFromLocal) {

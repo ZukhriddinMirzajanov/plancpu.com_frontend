@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = 'https://www.softlatency.com/api/auth'; 
+const API_BASE_URL = 'https://plancpu-536ef611f49e.herokuapp.com/api/auth'; 
 // const API_BASE_URL = 'http://localhost:5000/api/auth';
 
 const signup = (userData) => {

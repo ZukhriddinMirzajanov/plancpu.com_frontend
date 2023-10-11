@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import userService from '../../services/user.service';
 import { ToastContainer, toast } from 'react-toastify';
 import { HashLoader } from "react-spinners";
+import "./BlockedAccountPage.css";
+import plancpu from "../../plancpu.svg";
 
 function BlockedAccountPage() {
     const userFromLocal = JSON.parse(localStorage.getItem("user"));
@@ -29,6 +31,10 @@ function BlockedAccountPage() {
     }
     useEffect(checkUserStatus, [userFromLocal.id, navigate]);
 
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+    };
+
     const spinnerContainerCss = {
         position: "fixed",
         top: "0",
@@ -50,8 +56,9 @@ function BlockedAccountPage() {
                 </div>
             )}
             <ToastContainer position="top-center" />
-            <div>
-                <h1 className="blockedAccountText">Your Company account currently blocked!</h1>
+            <img src={plancpu} alt="logo" className="plancpu" />
+            <div className="blockedAccountText">
+                <p>Your Company account currently blocked! Please contact with plancpu support: <strong>plancpu.com@gmail.com</strong> <Link to="/login" onClick={handleLogout}>Logout</Link></p>
             </div>
 
         </>
