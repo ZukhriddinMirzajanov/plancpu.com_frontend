@@ -30,7 +30,12 @@ const LoginPage = () => {
         setIsLoading(true);
         authService.login(email, password)
             .then((data) => {
-                navigate("/");
+                if (data.company.isActive) {
+                    navigate("/");
+                } else {
+                    navigate("/blockedAccount");
+                }
+                
                 setIsLoading(false);
                 setEmail("");
                 setPassword("");
