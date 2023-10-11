@@ -64,7 +64,7 @@ const HomePage = () => {
     }, [userFromLocal.id, navigate]);
 
     useEffect(() => {
-        const socket = new SockJS("http://localhost:5000/ws");
+        const socket = new SockJS("https://plancpu-536ef611f49e.herokuapp.com/ws");
         const stompClient = over(socket);
 
         // Connect to the WebSocket server
