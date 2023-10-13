@@ -88,13 +88,11 @@ const HomePage = () => {
                 localStorage.removeItem("plancpu.com.selectedIndexFromLocal");
                 selectedIndex(0);
             }
-            setIsLoading(true);
             taskService
                 .getAllTasksByCompanyProjectId(
                     userData.companyProjects[Number(selectedIndex)].id
                 )
                 .then((res) => {
-                    setIsLoading(false);
                     if (res !== null) {
                         if (res.length > 0) {
                             const tasks1 = [];
@@ -133,7 +131,6 @@ const HomePage = () => {
                 })
                 .catch((err) => {
                     toast.error("Error!");
-                    setIsLoading(false);
                     console.log(err);
                     // navigate("/login");
                 });
