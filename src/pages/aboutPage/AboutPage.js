@@ -51,34 +51,30 @@ function AboutPage() {
                     </>
                 )}
                 <p>
-                    Plancpu is a project management SaaS company that is transforming the
-                    way organizations plan, execute, and succeed in their projects. Our
-                    passion for excellence and commitment to streamlining project
-                    workflows make us your ultimate partner in driving productivity,
-                    collaboration, and success.
+                    Plancpu is a project management platform.
                 </p>
                 <p>Key features:</p>
                 <ul>
                     <li>
-                        Intuitive and User-Friendly Interface: Our SaaS solution boasts an
-                        intuitive and user-friendly interface that ensures quick adoption
-                        across teams, maximizing productivity from day one.
+                        User Authentication: Implemented secure user authentication for Managers, Employees, and Admin, ensuring controlled access to the system.
                     </li>
                     <li>
-                        Advanced Project Planning: Say goodbye to scattered spreadsheets and
-                        endless emails. With ProjectMasterPro, you can create comprehensive
-                        project roadmaps, set clear milestones, and establish dependencies
-                        for better project visibility and resource allocation.
+                        Employee Management: Designed the Manager Dashboard, enabling the management of employees, project creation, analytics tracking, and more. Facilitated Employee Profile Update, allowing employees to maintain their personal information. Developed an Admin Dashboard for system control, including user account management.
                     </li>
                     <li>
-                        Real-Time Collaboration: Foster a united team spirit with our
-                        platform's real-time communication and collaboration features,
-                        enabling seamless sharing of ideas, files, and updates.
+                        Task Management: Created a robust task management system, enabling Managers and Employees to create, edit, and delete tasks within specific projects. Implemented task status management with real-time communication between clients and servers, ensuring seamless updates and collaboration. Established a task workflow, including Open, In Progress, In Review, and Closed statuses.
                     </li>
                     <li>
-                        Security and Reliability: Your data security is our top priority.
-                        With state-of-the-art encryption and security protocols, your
-                        sensitive project information is protected at all times.
+                        Project Management: Allowed Managers to create projects and assign employees to specific projects. Enabled Managers to filter and manage projects.
+                    </li>
+                    <li>
+                        Project Analytics: Implemented line and bar charts for project analytics, providing Managers and Employees with valuable insights.
+                    </li>
+                    <li>
+                        Time Registration: Enabled Employees to report their working hours. Facilitated the Manager's ability to view working hours reports of employees under their supervision.
+                    </li>
+                    <li>
+                        Technologies Used: Front-End: JavaScript, ReactJS, HTML, CSS, Bootstrap, Websocket. Back-End: Java Spring Boot, Websocket, JWT. Database: PostgreSQL. Hosting Platform: AWS, Heroku, Firebase.
                     </li>
                 </ul>
                 <p>
@@ -93,8 +89,8 @@ function AboutPage() {
                 <div className="container ">
                     <Nav className="footer-nav">
                         <ul className="footer-left">
-                            <h6>Address:</h6>
-                            <li>Tashkent, Uzbekistan</li>
+                            {/* <h6>Address:</h6>
+                            <li>Tashkent, Uzbekistan</li> */}
                         </ul>
                         <ul className="footer-right">
                             <h6>Contacts:</h6>
